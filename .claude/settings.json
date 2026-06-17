@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Read(//c/Users/RAHUL VASHISTH/Desktop/github_repos/Web-Site/**)",
-      "Bash(ls \"C:\\\\Users\\\\RAHUL VASHISTH\\\\Desktop\\\\github_repos\")",
-      "Read(//c/Users/RAHUL VASHISTH/Desktop/github_repos/**)"
-    ]
-  }
-}
