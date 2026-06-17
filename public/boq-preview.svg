@@ -1,0 +1,123 @@
+<svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,-apple-system,sans-serif">
+
+  <!-- Window shadow & background -->
+  <rect width="480" height="260" rx="14" fill="white"/>
+
+  <!-- ── Title bar ── -->
+  <rect width="480" height="36" rx="14" fill="#0f172a"/>
+  <rect y="22" width="480" height="14" fill="#0f172a"/>
+
+  <!-- Traffic lights -->
+  <circle cx="16" cy="18" r="5" fill="#ef4444" fill-opacity="0.85"/>
+  <circle cx="30" cy="18" r="5" fill="#f59e0b" fill-opacity="0.85"/>
+  <circle cx="44" cy="18" r="5" fill="#22c55e" fill-opacity="0.85"/>
+
+  <!-- Title -->
+  <text x="240" y="22" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="9.5" letter-spacing="0.3">ARC PEM — Project Estimation Manager</text>
+
+  <!-- ── Toolbar ── -->
+  <rect y="36" width="480" height="24" fill="#f8fafc"/>
+  <rect y="59" width="480" height="1" fill="#e2e8f0"/>
+
+  <!-- Breadcrumb -->
+  <text x="14" y="52" fill="#94a3b8" font-size="8">Projects</text>
+  <text x="54" y="52" fill="#cbd5e1" font-size="8">/</text>
+  <text x="62" y="52" fill="#94a3b8" font-size="8">Skyline Tower</text>
+  <text x="118" y="52" fill="#cbd5e1" font-size="8">/</text>
+  <text x="126" y="52" fill="#475569" font-size="8" font-weight="700">Block A — BOQ</text>
+
+  <!-- Export button -->
+  <rect x="392" y="40" width="74" height="16" rx="5" fill="#6366f1"/>
+  <text x="429" y="52" text-anchor="middle" fill="white" font-size="8" font-weight="700" letter-spacing="0.2">Export PDF ↓</text>
+
+  <!-- Save badge -->
+  <rect x="348" y="42" width="36" height="12" rx="4" fill="rgba(16,185,129,0.12)"/>
+  <text x="366" y="52" text-anchor="middle" fill="#10b981" font-size="7.5" font-weight="700">✓ Saved</text>
+
+  <!-- ── Column headers ── -->
+  <rect y="60" width="480" height="18" fill="#f1f5f9"/>
+  <rect y="77" width="480" height="1" fill="#e2e8f0"/>
+
+  <text x="34" y="73" fill="#94a3b8" font-size="7.5" font-weight="700" letter-spacing="0.8">WORK ITEM</text>
+  <text x="268" y="73" fill="#94a3b8" font-size="7.5" font-weight="700" letter-spacing="0.8">UNIT</text>
+  <text x="332" y="73" fill="#94a3b8" font-size="7.5" font-weight="700" letter-spacing="0.8">RATE</text>
+  <text x="396" y="73" fill="#94a3b8" font-size="7.5" font-weight="700" letter-spacing="0.8">AMOUNT</text>
+
+  <!-- ── Row 1: Civil ── -->
+  <rect y="78" width="480" height="26" fill="white"/>
+  <rect y="103" width="480" height="1" fill="#f1f5f9"/>
+
+  <rect x="14" y="85" width="9" height="9" rx="3" fill="#3b82f6"/>
+  <text x="30" y="95" fill="#1e293b" font-size="9" font-weight="600">Civil &amp; Structural Work</text>
+  <text x="268" y="95" fill="#64748b" font-size="8.5">1,240 sqft</text>
+  <text x="332" y="95" fill="#64748b" font-size="8.5">₹ 340</text>
+  <text x="396" y="95" fill="#10b981" font-size="9" font-weight="700">₹ 4.21 L</text>
+  <!-- Inline bar -->
+  <rect x="448" y="86" width="22" height="5" rx="2" fill="#e2e8f0"/>
+  <rect x="448" y="86" width="22" height="5" rx="2" fill="#3b82f6" fill-opacity="0.6"/>
+
+  <!-- ── Row 2: MEP ── -->
+  <rect y="104" width="480" height="26" fill="#fafafa"/>
+  <rect y="129" width="480" height="1" fill="#f1f5f9"/>
+
+  <rect x="14" y="111" width="9" height="9" rx="3" fill="#8b5cf6"/>
+  <text x="30" y="121" fill="#1e293b" font-size="9" font-weight="600">MEP (Electrical + Plumbing)</text>
+  <text x="268" y="121" fill="#64748b" font-size="8.5">1,240 sqft</text>
+  <text x="332" y="121" fill="#64748b" font-size="8.5">₹ 145</text>
+  <text x="396" y="121" fill="#10b981" font-size="9" font-weight="700">₹ 1.80 L</text>
+  <rect x="448" y="112" width="22" height="5" rx="2" fill="#e2e8f0"/>
+  <rect x="448" y="112" width="10" height="5" rx="2" fill="#8b5cf6" fill-opacity="0.6"/>
+
+  <!-- ── Row 3: Finishes ── -->
+  <rect y="130" width="480" height="26" fill="white"/>
+  <rect y="155" width="480" height="1" fill="#f1f5f9"/>
+
+  <rect x="14" y="137" width="9" height="9" rx="3" fill="#f59e0b"/>
+  <text x="30" y="147" fill="#1e293b" font-size="9" font-weight="600">Interior Finishes</text>
+  <text x="268" y="147" fill="#64748b" font-size="8.5">1,240 sqft</text>
+  <text x="332" y="147" fill="#64748b" font-size="8.5">₹ 170</text>
+  <text x="396" y="147" fill="#10b981" font-size="9" font-weight="700">₹ 2.11 L</text>
+  <rect x="448" y="138" width="22" height="5" rx="2" fill="#e2e8f0"/>
+  <rect x="448" y="138" width="14" height="5" rx="2" fill="#f59e0b" fill-opacity="0.6"/>
+
+  <!-- ── Row 4: External ── -->
+  <rect y="156" width="480" height="26" fill="#fafafa"/>
+  <rect y="181" width="480" height="1" fill="#e2e8f0"/>
+
+  <rect x="14" y="163" width="9" height="9" rx="3" fill="#10b981"/>
+  <text x="30" y="173" fill="#1e293b" font-size="9" font-weight="600">External Development</text>
+  <text x="268" y="173" fill="#64748b" font-size="8.5">420 sqft</text>
+  <text x="332" y="173" fill="#64748b" font-size="8.5">₹ 95</text>
+  <text x="396" y="173" fill="#10b981" font-size="9" font-weight="700">₹ 0.40 L</text>
+  <rect x="448" y="164" width="22" height="5" rx="2" fill="#e2e8f0"/>
+  <rect x="448" y="164" width="3" height="5" rx="2" fill="#10b981" fill-opacity="0.6"/>
+
+  <!-- ── Totals row ── -->
+  <rect y="182" width="480" height="32" fill="#0f172a"/>
+  <text x="14" y="202" fill="rgba(255,255,255,0.45)" font-size="8.5">Subtotal + 18% GST · 4 line items · 3,140 sqft total</text>
+  <text x="466" y="202" text-anchor="end" fill="white" font-size="13" font-weight="900">₹ 9.49 L</text>
+
+  <!-- ── Status footer ── -->
+  <rect y="214" width="480" height="46" fill="#f8fafc"/>
+
+  <!-- 3 mini stat cards -->
+  <!-- Card 1 -->
+  <rect x="14" y="220" width="136" height="32" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="22" y="227" width="16" height="16" rx="5" fill="rgba(59,130,246,0.1)"/>
+  <text x="22" y="237.5" font-size="9" fill="#3b82f6">📐</text>
+  <text x="44" y="232" fill="#64748b" font-size="7.5" font-weight="600">Area Covered</text>
+  <text x="44" y="242" fill="#0f172a" font-size="9" font-weight="800">3,140 sqft</text>
+
+  <!-- Card 2 -->
+  <rect x="158" y="220" width="136" height="32" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="166" y="237.5" font-size="9" fill="#10b981">📊</text>
+  <text x="182" y="232" fill="#64748b" font-size="7.5" font-weight="600">GST Amount</text>
+  <text x="182" y="242" fill="#0f172a" font-size="9" font-weight="800">₹ 1.45 L</text>
+
+  <!-- Card 3 -->
+  <rect x="302" y="220" width="164" height="32" rx="8" fill="rgba(99,102,241,0.06)" stroke="rgba(99,102,241,0.2)" stroke-width="1"/>
+  <text x="310" y="237.5" font-size="9" fill="#6366f1">✅</text>
+  <text x="326" y="232" fill="#6366f1" font-size="7.5" font-weight="600">Estimate Complete</text>
+  <text x="326" y="242" fill="#4f46e5" font-size="9" font-weight="800">100% · Ready to export</text>
+
+</svg>

@@ -1,0 +1,153 @@
+@tailwind utilities;
+
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS — edit here to reskin the whole app
+   ══════════════════════════════════════════════ */
+:root {
+  /* Brand */
+  --color-primary:       #6366f1;   /* indigo 500 */
+  --color-primary-dark:  #4f46e5;   /* indigo 600 */
+  --color-primary-light: #818cf8;   /* indigo 400 */
+  --color-secondary:     #3b82f6;   /* blue 500 */
+  --color-accent:        #8b5cf6;   /* violet 500 */
+
+  /* Semantic */
+  --color-success:  #10b981;   /* emerald 500 */
+  --color-warning:  #f59e0b;   /* amber 500 */
+  --color-danger:   #ef4444;   /* red 500 */
+  --color-info:     #0ea5e9;   /* sky 500 */
+
+  /* Ink (text / icon) */
+  --color-ink:        #0f172a;   /* slate 900 */
+  --color-ink-light:  #1e293b;   /* slate 800 */
+  --color-ink-muted:  #475569;   /* slate 600 */
+  --color-ink-subtle: #64748b;   /* slate 500 */
+  --color-ink-faint:  #94a3b8;   /* slate 400 */
+  --color-ink-ghost:  #cbd5e1;   /* slate 300 */
+
+  /* Surface (backgrounds / borders) */
+  --color-surface:       #ffffff;
+  --color-surface-alt:   #f8fafc;   /* slate 50 */
+  --color-surface-muted: #f1f5f9;   /* slate 100 */
+  --color-border:        #e2e8f0;   /* slate 200 */
+  --color-border-light:  #f1f5f9;   /* slate 100 */
+
+  /* Gradients */
+  --gradient-brand: linear-gradient(135deg, #3b82f6, #6366f1);
+  --gradient-dark:  linear-gradient(135deg, #0a0f1e, #0f172a);
+  --gradient-hero:  linear-gradient(155deg, #020817 0%, #06101f 35%, #09163a 70%, #0c1d4d 100%);
+
+  /* Shadows */
+  --shadow-sm:    0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-brand: 0 8px 24px rgba(99, 102, 241, 0.35);
+
+  /* Radii */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Dashboard base styles (landing.css controls everything else) ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Dashboard layout helpers */
+.dash-body {
+  font-family: var(--font-sans);
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dashboard quick-action card hover */
+.dash-action-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.dash-action-card:hover {
+  transform: translateY(-3px);
+  border-color: #e0e7ff !important;
+}
+.dash-action-card.blue:hover   { box-shadow: 0 8px 24px rgba(59,130,246,0.2), var(--shadow-sm); }
+.dash-action-card.purple:hover { box-shadow: 0 8px 24px rgba(139,92,246,0.2), var(--shadow-sm); }
+.dash-action-card.green:hover  { box-shadow: 0 8px 24px rgba(16,185,129,0.2), var(--shadow-sm); }
+
+/* ── Subscription plan cards ── */
+.plan-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: default;
+}
+.plan-card:not(.current):hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.09), var(--shadow-sm) !important;
+}
+.plan-card.popular:not(.current):hover {
+  box-shadow: 0 16px 40px rgba(99,102,241,0.2), var(--shadow-sm) !important;
+  border-color: var(--color-primary-light) !important;
+}
+
+/* ── Dashboard stat cards ── */
+.stat-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.09) !important;
+}
+
+/* ── Support contact channel cards ── */
+.channel-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.channel-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.09);
+}
+
+/* ── Support resource / link cards ── */
+.resource-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+}
+.resource-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+  border-color: #c7d2fe !important;
+}
+
+/* ── Current plan banner "Manage" link ── */
+.manage-link {
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.manage-link:hover {
+  background: #e0e7ff !important;
+  color: var(--color-primary-dark) !important;
+}
+
+/* ── Dashboard welcome hero upgrade button ── */
+.upgrade-btn {
+  transition: opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.upgrade-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(99,102,241,0.5) !important;
+}
+
+/* ── Sidebar inactive nav item hover ── */
+.sidebar-nav-inactive:hover {
+  color: rgba(255,255,255,0.8) !important;
+  background: rgba(255,255,255,0.07) !important;
+}
+.sidebar-nav-inactive:hover .sidebar-nav-icon {
+  background: rgba(255,255,255,0.1) !important;
+}
+
+/* ── Smooth scrollbar ── */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: var(--color-surface-muted); }
+::-webkit-scrollbar-thumb  { background: var(--color-ink-ghost); border-radius: 100px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-faint); }
