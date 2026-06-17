@@ -10,8 +10,8 @@ const CHANNELS = [
   {
     icon: Phone,
     label: 'Call Us',
-    value: '+91 9266103145',
-    action: 'tel:+919266103145',
+    value: '+91-8810235570',
+    action: 'tel:+918810235570',
     badge: 'Mon–Fri, 10am–6pm IST',
     accent: '#16a34a',
     bg: 'rgba(22,163,74,0.08)',
@@ -20,8 +20,8 @@ const CHANNELS = [
   {
     icon: MessageCircle,
     label: 'WhatsApp',
-    value: '+91 9266103145',
-    action: 'https://wa.me/919266103145',
+    value: '+91-8810235570',
+    action: 'https://wa.me/918810235570',
     badge: 'Quick replies, Mon–Fri',
     accent: '#059669',
     bg: 'rgba(5,150,105,0.08)',
@@ -30,8 +30,8 @@ const CHANNELS = [
   {
     icon: Mail,
     label: 'Email Support',
-    value: 'hashxlabs@gmail.com',
-    action: 'mailto:hashxlabs@gmail.com',
+    value: 'hashxlabs.info@gmail.com',
+    action: 'mailto:hashxlabs.info@gmail.com',
     badge: 'Response within 24 hours',
     accent: '#6366f1',
     bg: 'rgba(99,102,241,0.08)',
@@ -54,7 +54,7 @@ const FAQS = [
   },
   {
     q: 'What if the software crashes or has a bug?',
-    a: 'Email us at hashxlabs@gmail.com with a description of the issue and your OS version. We typically respond within 24 hours.',
+    a: 'Email us at hashxlabs.info@gmail.com with a description of the issue and your OS version. We typically respond within 24 hours.',
   },
   {
     q: 'Is my data backed up?',
@@ -293,7 +293,7 @@ export default function SupportPage() {
           </p>
         </div>
         <a
-          href="mailto:hashxlabs@gmail.com?subject=ARC PEM Support Request"
+          href="mailto:hashxlabs.info@gmail.com?subject=ARC PEM Support Request"
           style={{
             display: 'flex', alignItems: 'center', gap: '8px',
             background: 'white', color: '#4f46e5',

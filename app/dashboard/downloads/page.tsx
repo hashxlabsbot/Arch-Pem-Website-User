@@ -1,17 +1,11 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { createHash } from 'crypto'
 import {
   Download, Shield, Cpu, Monitor, HardDrive,
   CheckCircle2, Lock, Package, Zap, Apple,
-  AlertTriangle, Copy, Clock
+  AlertTriangle, Mail, Clock
 } from 'lucide-react'
-
-function generateLicenseKey(userId: string) {
-  const hash = createHash('sha256').update(userId + 'arcpem-license-salt').digest('hex').toUpperCase()
-  return `ARCPEM-${hash.slice(0, 4)}-${hash.slice(4, 8)}-${hash.slice(8, 12)}-${hash.slice(12, 16)}`
-}
 
 const STEPS = [
   { icon: Lock,        label: 'Verified',    desc: 'Login checked before download starts'   },
@@ -37,7 +31,6 @@ export default async function DownloadsPage() {
   })
 
   const hasActivePlan = !!user?.plan
-  const licenseKey = generateLicenseKey(session.user.id)
 
   return (
     <div style={{ maxWidth: '820px', paddingBottom: '40px' }}>
@@ -188,14 +181,14 @@ export default async function DownloadsPage() {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
             <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              Your License Key
+              License Activation
             </div>
             {hasActivePlan ? (
               <span style={{
                 fontSize: '0.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: '100px',
                 background: 'rgba(16,185,129,0.1)', color: '#059669', border: '1px solid rgba(16,185,129,0.2)',
               }}>
-                ● Active
+                ● Plan Active
               </span>
             ) : (
               <span style={{
@@ -210,24 +203,31 @@ export default async function DownloadsPage() {
           {hasActivePlan ? (
             <>
               <div style={{
-                background: '#0a0f1e', borderRadius: '10px', padding: '12px 14px',
-                fontFamily: 'monospace', fontSize: '0.82rem', color: '#34d399',
-                letterSpacing: '0.1em', marginBottom: '8px', wordBreak: 'break-all',
+                display: 'flex', alignItems: 'flex-start', gap: '10px',
+                background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)',
+                borderRadius: '10px', padding: '12px 14px', marginBottom: '10px',
               }}>
-                {licenseKey}
+                <Mail size={15} style={{ color: '#059669', flexShrink: 0, marginTop: '2px' }} />
+                <div style={{ fontSize: '0.76rem', color: '#065f46', lineHeight: 1.55 }}>
+                  Your plan is active. Install the app, then email us your <strong>Machine ID</strong>{' '}
+                  (shown in the app under Settings → License). We&apos;ll issue your device-locked
+                  license key by email — usually within a few business hours.
+                </div>
               </div>
-              <div style={{ fontSize: '0.7rem', color: '#94a3b8', lineHeight: 1.5 }}>
-                Enter this key in the app after installation to activate.
-              </div>
+              <a href="mailto:hashxlabs.info@gmail.com?subject=ARC PEM License Activation&body=My plan is active. My Machine ID is: " style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                fontSize: '0.78rem', fontWeight: 700, padding: '9px 16px',
+                background: 'linear-gradient(135deg,#10b981,#059669)', color: 'white',
+                borderRadius: '10px', textDecoration: 'none', textAlign: 'center',
+              }}>
+                <Mail size={14} /> Send Machine ID to activate
+              </a>
             </>
           ) : (
             <div>
-              <div style={{
-                background: '#f8fafc', borderRadius: '10px', padding: '12px 14px',
-                fontFamily: 'monospace', fontSize: '0.82rem', color: '#cbd5e1',
-                letterSpacing: '0.1em', marginBottom: '10px', filter: 'blur(5px)', userSelect: 'none',
-              }}>
-                ARCPEM-XXXX-XXXX-XXXX-XXXX
+              <div style={{ fontSize: '0.76rem', color: '#94a3b8', lineHeight: 1.55, marginBottom: '10px' }}>
+                Upgrade to a paid plan to receive a device-locked license key. Until then the app
+                runs in trial mode.
               </div>
               <a href="/dashboard/subscription" style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
@@ -235,7 +235,7 @@ export default async function DownloadsPage() {
                 background: 'linear-gradient(135deg,#3b82f6,#6366f1)', color: 'white',
                 borderRadius: '10px', textDecoration: 'none', textAlign: 'center',
               }}>
-                Upgrade to unlock key →
+                Upgrade to get your key →
               </a>
             </div>
           )}

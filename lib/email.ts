@@ -133,6 +133,44 @@ export async function sendPasswordResetEmail({
   `)
 }
 
+export async function sendDemoRequestEmail({
+  to, name, whatsapp, company, role, teamSize,
+}: { to: string; name: string; whatsapp: string; company?: string; role?: string; teamSize?: string }) {
+  const rows = [
+    ['Name',       name],
+    ['WhatsApp',   whatsapp],
+    ['Company',    company || '—'],
+    ['Role',       role || '—'],
+    ['Team Size',  teamSize || '—'],
+  ]
+
+  await sendMail(to, 'ARC PEM Team', `New demo request — ${name}`, `
+    <!DOCTYPE html><html>
+    <body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',Arial,sans-serif;">
+    <div style="max-width:540px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f);padding:32px 36px;">
+        <h1 style="color:white;font-size:22px;font-weight:700;margin:0 0 6px;">New Demo Request 🎯</h1>
+        <p style="color:rgba(255,255,255,0.75);font-size:14px;margin:0;">A prospect booked a demo from the website.</p>
+      </div>
+      <div style="padding:32px 36px;">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;">
+          <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 14px;">Lead Details</p>
+          ${rows.map(([label, value]) => `
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;">
+              <span style="font-size:13px;color:#64748b;">${label}</span>
+              <span style="font-size:13px;font-weight:700;color:#0f172a;">${value}</span>
+            </div>`).join('')}
+        </div>
+        <p style="font-size:13px;color:#94a3b8;margin:20px 0 0;">Reach out on WhatsApp within 2 hours as promised on the site.</p>
+      </div>
+      <div style="background:#f8fafc;border-top:1px solid #f1f5f9;padding:20px 36px;text-align:center;">
+        <p style="font-size:12px;color:#94a3b8;margin:0;">© 2026 ARCPEM · Demo request notification</p>
+      </div>
+    </div>
+    </body></html>
+  `)
+}
+
 export async function sendPaymentReceivedEmail({
   to, name, planName, amount, utr,
 }: { to: string; name: string; planName: string; amount: number; utr: string }) {

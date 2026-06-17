@@ -29,7 +29,8 @@ export async function middleware(req: NextRequest) {
     }
 
     if (token.role === 'ADMIN') {
-      return NextResponse.redirect(new URL('http://localhost:3000/admin', req.url))
+      const adminUrl = process.env.ADMIN_APP_URL || 'http://localhost:3000'
+      return NextResponse.redirect(new URL('/admin', adminUrl))
     }
   }
 

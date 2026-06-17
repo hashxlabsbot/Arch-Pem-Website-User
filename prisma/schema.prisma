@@ -1,23 +1,41 @@
+// ─────────────────────────────────────────────────────────────────────────
+// SHARED DATABASE — these models MIRROR the admin app (Arc-Pem-Admin), which
+// owns the schema and its migrations. This website reads/writes the SAME
+// PostgreSQL database.
+//
+// ⚠️  NEVER run `prisma migrate` or `prisma db push` from this project.
+//     Doing so would try to make the DB match this (subset) schema and would
+//     DROP the admin-only tables (Client, License, ApiKey, ActivityLog) and
+//     their columns/indexes. Only ever run `prisma generate` here.
+//     Schema changes are made in Arc-Pem-Admin and migrated from there.
+// ─────────────────────────────────────────────────────────────────────────
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      String   @default("USER")
-  status    String   @default("ACTIVE")
-  planId    String?
-  plan      Plan?    @relation(fields: [planId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  password     String
+  role         String   @default("USER")
+  status       String   @default("ACTIVE")
+  tokenVersion Int      @default(0)
+  planId       String?
+  plan         Plan?    @relation(fields: [planId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([role, status, createdAt])
+  @@index([planId])
+  @@index([createdAt])
 }
 
 model PasswordResetToken {
@@ -27,6 +45,8 @@ model PasswordResetToken {
   expiresAt DateTime
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model PendingPayment {
@@ -39,6 +59,9 @@ model PendingPayment {
   status    String   @default("pending")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status, createdAt])
 }
 
 model Plan {

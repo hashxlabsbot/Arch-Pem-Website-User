@@ -46,7 +46,7 @@ export default async function SubscriptionPage() {
               <div className="text-xs mt-1" style={{ color: '#94a3b8' }}>{user.plan.description}</div>
             </div>
             <a
-              href="mailto:hashxlabs@gmail.com"
+              href="mailto:hashxlabs.info@gmail.com"
               className="manage-link no-underline flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl"
               style={{ background: '#f1f5f9', color: '#3b82f6' }}
             >
@@ -167,7 +167,7 @@ export default async function SubscriptionPage() {
                   </div>
                 ) : plan.price === 0 ? (
                   <a
-                    href="mailto:hashxlabs@gmail.com?subject=Enterprise Plan Enquiry"
+                    href="mailto:hashxlabs.info@gmail.com?subject=Enterprise Plan Enquiry"
                     className="no-underline block text-center text-xs font-bold py-2.5 rounded-xl transition-colors"
                     style={{ background: '#f1f5f9', color: '#475569' }}
                   >
@@ -190,8 +190,8 @@ export default async function SubscriptionPage() {
 
       <p className="text-xs mt-5 text-center" style={{ color: '#cbd5e1' }}>
         Secure payments powered by Razorpay · For help email{' '}
-        <a href="mailto:hashxlabs@gmail.com" style={{ color: '#6366f1' }}>hashxlabs@gmail.com</a>{' '}
-        or call <strong style={{ color: '#94a3b8' }}>+91 9266103145</strong>
+        <a href="mailto:hashxlabs.info@gmail.com" style={{ color: '#6366f1' }}>hashxlabs.info@gmail.com</a>{' '}
+        or call <strong style={{ color: '#94a3b8' }}>+91-8810235570</strong>
       </p>
     </div>
   )
