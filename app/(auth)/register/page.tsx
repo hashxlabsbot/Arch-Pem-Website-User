@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Eye, EyeOff, Loader2, AlertCircle, Mail, ShieldCheck, User, Building2, Lock } from 'lucide-react'
+import { Eye, EyeOff, Loader2, AlertCircle, Mail, ShieldCheck, User, Building2, Lock, X, ExternalLink } from 'lucide-react'
 import LogoMark from '@/components/LogoMark'
+import { DocumentIcon } from '@/components/icons'
 
 export default function RegisterPage() {
   const router  = useRouter()
@@ -25,6 +26,7 @@ export default function RegisterPage() {
 
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState('')
+  const [legalOpen, setLegalOpen] = useState<'terms' | 'privacy' | null>(null)
 
   useEffect(() => {
     if (cooldown <= 0) return
@@ -327,7 +329,7 @@ export default function RegisterPage() {
             </label>
             <div style={{ position: 'relative' }}>
               <User size={13} style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', color: focused === 'name' ? '#6366f1' : '#94a3b8', pointerEvents: 'none' }} />
-              <input type="text" value={name} required autoComplete="name" placeholder="Rahul Sharma"
+              <input type="text" value={name} required autoComplete="name" placeholder="Your Name"
                 onChange={e => setName(e.target.value)}
                 onFocus={() => setFocused('name')} onBlur={() => setFocused(null)}
                 style={iconInputStyle('name')} />
@@ -425,9 +427,9 @@ export default function RegisterPage() {
 
         <p style={{ fontSize: '0.68rem', color: '#cbd5e1', textAlign: 'center', lineHeight: 1.5, margin: 0 }}>
           By creating an account you agree to our{' '}
-          <a href="#" style={{ color: '#94a3b8', textDecoration: 'underline' }}>Terms of Service</a>
+          <button type="button" onClick={() => setLegalOpen('terms')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#94a3b8', textDecoration: 'underline', fontSize: 'inherit', fontFamily: 'inherit' }}>Terms of Service</button>
           {' '}and{' '}
-          <a href="#" style={{ color: '#94a3b8', textDecoration: 'underline' }}>Privacy Policy</a>
+          <button type="button" onClick={() => setLegalOpen('privacy')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#94a3b8', textDecoration: 'underline', fontSize: 'inherit', fontFamily: 'inherit' }}>Privacy Policy</button>
         </p>
       </form>
 
@@ -444,6 +446,78 @@ export default function RegisterPage() {
       <p style={{ textAlign: 'center', marginTop: '10px' }}>
         <a href="/" style={{ fontSize: '0.74rem', color: '#cbd5e1', textDecoration: 'none' }}>← Back to website</a>
       </p>
+
+      {/* ── Legal modal ── */}
+      {legalOpen && (
+        <div
+          onClick={() => setLegalOpen(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
+            background: 'rgba(15,23,42,0.65)', backdropFilter: 'blur(4px)',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              width: '90vw', maxWidth: '860px', height: '85vh',
+              background: 'white', borderRadius: '20px', overflow: 'hidden',
+              display: 'flex', flexDirection: 'column',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08)',
+            }}
+          >
+            {/* Header */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '14px 18px', borderBottom: '1px solid #f1f5f9', flexShrink: 0,
+              background: '#fafafa',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{
+                  width: '30px', height: '30px', borderRadius: '8px',
+                  background: 'linear-gradient(135deg, #6366f1, #3b82f6)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                }}>
+                  <DocumentIcon size={15} color="white" />
+                </div>
+                <span style={{ fontWeight: 800, fontSize: '0.92rem', color: '#0f172a' }}>
+                  {legalOpen === 'terms' ? 'Terms of Service' : 'Privacy Policy'}
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <a
+                  href={legalOpen === 'terms' ? '/terms' : '/privacy'}
+                  target="_blank" rel="noopener noreferrer"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '5px',
+                    fontSize: '0.72rem', color: '#6366f1', fontWeight: 600,
+                    textDecoration: 'none', padding: '5px 10px', borderRadius: '8px',
+                    background: 'rgba(99,102,241,0.08)',
+                  }}
+                >
+                  <ExternalLink size={11} /> Open in new tab
+                </a>
+                <button
+                  onClick={() => setLegalOpen(null)}
+                  style={{
+                    width: '32px', height: '32px', borderRadius: '8px', border: 'none',
+                    cursor: 'pointer', background: '#f1f5f9', color: '#64748b',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+            {/* Content */}
+            <iframe
+              src={legalOpen === 'terms' ? '/terms' : '/privacy'}
+              title={legalOpen === 'terms' ? 'Terms of Service' : 'Privacy Policy'}
+              style={{ flex: 1, border: 'none', width: '100%' }}
+            />
+          </div>
+        </div>
+      )}
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </>

@@ -6,7 +6,7 @@ import { logger } from '@/lib/logger'
 export const dynamic = 'force-dynamic'
 
 // Where demo leads are delivered. Defaults to the support inbox.
-const LEADS_INBOX = process.env.DEMO_LEADS_EMAIL ?? 'hashxlabs.info@gmail.com'
+const LEADS_INBOX = process.env.DEMO_LEADS_EMAIL ?? 'info@arcpem.com'
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'

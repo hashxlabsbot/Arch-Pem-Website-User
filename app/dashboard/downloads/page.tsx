@@ -6,6 +6,7 @@ import {
   CheckCircle2, Lock, Package, Zap, Apple,
   AlertTriangle, Mail, Clock
 } from 'lucide-react'
+import { company } from '@/lib/company'
 
 const STEPS = [
   { icon: Lock,        label: 'Verified',    desc: 'Login checked before download starts'   },
@@ -214,7 +215,7 @@ export default async function DownloadsPage() {
                   license key by email — usually within a few business hours.
                 </div>
               </div>
-              <a href="mailto:hashxlabs.info@gmail.com?subject=ARC PEM License Activation&body=My plan is active. My Machine ID is: " style={{
+              <a href={`mailto:${company.supportEmail}?subject=ARC PEM License Activation&body=My plan is active. My Machine ID is: `} style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
                 fontSize: '0.78rem', fontWeight: 700, padding: '9px 16px',
                 background: 'linear-gradient(135deg,#10b981,#059669)', color: 'white',

@@ -5,6 +5,7 @@ import {
   Phone, Mail, MessageCircle, BookOpen, Video, FileText,
   ChevronDown, ArrowRight, Clock, Headphones, Zap,
 } from 'lucide-react'
+import { company } from '@/lib/company'
 
 const CHANNELS = [
   {
@@ -30,8 +31,8 @@ const CHANNELS = [
   {
     icon: Mail,
     label: 'Email Support',
-    value: 'hashxlabs.info@gmail.com',
-    action: 'mailto:hashxlabs.info@gmail.com',
+    value: company.supportEmail,
+    action: `mailto:${company.supportEmail}`,
     badge: 'Response within 24 hours',
     accent: '#6366f1',
     bg: 'rgba(99,102,241,0.08)',
@@ -54,7 +55,7 @@ const FAQS = [
   },
   {
     q: 'What if the software crashes or has a bug?',
-    a: 'Email us at hashxlabs.info@gmail.com with a description of the issue and your OS version. We typically respond within 24 hours.',
+    a: `Email us at ${company.supportEmail} with a description of the issue and your OS version. We typically respond within 24 hours.`,
   },
   {
     q: 'Is my data backed up?',
@@ -293,7 +294,7 @@ export default function SupportPage() {
           </p>
         </div>
         <a
-          href="mailto:hashxlabs.info@gmail.com?subject=ARC PEM Support Request"
+          href={`mailto:${company.supportEmail}?subject=ARC PEM Support Request`}
           style={{
             display: 'flex', alignItems: 'center', gap: '8px',
             background: 'white', color: '#4f46e5',

@@ -25,8 +25,8 @@ export const company = {
   },
 
   /** Prefer a support address on your own domain over a Gmail address. */
-  supportEmail: 'hashxlabs.info@gmail.com', // TODO: e.g. support@arcpem.com
-  salesEmail: 'hashxlabs.info@gmail.com',   // TODO
+  supportEmail: 'info@arcpem.com',
+  salesEmail: 'info@arcpem.com',
 
   /** Shown site-wide; currently only appears inside the demo modal. */
   phone: '+91-8810235570',

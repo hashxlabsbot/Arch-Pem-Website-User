@@ -2,6 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useDemoModal } from '@/components/marketing/DemoModalContext'
+import {
+  DashboardIcon, FolderIcon, WalletIcon, ClockIcon, ReceiptIcon,
+  DocumentIcon, UsersIcon, SettingsIcon, BuildingIcon, LockIcon,
+  ClipboardIcon, StoreIcon, HardHatIcon, BoltIcon, PhoneIcon,
+  FileIcon, TrendingDownIcon, RocketIcon, CompassIcon,
+  PrinterIcon, ExportIcon, WarningIcon,
+} from '@/components/icons'
 
 export default function HomePage() {
   const openDemo = useDemoModal()
@@ -96,6 +103,52 @@ export default function HomePage() {
     }
   }, [])
 
+  const navMain = [
+    { id: 'pane-dashboard', icon: <DashboardIcon size={14} />, label: 'Dashboard' },
+    { id: 'pane-projects',  icon: <FolderIcon size={14} />,    label: 'Projects'  },
+    { id: 'pane-expenses',  icon: <WalletIcon size={14} />,    label: 'Expenses'  },
+  ]
+
+  const navReports = [
+    { id: 'pane-pending', icon: <ClockIcon size={14} />,    label: 'Pending Payments' },
+    { id: 'pane-gst',     icon: <ReceiptIcon size={14} />,  label: 'GST Report'       },
+    { id: 'pane-summary', icon: <DocumentIcon size={14} />, label: 'Summary Sheet'    },
+  ]
+
+  const cmpNodes = [
+    { cls: 'cmp-n-top',    ico: <ClipboardIcon size={22} color="white" />, lbl: 'BOQ &\nBudget'    },
+    { cls: 'cmp-n-left',   ico: <StoreIcon size={22} color="white" />,     lbl: 'Vendor\nTracking' },
+    { cls: 'cmp-n-right',  ico: <HardHatIcon size={22} color="white" />,   lbl: 'Labour\nTracking' },
+    { cls: 'cmp-n-bottom', ico: <WalletIcon size={22} color="white" />,    lbl: 'Finance\nControl' },
+  ]
+
+  const cmpPetals = [
+    { cls: 'cp-top',    ico: <ClipboardIcon size={20} color="white" />, lbl: 'BOQ &\nBudget'    },
+    { cls: 'cp-left',   ico: <StoreIcon size={20} color="white" />,     lbl: 'Vendor\nTracking' },
+    { cls: 'cp-right',  ico: <HardHatIcon size={20} color="white" />,   lbl: 'Labour\nTracking' },
+    { cls: 'cp-bottom', ico: <WalletIcon size={20} color="white" />,    lbl: 'Finance\nControl' },
+  ]
+
+  const statItems = [
+    { icon: <TrendingDownIcon size={22} color="#6366f1" strokeWidth={2.5} />, num: '10%',    target: 10,   suffix: '%',  title: 'Budget Overrun Reduction', sub: 'Faster visibility on cost vs. budget across all projects', pct: 10  },
+    { icon: <BoltIcon size={22} color="#6366f1" />,                           num: '80%',    target: 80,   suffix: '%',  title: 'Faster Accounting Handoff', sub: 'Tally CSV eliminates manual CA re-entry',                pct: 80  },
+    { icon: <RocketIcon size={22} color="#6366f1" strokeWidth={1.5} />,       num: '<15 min',target: null, suffix: '',   title: 'Setup Guarantee',           sub: 'No server, no IT department required',                  pct: 95  },
+    { icon: <BuildingIcon size={22} color="#6366f1" strokeWidth={2} />,       num: '30+',    target: 30,   suffix: '+',  title: 'Construction Teams',        sub: 'Architecture & construction firms trust ARC PEM',       pct: 60  },
+  ]
+
+  const showcaseCards = [
+    { img: '/images/architecture-modern.jpg', chipIcon: <CompassIcon size={11} />,  chip: 'Architecture', title: 'Design to Budget',      desc: 'Turn drawings and BOQs into precise, client-ready cost estimates with GST and cost-per-sq.ft built in.' },
+    { img: '/images/construction-frame.jpg',  chipIcon: <BuildingIcon size={11} />, chip: 'Construction', title: 'Every Site, Tracked',   desc: 'Labour headcount, vendor bills and site expenses captured on the ground — foundation to handover.' },
+    { img: '/images/finance-laptop.jpg',      chipIcon: <WalletIcon size={11} />,   chip: 'Finance',      title: 'Every Rupee Accounted', desc: 'Vendor ledgers, contractor bills, GST registers and one-click Tally export — without a spreadsheet.' },
+    { img: '/images/management-meeting.jpg',  chipIcon: <DashboardIcon size={11} />,chip: 'Management',   title: 'One Source of Truth',   desc: 'Give principals and project managers live visibility on budget vs. actual across every project.' },
+  ]
+
+  const reportBtns = [
+    { key: 'print', icon: <PrinterIcon size={10} />, label: 'Print' },
+    { key: 'pdf',   icon: <FileIcon size={10} />,    label: 'PDF'   },
+    { key: 'excel', icon: <ExportIcon size={10} />,  label: 'Excel' },
+  ]
+
   return (
     <>
       {/* ── Hero ── */}
@@ -103,7 +156,10 @@ export default function HomePage() {
         <canvas id="particle-canvas" ref={canvasRef} />
         <div className="container hero-inner">
           <div className="hero-left">
-            <div className="hero-tag">🏗️ &nbsp;Built for Indian Architects &amp; Builders</div>
+            <div className="hero-tag">
+              <BuildingIcon size={13} style={{ marginRight: 6 }} />
+              Built for Indian Architects &amp; Builders
+            </div>
             <h1>
               India&apos;s Complete<br />
               <span className="hi">Construction Finance</span><br />
@@ -116,16 +172,6 @@ export default function HomePage() {
               <button className="btn btn-primary btn-lg" onClick={openDemo}>Talk to an Expert</button>
               <button className="btn btn-outline btn-lg" onClick={openDemo}>Book Free Demo</button>
             </div>
-            <div className="hero-trust">
-              <p className="hero-trust-label">Trusted by 30+ construction &amp; architecture teams</p>
-              <div className="hero-trust-logos">
-                <span className="htl">Skyline Architects</span>
-                <span className="htl">BuildRight Infra</span>
-                <span className="htl">DesignCraft</span>
-                <span className="htl">Vertex Constructions</span>
-                <span className="htl">MetroSpace MEP</span>
-              </div>
-            </div>
           </div>
 
           {/* Hero right — App window mockup */}
@@ -134,7 +180,10 @@ export default function HomePage() {
               <div className="app-window">
                 <div className="win-bar">
                   <div className="win-dot" /><div className="win-dot" /><div className="win-dot" />
-                  <div className="win-url">🔒 archpem.app/dashboard</div>
+                  <div className="win-url">
+                    <LockIcon size={10} color="#22c55e" style={{ marginRight: 4 }} />
+                    archpem.app/dashboard
+                  </div>
                 </div>
                 <div className="win-body">
                   <div className="win-side">
@@ -146,11 +195,7 @@ export default function HomePage() {
                       <span style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.4)', fontWeight: 500, marginLeft: '2px' }}>Project Expense Manager</span>
                     </div>
                     <div className="ws-section">Main</div>
-                    {[
-                      { id: 'pane-dashboard', icon: '📊', label: 'Dashboard' },
-                      { id: 'pane-projects',  icon: '📁', label: 'Projects'  },
-                      { id: 'pane-expenses',  icon: '💰', label: 'Expenses'  },
-                    ].map(({ id, icon, label }) => (
+                    {navMain.map(({ id, icon, label }) => (
                       <div
                         key={id}
                         className={`ws-item${activePane === id ? ' active' : ''}`}
@@ -160,20 +205,16 @@ export default function HomePage() {
                       </div>
                     ))}
                     <div className="ws-section">Reports</div>
-                    {[
-                      { id: 'pane-pending', icon: '⏳', label: 'Pending Payments' },
-                      { id: 'pane-gst',     icon: '🧾', label: 'GST Report'       },
-                      { id: 'pane-summary', icon: '📑', label: 'Summary Sheet'    },
-                    ].map(({ id, icon, label }) => (
+                    {navReports.map(({ id, icon, label }) => (
                       <div key={id} className={`ws-item${activePane === id ? ' active' : ''}`} onClick={() => setActivePane(id)}>
                         <span className="ico">{icon}</span>{label}
                       </div>
                     ))}
                     <div className="ws-section">Directory</div>
                     <div className={`ws-item${activePane === 'pane-vendors' ? ' active' : ''}`} onClick={() => setActivePane('pane-vendors')}>
-                      <span className="ico">👥</span>Party Directory
+                      <span className="ico"><UsersIcon size={14} /></span>Party Directory
                     </div>
-                    <div className="ws-item"><span className="ico">⚙️</span>Settings</div>
+                    <div className="ws-item"><span className="ico"><SettingsIcon size={14} /></span>Settings</div>
                     <div style={{ marginTop: 'auto', padding: '10px', background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: '8px', fontSize: '0.65rem', color: '#93c5fd', textAlign: 'left' }}>
                       <div style={{ fontWeight: 700, color: '#ffffff' }}>100% Offline</div>
                       <div style={{ color: 'rgba(255,255,255,0.4)', marginTop: '1px' }}>All data stored locally.</div>
@@ -264,7 +305,9 @@ export default function HomePage() {
                           <div key={p.id} className="proj-card">
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                                <div style={{ background: '#eff6ff', color: '#2563eb', borderRadius: '7px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '.75rem' }}>📁</div>
+                                <div style={{ background: '#eff6ff', color: '#2563eb', borderRadius: '7px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                  <FolderIcon size={14} color="#2563eb" />
+                                </div>
                                 <div>
                                   <div style={{ fontSize: '.5rem', fontWeight: 700, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '.06em' }}>{p.id}</div>
                                   <div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 700, fontSize: '.78rem', color: '#0f172a' }}>{p.name}</div>
@@ -329,7 +372,11 @@ export default function HomePage() {
                       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '9px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
                         <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '0.82rem', fontWeight: 800, color: '#0f172a' }}>GST Purchase Sheet</div><div style={{ fontSize: '0.58rem', color: '#64748b' }}>Monthly · share with CA for filing</div></div>
                         <div style={{ display: 'flex', gap: '4px' }}>
-                          {['🖨️ Print','📄 PDF','📊 Excel'].map(b=><button key={b} className="rep-btn" style={{ padding: '4px 7px', fontSize: '0.58rem' }}>{b}</button>)}
+                          {reportBtns.map(b => (
+                            <button key={b.key} className="rep-btn" style={{ padding: '4px 7px', fontSize: '0.58rem', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                              {b.icon}{b.label}
+                            </button>
+                          ))}
                         </div>
                       </div>
                       <div style={{ flex: 1, overflow: 'auto', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -351,10 +398,12 @@ export default function HomePage() {
                     <div id="pane-pending" className={`app-pane${activePane === 'pane-pending' ? ' active' : ''}`} style={{ display: activePane === 'pane-pending' ? 'flex' : 'none', flexDirection: 'column', padding: '16px', overflow: 'auto', background: '#f8fafc' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexShrink: 0 }}>
                         <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '0.85rem', fontWeight: 800, color: '#0f172a' }}>Pending Payments</div><div style={{ fontSize: '0.6rem', color: '#64748b' }}>All unpaid bills · oldest first</div></div>
-                        <button className="rep-btn" style={{ flexShrink: 0, fontSize: '0.6rem', padding: '4px 8px' }}>📊 Export</button>
+                        <button className="rep-btn" style={{ flexShrink: 0, fontSize: '0.6rem', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                          <ExportIcon size={10} />Export
+                        </button>
                       </div>
                       <div className="warning-banner" style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '12px', padding: '10px 14px', marginBottom: '14px' }}>
-                        <span style={{ fontSize: '1.1rem', color: '#f59e0b' }}>⚠️</span>
+                        <WarningIcon size={18} color="#f59e0b" style={{ flexShrink: 0 }} />
                         <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#92400e' }}>Rs.24,86,340 pending across 5 bills</div><div style={{ fontSize: '0.6rem', color: '#b45309', marginTop: '1px' }}>2 bills are over 30 days old</div></div>
                       </div>
                       <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '0.62rem', color: '#64748b', padding: '12px' }}>
@@ -366,7 +415,17 @@ export default function HomePage() {
                     <div id="pane-summary" className={`app-pane${activePane === 'pane-summary' ? ' active' : ''}`} style={{ display: activePane === 'pane-summary' ? 'flex' : 'none', flexDirection: 'column', padding: '16px', overflow: 'auto', background: '#f8fafc' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
                         <div><h1 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Summary Sheet</h1><p style={{ fontSize: '0.68rem', color: '#64748b', margin: '2px 0 0' }}>Skyline Residency • Mr. Mehta • Pune, MH</p></div>
-                        <div style={{ display: 'flex', gap: '6px' }}>{['📊 Excel','📄 PDF','🖨️ Print'].map(b=><button key={b} className="rep-btn">{b}</button>)}</div>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          {[
+                            { key: 'excel', icon: <ExportIcon size={10} />,  label: 'Excel' },
+                            { key: 'pdf',   icon: <FileIcon size={10} />,    label: 'PDF'   },
+                            { key: 'print', icon: <PrinterIcon size={10} />, label: 'Print' },
+                          ].map(b => (
+                            <button key={b.key} className="rep-btn" style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                              {b.icon}{b.label}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                       <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px', fontSize: '0.65rem' }}>
                         Full ledger: Labour ₹31,40,000 · Site ₹5,80,000 · Contractors ₹5,30,000 · Vendors ₹3,20,000<br />
@@ -415,15 +474,15 @@ export default function HomePage() {
                   <line x1="170" y1="170" x2="170" y2="280" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" strokeDasharray="4 3"/>
                   <circle cx="170" cy="170" r="5" fill="rgba(255,255,255,0.2)"/>
                 </svg>
-                {[{cls:'cmp-n-top',ico:'📋',lbl:'BOQ &\nBudget'},{cls:'cmp-n-left',ico:'🏪',lbl:'Vendor\nTracking'},{cls:'cmp-n-right',ico:'👷',lbl:'Labour\nTracking'},{cls:'cmp-n-bottom',ico:'💰',lbl:'Finance\nControl'}].map(n=>(
+                {cmpNodes.map(n=>(
                   <div key={n.cls} className={`cmp-node ${n.cls}`}><div className="cmp-node-ring"><div className="cmp-node-circle">{n.ico}</div></div><span>{n.lbl.split('\n').map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</span></div>
                 ))}
                 <div className="tool-chip tc-1"><span className="tc-dot" style={{ background: '#1D6F42' }} />Excel</div>
                 <div className="tool-chip tc-2">Tally</div>
-                <div className="tool-chip tc-3">📱 WhatsApp</div>
-                <div className="tool-chip tc-4">📄 Paper Bills</div>
-                <div className="tool-chip tc-5">📋 Registers</div>
-                <div className="tool-chip tc-6" style={{ color: '#e24c4b' }}>📁 PDF Files</div>
+                <div className="tool-chip tc-3" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><PhoneIcon size={11} color="currentColor" /> WhatsApp</div>
+                <div className="tool-chip tc-4" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><FileIcon size={11} color="currentColor" /> Paper Bills</div>
+                <div className="tool-chip tc-5" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><ClipboardIcon size={11} color="currentColor" /> Registers</div>
+                <div className="tool-chip tc-6" style={{ color: '#e24c4b', display: 'flex', alignItems: 'center', gap: '4px' }}><FolderIcon size={11} color="#e24c4b" /> PDF Files</div>
               </div>
               <div className="cmp-label-block"><h3>Different Software for every use case</h3><p>NEVER ENDING SPREADSHEET CHAOS</p></div>
             </div>
@@ -438,12 +497,21 @@ export default function HomePage() {
             </div>
             <div className="cmp-col fade-up">
               <div className="cmp-after">
-                <div className="cmp-outer-ring"><span className="cmp-ring-label">SMART EXPENSE MANAGEMENT</span></div>
+                <div className="cmp-outer-ring">
+                  <svg className="cmp-ring-text" viewBox="0 0 360 360" aria-hidden="true">
+                    <defs>
+                      <path id="cmpRingPath" d="M180,180 m-169,0 a169,169 0 1,1 338,0 a169,169 0 1,1 -338,0" />
+                    </defs>
+                    <text textAnchor="middle">
+                      <textPath href="#cmpRingPath" startOffset="25%">SMART EXPENSE MANAGEMENT</textPath>
+                    </text>
+                  </svg>
+                </div>
                 <div className="cmp-glow" />
-                {[{cls:'cp-top',ico:'📋',lbl:'BOQ &\nBudget'},{cls:'cp-left',ico:'🏪',lbl:'Vendor\nTracking'},{cls:'cp-right',ico:'👷',lbl:'Labour\nTracking'},{cls:'cp-bottom',ico:'💰',lbl:'Finance\nControl'}].map(p=>(
+                {cmpPetals.map(p=>(
                   <div key={p.cls} className={`cmp-petal ${p.cls}`}><div className="cp-icon">{p.ico}</div><div className="cp-text">{p.lbl.split('\n').map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div></div>
                 ))}
-                <div className="cmp-center"><div className="cmp-center-icon">⚡</div><div className="cmp-center-name">Arch<br/>PEM</div></div>
+                <div className="cmp-center"><div className="cmp-center-icon"><BoltIcon size={26} color="white" /></div><div className="cmp-center-name">Arch<br/>PEM</div></div>
               </div>
               <div className="cmp-label-block"><h3>Everything on ARC PEM</h3><p>ALL SET IN UNDER 15 MINUTES</p></div>
             </div>
@@ -455,12 +523,7 @@ export default function HomePage() {
       <div className="stats-band">
         <div className="container">
           <div className="stats-grid">
-            {[
-              { icon: '📉', num: '10%', target: 10, suffix: '%', title: 'Budget Overrun Reduction', sub: 'Faster visibility on cost vs. budget across all projects', pct: 10 },
-              { icon: '⚡', num: '80%', target: 80, suffix: '%', title: 'Faster Accounting Handoff', sub: 'Tally CSV eliminates manual CA re-entry', pct: 80 },
-              { icon: '🚀', num: '<15 min', target: null, suffix: '', title: 'Setup Guarantee', sub: 'No server, no IT department required', pct: 95 },
-              { icon: '🏗️', num: '30+', target: 30, suffix: '+', title: 'Construction Teams', sub: 'Architecture & construction firms trust ARC PEM', pct: 60 },
-            ].map((s, i) => (
+            {statItems.map((s, i) => (
               <div key={s.title} className={`stat-block fade-up${i>0?' d'+i:''}`}>
                 <div className="stat-ring-wrap">
                   <svg className="stat-ring-svg" width="84" height="84" viewBox="0 0 84 84">
@@ -487,16 +550,11 @@ export default function HomePage() {
             <p>One platform across every stage of a project — design budgets, live construction sites, day-to-day finances, and the partners steering it all.</p>
           </div>
           <div className="showcase-grid">
-            {[
-              { img: '/images/architecture-modern.jpg',  chip: '📐 Architecture', title: 'Design to Budget',      desc: 'Turn drawings and BOQs into precise, client-ready cost estimates with GST and cost-per-sq.ft built in.' },
-              { img: '/images/construction-frame.jpg',   chip: '🏗️ Construction', title: 'Every Site, Tracked',  desc: 'Labour headcount, vendor bills and site expenses captured on the ground — foundation to handover.' },
-              { img: '/images/finance-laptop.jpg',       chip: '💰 Finance',      title: 'Every Rupee Accounted', desc: 'Vendor ledgers, contractor bills, GST registers and one-click Tally export — without a spreadsheet.' },
-              { img: '/images/management-meeting.jpg',   chip: '📊 Management',   title: 'One Source of Truth',   desc: 'Give principals and project managers live visibility on budget vs. actual across every project.' },
-            ].map((c, i) => (
+            {showcaseCards.map((c, i) => (
               <div key={c.title} className={`show-card fade-up${i>0?' d'+i:''}`}>
                 <img src={c.img} alt={c.title} loading="lazy" />
                 <div className="show-card-body">
-                  <span className="show-chip">{c.chip}</span>
+                  <span className="show-chip" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>{c.chipIcon}{c.chip}</span>
                   <h3>{c.title}</h3>
                   <p>{c.desc}</p>
                 </div>

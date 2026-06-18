@@ -108,7 +108,9 @@ export default function UpgradeButton({ planId, planName, userName, userEmail }:
             }
             setVerifying(false)
             setSuccess(true)
-            router.refresh() // re-render the server component → current-plan banner updates
+            // router.refresh() is deferred to after the user closes the success modal,
+            // otherwise the page re-render unmounts this component (plan card switches to
+            // "Current Plan") before the modal is seen, causing it to blink and vanish.
           } catch {
             setError('We could not confirm your payment. If you were charged, it will be activated shortly — contact support if not.')
             setVerifying(false)
@@ -172,14 +174,14 @@ export default function UpgradeButton({ planId, planName, userName, userEmail }:
             background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
-          onClick={e => { if (e.target === e.currentTarget) setSuccess(false) }}
+          onClick={e => { if (e.target === e.currentTarget) { setSuccess(false); router.refresh() } }}
         >
           <div style={{
             background: '#fff', borderRadius: '20px', width: '100%', maxWidth: '380px',
             margin: '16px', boxShadow: '0 24px 64px rgba(0,0,0,0.2)', overflow: 'hidden',
           }}>
             <div style={{ background: 'linear-gradient(135deg, #0f766e, #10b981)', padding: '24px', position: 'relative' }}>
-              <button onClick={() => setSuccess(false)} style={{
+              <button onClick={() => { setSuccess(false); router.refresh() }} style={{
                 position: 'absolute', top: '14px', right: '14px',
                 background: 'rgba(255,255,255,0.18)', border: 'none', borderRadius: '8px',
                 width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -202,7 +204,7 @@ export default function UpgradeButton({ planId, planName, userName, userEmail }:
                 <ShieldCheck size={12} /> Secured by Razorpay
               </p>
               <button
-                onClick={() => setSuccess(false)}
+                onClick={() => { setSuccess(false); router.refresh() }}
                 style={{
                   padding: '10px 24px', background: '#0f172a', border: 'none', borderRadius: '10px',
                   fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', color: '#fff', fontFamily: 'inherit',

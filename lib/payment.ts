@@ -34,6 +34,7 @@ export type ActivationResult =
   | { ok: true; alreadyProcessed: boolean; planName: string }
   | { ok: false; status: number; error: string }
 
+
 /**
  * Verify a captured Razorpay payment against its order and activate the plan.
  *
@@ -155,7 +156,7 @@ export async function activatePaidPlan({
     planName: plan.name,
     amount: plan.price,
     paymentId,
-  }).catch((err) => logger.error('payment success email failed', err))
+  }).catch((err: unknown) => logger.error('payment success email failed', err))
 
   return { ok: true, alreadyProcessed: false, planName: plan.name }
 }

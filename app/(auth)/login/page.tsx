@@ -225,24 +225,6 @@ export default function LoginPage() {
         )}
       </form>
 
-      {/* Trust strip */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px',
-        marginTop: '16px', padding: '10px 0',
-        borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9',
-      }}>
-        {[
-          { icon: '🔒', text: 'SSL Encrypted' },
-          { icon: '🛡️', text: 'Data protected' },
-          { icon: '✅', text: 'No spam' },
-        ].map(({ icon, text }) => (
-          <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span style={{ fontSize: '11px' }}>{icon}</span>
-            <span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 500 }}>{text}</span>
-          </div>
-        ))}
-      </div>
-
       {/* Create account card */}
       <div style={{ marginTop: '16px' }}>
         <a href="/register" style={{

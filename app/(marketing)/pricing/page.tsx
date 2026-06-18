@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { company } from '@/lib/company'
 
 interface Plan {
@@ -34,6 +35,7 @@ function parseFeatures(raw: string): string[] {
 
 export default function PricingPage() {
   const router = useRouter()
+  const { data: session } = useSession()
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
   const [annual, setAnnual] = useState(false)
@@ -66,7 +68,11 @@ export default function PricingPage() {
 
   function openSignupWithPlan(planName: string) {
     const billing = annual ? 'annual' : 'monthly'
-    router.push(`/register?plan=${encodeURIComponent(planName)}&billing=${billing}`)
+    if (session) {
+      router.push(`/dashboard/subscription?plan=${encodeURIComponent(planName)}&billing=${billing}`)
+    } else {
+      router.push(`/register?plan=${encodeURIComponent(planName)}&billing=${billing}`)
+    }
   }
 
   return (
