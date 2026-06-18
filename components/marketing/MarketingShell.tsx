@@ -185,7 +185,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
       <header className="navbar" id="navbar">
         <div className="container nav-wrap">
           <Link href="/" className="nav-logo">
-            <LogoMark size={38} />
+            <LogoMark size={52} />
           </Link>
 
           <nav className="nav-links">
@@ -252,7 +252,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
       <div className={`mob-drawer${drawerOpen ? ' open' : ''}`} id="mobDrawer">
         <div className="mob-head">
           <Link href="/" className="nav-logo" style={{ fontSize: '1.1rem' }}>
-            <LogoMark size={36} />
+            <LogoMark size={46} />
           </Link>
           <button className="mob-close" onClick={() => setDrawerOpen(false)}>✕</button>
         </div>
@@ -388,7 +388,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
           <div className="fv2-top">
             <div className="fv2-brand">
               <div className="fv2-logo">
-                <LogoMark size={34} onDark />
+                <LogoMark size={48} onDark />
               </div>
               <p className="fv2-tagline">Project expense management software built for Indian architecture consultancies and construction firms.</p>
               <div className="fv2-newsletter">
