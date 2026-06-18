@@ -51,6 +51,18 @@ export default function PricingPage() {
     }
   }, [])
 
+  // The marketing shell's reveal observer only runs once over the .fade-up
+  // elements that exist at mount. Our cards render after the /api/plans fetch
+  // (and the heading is missed on client-side nav), so reveal them ourselves
+  // once content is in the DOM — otherwise they stay at opacity:0.
+  useEffect(() => {
+    if (loading) return
+    const id = requestAnimationFrame(() => {
+      document.querySelectorAll('#pricing .fade-up').forEach((el) => el.classList.add('in'))
+    })
+    return () => cancelAnimationFrame(id)
+  }, [loading])
+
   function openSignupWithPlan(planName: string) {
     const billing = annual ? 'annual' : 'monthly'
     router.push(`/register?plan=${encodeURIComponent(planName)}&billing=${billing}`)
