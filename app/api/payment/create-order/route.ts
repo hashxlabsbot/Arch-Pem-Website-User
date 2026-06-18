@@ -5,7 +5,7 @@ import { db } from '@/lib/db'
 import { rateLimit } from '@/lib/rate-limit'
 import { env } from '@/lib/env'
 import { logger } from '@/lib/logger'
-import Razorpay from 'razorpay'
+import { getRazorpay } from '@/lib/payment'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,33 +19,41 @@ export async function POST(req: NextRequest) {
   }
 
   // Instantiate lazily so a missing key never crashes module load / the build.
-  const keyId = env.razorpayKeyId()
-  const keySecret = env.razorpayKeySecret()
-  if (!keyId || !keySecret) {
+  const razorpay = getRazorpay()
+  if (!razorpay) {
     logger.error('create-order: Razorpay keys not configured')
     return NextResponse.json({ error: 'Payment processing is not configured.' }, { status: 503 })
   }
-  const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret })
 
-  const { planId } = await req.json()
+  const body = await req.json().catch(() => null)
+  const planId = typeof body?.planId === 'string' ? body.planId : null
   if (!planId) return NextResponse.json({ error: 'planId required' }, { status: 400 })
 
   const plan = await db.plan.findUnique({ where: { id: planId } })
   if (!plan) return NextResponse.json({ error: 'Plan not found' }, { status: 404 })
-  if (plan.price === 0) return NextResponse.json({ error: 'Contact sales for this plan' }, { status: 400 })
+  if (plan.price <= 0) return NextResponse.json({ error: 'Contact sales for this plan' }, { status: 400 })
 
-  const order = await razorpay.orders.create({
-    amount: plan.price * 100, // paise
-    currency: 'INR',
-    receipt: `rcpt_${session.user.id.slice(-8)}_${Date.now()}`,
-    notes: { userId: session.user.id, planId: plan.id, planName: plan.name },
-  })
+  // Razorpay requires an integer amount in paise; Float * 100 can drift.
+  const amountPaise = Math.round(plan.price * 100)
 
-  return NextResponse.json({
-    orderId: order.id,
-    amount: order.amount,
-    currency: order.currency,
-    planName: plan.name,
-    keyId,
-  })
+  try {
+    const order = await razorpay.orders.create({
+      amount: amountPaise,
+      currency: 'INR',
+      receipt: `rcpt_${session.user.id.slice(-8)}_${Date.now()}`,
+      // Server-set binding — verify/webhook trust ONLY these, never the client.
+      notes: { userId: session.user.id, planId: plan.id, planName: plan.name },
+    })
+
+    return NextResponse.json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      planName: plan.name,
+      keyId: env.razorpayKeyId(),
+    })
+  } catch (err) {
+    logger.error('create-order: Razorpay order creation failed', err, { userId: session.user.id, planId })
+    return NextResponse.json({ error: 'Could not start payment. Please try again.' }, { status: 502 })
+  }
 }

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { db } from '@/lib/db'
 import { rateLimit } from '@/lib/rate-limit'
 import { env } from '@/lib/env'
 import { logger } from '@/lib/logger'
+import { activatePaidPlan } from '@/lib/payment'
 import crypto from 'crypto'
 
 export const dynamic = 'force-dynamic'
@@ -24,24 +24,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Payment processing is not configured.' }, { status: 503 })
   }
 
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, planId } = await req.json()
-  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !planId) {
+  const body = await req.json().catch(() => null)
+  const razorpay_order_id = typeof body?.razorpay_order_id === 'string' ? body.razorpay_order_id : ''
+  const razorpay_payment_id = typeof body?.razorpay_payment_id === 'string' ? body.razorpay_payment_id : ''
+  const razorpay_signature = typeof body?.razorpay_signature === 'string' ? body.razorpay_signature : ''
+  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
     return NextResponse.json({ error: 'Missing required payment fields' }, { status: 400 })
   }
 
-  const plan = await db.plan.findUnique({ where: { id: planId } })
-  if (!plan) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
-
-  // Verify Razorpay signature with a constant-time compare. Buffers must be the
-  // same length or crypto.timingSafeEqual throws — so compare hex strings of
-  // known equal length defensively.
+  // Verify the Razorpay checkout signature with a constant-time compare. Buffers
+  // must be equal length for crypto.timingSafeEqual, so guard the length first.
   const expected = crypto
     .createHmac('sha256', secret)
     .update(`${razorpay_order_id}|${razorpay_payment_id}`)
     .digest('hex')
 
   const expectedBuf = Buffer.from(expected, 'utf8')
-  const providedBuf = Buffer.from(String(razorpay_signature), 'utf8')
+  const providedBuf = Buffer.from(razorpay_signature, 'utf8')
   const signatureValid =
     expectedBuf.length === providedBuf.length && crypto.timingSafeEqual(expectedBuf, providedBuf)
 
@@ -50,10 +49,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Payment verification failed' }, { status: 400 })
   }
 
-  await db.user.update({
-    where: { id: session.user.id },
-    data: { planId: plan.id },
+  // The signature only proves the order/payment pair is authentic. activatePaidPlan
+  // is the authority: it derives the plan from the order's server-set notes,
+  // confirms the payment is captured and the amount matches, checks the order
+  // belongs to this user, and activates idempotently. Any client-sent planId is
+  // intentionally ignored — this closes the price-substitution hole.
+  const result = await activatePaidPlan({
+    orderId: razorpay_order_id,
+    paymentId: razorpay_payment_id,
+    expectedUserId: session.user.id,
   })
 
-  return NextResponse.json({ success: true })
+  if (!result.ok) {
+    return NextResponse.json({ error: result.error }, { status: result.status })
+  }
+
+  return NextResponse.json({ success: true, planName: result.planName })
 }

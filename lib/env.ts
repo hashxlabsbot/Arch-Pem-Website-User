@@ -12,6 +12,7 @@ type EnvKey =
   | 'NEXT_PUBLIC_ADMIN_API'
   | 'RAZORPAY_KEY_ID'
   | 'RAZORPAY_KEY_SECRET'
+  | 'RAZORPAY_WEBHOOK_SECRET'
   | 'BREVO_API_KEY'
   | 'BREVO_SENDER_EMAIL'
   | 'UPSTASH_REDIS_REST_URL'
@@ -48,6 +49,7 @@ export const env = {
   adminApi: () => get('NEXT_PUBLIC_ADMIN_API') ?? get('ADMIN_APP_URL') ?? 'http://localhost:3000',
   razorpayKeyId: () => get('RAZORPAY_KEY_ID'),
   razorpayKeySecret: () => get('RAZORPAY_KEY_SECRET'),
+  razorpayWebhookSecret: () => get('RAZORPAY_WEBHOOK_SECRET'),
   brevoApiKey: () => get('BREVO_API_KEY'),
   brevoSender: () => get('BREVO_SENDER_EMAIL') ?? 'noreply@arcpem.com',
   upstashUrl: () => get('UPSTASH_REDIS_REST_URL'),

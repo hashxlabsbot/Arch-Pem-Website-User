@@ -1,11 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import QRCode from 'react-qr-code'
-import { Copy, CheckCheck, X, Loader2, ExternalLink, AlertCircle, CheckCircle2 } from 'lucide-react'
-
-const UPI_ID   = '93105302202ybl'
-const UPI_NAME = 'ARC PEM'
+import { useRouter } from 'next/navigation'
+import { Loader2, X, AlertCircle, CheckCircle2, ShieldCheck } from 'lucide-react'
 
 interface Props {
   planId:    string
@@ -15,236 +12,203 @@ interface Props {
   userEmail: string
 }
 
-export default function UpgradeButton({ planId, planName, price }: Props) {
-  const [open, setOpen]       = useState(false)
-  const [copied, setCopied]   = useState(false)
-  const [utr, setUtr]         = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError]     = useState('')
+// Razorpay injects this global once checkout.js is loaded.
+declare global {
+  interface Window {
+    Razorpay?: new (options: Record<string, unknown>) => { open: () => void; on: (e: string, cb: (r: unknown) => void) => void }
+  }
+}
+
+const CHECKOUT_SRC = 'https://checkout.razorpay.com/v1/checkout.js'
+
+function loadCheckout(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') return resolve(false)
+    if (window.Razorpay) return resolve(true)
+    const existing = document.querySelector<HTMLScriptElement>(`script[src="${CHECKOUT_SRC}"]`)
+    if (existing) {
+      existing.addEventListener('load', () => resolve(true))
+      existing.addEventListener('error', () => resolve(false))
+      return
+    }
+    const script = document.createElement('script')
+    script.src = CHECKOUT_SRC
+    script.onload = () => resolve(true)
+    script.onerror = () => resolve(false)
+    document.body.appendChild(script)
+  })
+}
+
+export default function UpgradeButton({ planId, planName, userName, userEmail }: Props) {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)    // creating order / opening checkout
+  const [verifying, setVerifying] = useState(false) // post-payment verification
+  const [error, setError]   = useState('')
   const [success, setSuccess] = useState(false)
 
-  const upiString = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(UPI_NAME)}&am=${price}&cu=INR&tn=${encodeURIComponent(planName + ' Plan - ARC PEM')}`
-
-  function copyUpiId() {
-    navigator.clipboard.writeText(UPI_ID)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  function closeModal() {
-    if (success) return
-    setOpen(false)
-    setUtr('')
+  async function handleUpgrade() {
+    if (loading || verifying) return
     setError('')
-  }
+    setLoading(true)
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!utr.trim()) { setError('Enter your UTR / Transaction ID'); return }
-    setSubmitting(true)
-    setError('')
+    try {
+      const ok = await loadCheckout()
+      if (!ok || !window.Razorpay) {
+        setError('Could not load the payment window. Check your connection and try again.')
+        setLoading(false)
+        return
+      }
 
-    const res = await fetch('/api/payment/upi-submit', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ planId, planName, amount: price, utr }),
-    })
+      // 1) Create the order server-side (amount + notes are set there, not here).
+      const orderRes = await fetch('/api/payment/create-order', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ planId }),
+      })
+      const order = await orderRes.json()
+      if (!orderRes.ok) {
+        setError(order.error ?? 'Could not start payment. Please try again.')
+        setLoading(false)
+        return
+      }
 
-    const data = await res.json()
-    setSubmitting(false)
+      // 2) Open Razorpay Checkout.
+      const rzp = new window.Razorpay({
+        key:         order.keyId,
+        order_id:    order.orderId,
+        amount:      order.amount,
+        currency:    order.currency,
+        name:        'ARC PEM',
+        description: `${order.planName} Plan`,
+        prefill:     { name: userName, email: userEmail },
+        theme:       { color: '#4f46e5' },
+        // 3) On success, verify server-side before we trust anything.
+        handler: async (response: unknown) => {
+          const r = response as {
+            razorpay_order_id: string
+            razorpay_payment_id: string
+            razorpay_signature: string
+          }
+          setVerifying(true)
+          try {
+            const verifyRes = await fetch('/api/payment/verify', {
+              method:  'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body:    JSON.stringify({
+                razorpay_order_id:   r.razorpay_order_id,
+                razorpay_payment_id: r.razorpay_payment_id,
+                razorpay_signature:  r.razorpay_signature,
+              }),
+            })
+            const data = await verifyRes.json()
+            if (!verifyRes.ok) {
+              setError(data.error ?? 'We could not confirm your payment. If you were charged, it will be activated shortly — contact support if not.')
+              setVerifying(false)
+              return
+            }
+            setVerifying(false)
+            setSuccess(true)
+            router.refresh() // re-render the server component → current-plan banner updates
+          } catch {
+            setError('We could not confirm your payment. If you were charged, it will be activated shortly — contact support if not.')
+            setVerifying(false)
+          }
+        },
+        modal: {
+          ondismiss: () => setLoading(false),
+        },
+      })
 
-    if (!res.ok) { setError(data.error ?? 'Submission failed. Try again.'); return }
-    setSuccess(true)
+      rzp.on('payment.failed', (resp: unknown) => {
+        const desc = (resp as { error?: { description?: string } })?.error?.description
+        setError(desc ?? 'Payment failed. Please try again.')
+        setLoading(false)
+      })
+
+      rzp.open()
+      // Checkout is now open; its own modal takes over, so clear our loading state.
+      setLoading(false)
+    } catch {
+      setError('Something went wrong starting the payment. Please try again.')
+      setLoading(false)
+    }
   }
 
   return (
     <>
       <button
-        onClick={() => setOpen(true)}
+        onClick={handleUpgrade}
+        disabled={loading || verifying}
         style={{
           width: '100%', padding: '10px',
-          background: 'linear-gradient(135deg, #3b82f6, #6366f1)',
+          background: loading || verifying ? '#93c5fd' : 'linear-gradient(135deg, #3b82f6, #6366f1)',
           color: 'white', border: 'none', borderRadius: '10px',
-          fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer',
+          fontSize: '0.8rem', fontWeight: 700,
+          cursor: loading || verifying ? 'not-allowed' : 'pointer',
           fontFamily: 'inherit',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
         }}
       >
-        Upgrade →
+        {(loading || verifying) && <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />}
+        {verifying ? 'Confirming…' : loading ? 'Loading…' : 'Upgrade →'}
       </button>
 
-      {open && (
+      {error && !success && (
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: '#dc2626', fontSize: '0.72rem', marginTop: '8px', lineHeight: 1.4 }}>
+          <AlertCircle size={12} style={{ flexShrink: 0, marginTop: '1px' }} /> {error}
+        </div>
+      )}
+
+      {success && (
         <div
           style={{
             position: 'fixed', inset: 0, zIndex: 1000,
             background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
-          onClick={e => { if (e.target === e.currentTarget) closeModal() }}
+          onClick={e => { if (e.target === e.currentTarget) setSuccess(false) }}
         >
           <div style={{
-            background: '#fff', borderRadius: '20px', width: '100%', maxWidth: '420px',
-            margin: '16px', boxShadow: '0 24px 64px rgba(0,0,0,0.2)',
-            overflow: 'hidden',
+            background: '#fff', borderRadius: '20px', width: '100%', maxWidth: '380px',
+            margin: '16px', boxShadow: '0 24px 64px rgba(0,0,0,0.2)', overflow: 'hidden',
           }}>
-
-            {/* Header */}
-            <div style={{
-              background: 'linear-gradient(135deg, #0f172a, #1e1b4b)',
-              padding: '20px 24px 24px',
-              position: 'relative',
-            }}>
-              {!success && (
-                <button onClick={closeModal} style={{
-                  position: 'absolute', top: '16px', right: '16px',
-                  background: 'rgba(255,255,255,0.1)', border: 'none',
-                  borderRadius: '8px', width: '28px', height: '28px',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', color: 'white',
-                }}>
-                  <X size={14} />
-                </button>
-              )}
-              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgba(255,255,255,0.45)', marginBottom: '4px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                Upgrading to
-              </div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff' }}>{planName} Plan</div>
-              <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#60a5fa', marginTop: '2px' }}>
-                ₹{price.toLocaleString('en-IN')}<span style={{ fontSize: '0.85rem', fontWeight: 400, color: 'rgba(255,255,255,0.4)' }}>/month</span>
-              </div>
+            <div style={{ background: 'linear-gradient(135deg, #0f766e, #10b981)', padding: '24px', position: 'relative' }}>
+              <button onClick={() => setSuccess(false)} style={{
+                position: 'absolute', top: '14px', right: '14px',
+                background: 'rgba(255,255,255,0.18)', border: 'none', borderRadius: '8px',
+                width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', color: 'white',
+              }}><X size={14} /></button>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Payment successful</div>
+              <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#fff', marginTop: '2px' }}>{planName} Plan activated</div>
             </div>
-
-            <div style={{ padding: '24px' }}>
-
-              {success ? (
-                /* Success state */
-                <div style={{ textAlign: 'center', padding: '16px 0' }}>
-                  <div style={{
-                    width: '56px', height: '56px', borderRadius: '50%',
-                    background: 'rgba(16,185,129,0.1)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: '0 auto 16px',
-                  }}>
-                    <CheckCircle2 size={28} style={{ color: '#10b981' }} />
-                  </div>
-                  <div style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>
-                    Payment Submitted!
-                  </div>
-                  <p style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: '1.5', marginBottom: '20px' }}>
-                    We&apos;ve received your UTR. Our team will verify your payment and activate your plan within <strong>2–4 hours</strong>.
-                    You&apos;ll see the update in your dashboard.
-                  </p>
-                  <button
-                    onClick={() => { setOpen(false); setSuccess(false); setUtr('') }}
-                    style={{
-                      padding: '10px 24px', background: '#f1f5f9', border: 'none',
-                      borderRadius: '10px', fontSize: '0.82rem', fontWeight: 700,
-                      cursor: 'pointer', color: '#0f172a', fontFamily: 'inherit',
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
-              ) : (
-                <>
-                  {/* QR Code */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
-                    <div style={{
-                      background: '#fff', padding: '12px', borderRadius: '12px',
-                      border: '1px solid #e2e8f0', marginBottom: '12px',
-                    }}>
-                      <QRCode value={upiString} size={160} />
-                    </div>
-                    <p style={{ fontSize: '0.72rem', color: '#94a3b8', marginBottom: '10px' }}>
-                      Scan with PhonePe, GPay, Paytm, or BHIM
-                    </p>
-
-                    {/* UPI ID row */}
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: '8px',
-                      background: '#f8fafc', border: '1px solid #e2e8f0',
-                      borderRadius: '10px', padding: '8px 12px', width: '100%',
-                    }}>
-                      <span style={{ flex: 1, fontSize: '0.82rem', fontWeight: 600, color: '#334155', fontFamily: 'monospace' }}>
-                        {UPI_ID}
-                      </span>
-                      <button
-                        onClick={copyUpiId}
-                        style={{
-                          display: 'flex', alignItems: 'center', gap: '4px',
-                          background: copied ? 'rgba(16,185,129,0.1)' : '#f1f5f9',
-                          border: 'none', borderRadius: '7px', padding: '5px 10px',
-                          fontSize: '0.72rem', fontWeight: 700,
-                          color: copied ? '#10b981' : '#64748b',
-                          cursor: 'pointer', fontFamily: 'inherit',
-                        }}
-                      >
-                        {copied ? <><CheckCheck size={12} /> Copied</> : <><Copy size={12} /> Copy</>}
-                      </button>
-                    </div>
-
-                    {/* Open in app */}
-                    <a
-                      href={upiString}
-                      style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                        marginTop: '8px', width: '100%', padding: '9px',
-                        background: 'linear-gradient(135deg, #6d28d9, #4f46e5)',
-                        color: 'white', borderRadius: '10px',
-                        fontSize: '0.78rem', fontWeight: 700, textDecoration: 'none',
-                      }}
-                    >
-                      <ExternalLink size={13} />
-                      Open in PhonePe / GPay
-                    </a>
-                  </div>
-
-                  {/* UTR form */}
-                  <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '18px' }}>
-                    <p style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '12px', lineHeight: '1.5' }}>
-                      After paying, enter your <strong>UTR / Transaction ID</strong> from the payment confirmation. We&apos;ll verify and activate your plan.
-                    </p>
-                    <form onSubmit={handleSubmit}>
-                      <input
-                        type="text"
-                        value={utr}
-                        onChange={e => { setUtr(e.target.value); setError('') }}
-                        placeholder="e.g. 506123456789 or T2506XXXXXXXX"
-                        style={{
-                          width: '100%', padding: '10px 14px', marginBottom: '10px',
-                          border: `1.5px solid ${error ? '#fca5a5' : '#e2e8f0'}`,
-                          borderRadius: '10px', fontSize: '0.82rem', outline: 'none',
-                          fontFamily: 'inherit', boxSizing: 'border-box',
-                        }}
-                      />
-                      {error && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#dc2626', fontSize: '0.74rem', marginBottom: '10px' }}>
-                          <AlertCircle size={12} /> {error}
-                        </div>
-                      )}
-                      <button
-                        type="submit"
-                        disabled={submitting}
-                        style={{
-                          width: '100%', padding: '11px',
-                          background: submitting ? '#93c5fd' : 'linear-gradient(135deg, #3b82f6, #6366f1)',
-                          color: 'white', border: 'none', borderRadius: '10px',
-                          fontSize: '0.85rem', fontWeight: 700,
-                          cursor: submitting ? 'not-allowed' : 'pointer',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                          fontFamily: 'inherit',
-                        }}
-                      >
-                        {submitting && <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />}
-                        {submitting ? 'Submitting…' : 'Submit & Confirm Payment'}
-                      </button>
-                    </form>
-                  </div>
-                </>
-              )}
+            <div style={{ padding: '24px', textAlign: 'center' }}>
+              <div style={{
+                width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(16,185,129,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
+              }}>
+                <CheckCircle2 size={28} style={{ color: '#10b981' }} />
+              </div>
+              <p style={{ fontSize: '0.82rem', color: '#475569', lineHeight: 1.5, marginBottom: '8px' }}>
+                Your <strong>{planName}</strong> plan is now active. A receipt has been emailed to you.
+              </p>
+              <p style={{ fontSize: '0.7rem', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginBottom: '20px' }}>
+                <ShieldCheck size={12} /> Secured by Razorpay
+              </p>
+              <button
+                onClick={() => setSuccess(false)}
+                style={{
+                  padding: '10px 24px', background: '#0f172a', border: 'none', borderRadius: '10px',
+                  fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', color: '#fff', fontFamily: 'inherit',
+                }}
+              >
+                Done
+              </button>
             </div>
           </div>
         </div>
       )}
+
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </>
   )
