@@ -42,13 +42,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           pointerEvents: 'none',
         }} />
 
-        {/* ── dot-grid overlay ── */}
-        <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'radial-gradient(rgba(255,255,255,0.055) 1px, transparent 1px)',
-          backgroundSize: '26px 26px',
-        }} />
-
         {/* ── top accent line ── */}
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
@@ -62,16 +55,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         }}>
 
           {/* Logo */}
-          <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '11px', textDecoration: 'none', marginBottom: '28px' }}>
-            <LogoMark size={40} />
-            <div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 900, color: 'white', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
-                ARC <span style={{ color: '#60a5fa' }}>PEM</span>
-              </div>
-              <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.28)', fontWeight: 500, letterSpacing: '0.07em', textTransform: 'uppercase' }}>
-                Project Estimation Manager
-              </div>
-            </div>
+          <a href="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none', marginBottom: '28px' }}>
+            <LogoMark size={40} onDark />
           </a>
 
           {/* Headline */}
@@ -202,16 +187,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           width: '100%', maxWidth: '420px',
           marginBottom: '20px', position: 'relative', zIndex: 1,
         }}>
-          <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-            <LogoMark size={38} />
-            <div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#0f172a', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
-                ARC <span style={{ color: '#6366f1' }}>PEM</span>
-              </div>
-              <div style={{ fontSize: '0.58rem', color: '#94a3b8', fontWeight: 500, letterSpacing: '0.07em', textTransform: 'uppercase' }}>
-                Project Estimation Manager
-              </div>
-            </div>
+          <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <LogoMark size={40} />
           </a>
         </div>
 

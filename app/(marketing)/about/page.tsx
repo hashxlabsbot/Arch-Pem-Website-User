@@ -9,6 +9,19 @@ export default function AboutPage() {
   return (
     <section className="section bg-gray" id="testimonials" style={{ paddingTop: '120px' }}>
       <div className="container">
+        <div className="img-hero fade-up">
+          <img src="/images/management-team.jpg" alt="Construction and architecture team reviewing a project" loading="lazy" />
+          <div className="img-hero-inner">
+            <span className="badge badge-indigo">About ARC PEM</span>
+            <h1>Software built alongside India&apos;s builders</h1>
+            <p>We spent two years on real sites and in real studios — watching how architects, contractors and accountants actually move money. ARC PEM is the result: one platform that fits the way Indian construction firms work.</p>
+            <div className="img-hero-stats">
+              <div className="img-hero-stat"><div className="ihs-num">30+</div><div className="ihs-lbl">Firms onboard</div></div>
+              <div className="img-hero-stat"><div className="ihs-num">₹120Cr+</div><div className="ihs-lbl">Project value tracked</div></div>
+              <div className="img-hero-stat"><div className="ihs-num">100%</div><div className="ihs-lbl">Offline &amp; secure</div></div>
+            </div>
+          </div>
+        </div>
         <div className="sec-hd fade-up">
           <span className="badge badge-indigo">Customer Stories</span>
           <h2>Our Customer Success Stories</h2>

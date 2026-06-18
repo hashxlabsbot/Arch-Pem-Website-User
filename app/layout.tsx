@@ -9,6 +9,14 @@ export const metadata: Metadata = {
   title: 'ARC PEM — Project Expense Management Software',
   description:
     'ARC PEM unifies BOQ, vendor bills, labour tracking, contractor ledgers, GST, and professional reports — fully offline desktop software for Indian construction firms.',
+  icons: {
+    icon: [
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/arc-icon.png', sizes: '256x256', type: 'image/png' },
+    ],
+    shortcut: '/favicon-32.png',
+    apple: '/arc-icon.png',
+  },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>

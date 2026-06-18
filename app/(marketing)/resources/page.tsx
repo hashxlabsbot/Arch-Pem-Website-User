@@ -9,6 +9,14 @@ export default function ResourcesPage() {
   return (
     <section className="section" id="about" style={{ paddingTop: '120px' }}>
       <div className="container">
+        <div className="img-hero fade-up">
+          <img src="/images/blueprint-plans.jpg" alt="Architect working on construction blueprints" loading="lazy" />
+          <div className="img-hero-inner">
+            <span className="badge badge-indigo">Resources</span>
+            <h1>Everything you need to master ARC PEM</h1>
+            <p>Guides, video walkthroughs, ready-made BOQ templates and a complete GST-to-Tally workflow — from your first project to your hundredth.</p>
+          </div>
+        </div>
         <div className="sec-hd fade-up">
           <span className="badge badge-indigo">Resources</span>
           <h2>One Stop Shop for All Resources</h2>

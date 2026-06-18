@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { LayoutDashboard, CreditCard, Download, HelpCircle, LogOut, Settings } from 'lucide-react'
-import LogoMark from '@/components/LogoMark'
 
 const NAV = [
   { label: 'Dashboard',    href: '/dashboard',              icon: LayoutDashboard },
@@ -54,12 +53,24 @@ export default function Sidebar({ isOpen, onClose }: Props) {
         {/* Logo */}
         <div className="px-5 py-5 flex-shrink-0">
           <a href="/" className="flex items-center gap-3 no-underline group">
-            <LogoMark size={36} />
-            <div>
-              <div className="text-white font-black text-sm tracking-wide leading-tight">
-                ARC <span style={{ color: '#60a5fa' }}>PEM</span>
-              </div>
-              <div className="text-[10px] font-medium" style={{ color: 'rgba(255,255,255,0.35)' }}>Project Estimation Manager</div>
+            <img
+              src="/arc-icon.png"
+              alt="ARC PEM"
+              width={38}
+              height={38}
+              className="flex-shrink-0 rounded-[11px]"
+              style={{ display: 'block', boxShadow: '0 2px 12px rgba(59,130,246,0.35)' }}
+            />
+            <div className="flex flex-col leading-none">
+              <span
+                className="text-white font-extrabold tracking-tight"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.02rem' }}
+              >
+                ARC PEM
+              </span>
+              <span className="text-[11px] font-medium mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                Project Expense Manager
+              </span>
             </div>
           </a>
         </div>

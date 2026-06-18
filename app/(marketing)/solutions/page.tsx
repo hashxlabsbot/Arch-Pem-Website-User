@@ -15,6 +15,14 @@ export default function SolutionsPage() {
       {/* ── Solutions ── */}
       <section className="section bg-gray" id="features" style={{ paddingTop: '120px' }}>
         <div className="container">
+          <div className="img-hero fade-up">
+            <img src="/images/construction-crane.jpg" alt="Construction site managed with ARC PEM" loading="lazy" />
+            <div className="img-hero-inner">
+              <span className="badge badge-indigo">Solutions</span>
+              <h1>One platform for every financial workflow on site</h1>
+              <p>BOQ and budgets, vendor and labour expenses, GST and Tally exports, multi-user security — built for Indian architecture and construction firms, fully offline.</p>
+            </div>
+          </div>
           <div className="sec-hd fade-up">
             <span className="badge badge-indigo">All Your Construction Management</span>
             <h2>Everything Your Firm Needs, Out of the Box</h2>
@@ -48,6 +56,7 @@ export default function SolutionsPage() {
           {/* Row 1: BOQ */}
           <div className="feat-row fade-up">
             <div className="feat-text">
+              <div className="feat-photo"><img src="/images/engineer-site.jpg" alt="Engineer working on project drawings" loading="lazy" /></div>
               <span className="badge badge-indigo">Project &amp; Budget Management</span>
               <h3>Replace spreadsheet BOQs with a proper budget engine</h3>
               <p>Build structured Bills of Quantities with colour-coded categories, line items, units, and rates. Watch the subtotal, contingency, GST, and cost-per-sq.ft update live as you type.</p>
@@ -89,6 +98,7 @@ export default function SolutionsPage() {
           {/* Row 2: Expense */}
           <div className="feat-row rev fade-up">
             <div className="feat-text">
+              <div className="feat-photo"><img src="/images/finance-analytics.jpg" alt="Project finance dashboard" loading="lazy" /></div>
               <span className="badge badge-teal">Expense &amp; Finance Management</span>
               <h3>Every bill. Every worker. Every rupee — tracked.</h3>
               <p>Log vendor bills with per-entry GST, track daily labour headcount by role, manage contractor invoices, and capture site costs — all in one ledger per project.</p>
@@ -127,6 +137,7 @@ export default function SolutionsPage() {
           {/* Row 3: Power */}
           <div className="feat-row fade-up">
             <div className="feat-text">
+              <div className="feat-photo"><img src="/images/construction-workers.jpg" alt="Construction workers on site" loading="lazy" /></div>
               <span className="badge badge-amber">Power Features</span>
               <h3>Enterprise security. Zero server. Works on-site.</h3>
               <p>ARC PEM is fully offline — your data never touches a cloud server. Share the database over LAN or Google Drive for multi-user access, protected by RSA-2048 machine-locked licensing.</p>

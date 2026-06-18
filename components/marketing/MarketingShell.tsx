@@ -181,19 +181,11 @@ export default function MarketingShell({ children }: { children: React.ReactNode
       <div className="noise-overlay" />
       <div className="cursor-glow" />
 
-      {/* ── Announcement Bar ── */}
-      <div className="ann-bar">
-        <span className="ann-pill">New</span>
-        🚀 &nbsp;Introducing ARC PEM v2.0 — AI-assisted GST reconciliation &amp; cross-project Tally export is now live.
-        <Link href="/solutions">Check Now →</Link>
-      </div>
-
       {/* ── Navbar ── */}
       <header className="navbar" id="navbar">
         <div className="container nav-wrap">
           <Link href="/" className="nav-logo">
-            <LogoMark size={32} />
-            ARC <span style={{ color: 'var(--indigo)' }}>PEM</span>
+            <LogoMark size={38} />
           </Link>
 
           <nav className="nav-links">
@@ -260,8 +252,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
       <div className={`mob-drawer${drawerOpen ? ' open' : ''}`} id="mobDrawer">
         <div className="mob-head">
           <Link href="/" className="nav-logo" style={{ fontSize: '1.1rem' }}>
-            <LogoMark size={30} />
-            ARC <span style={{ color: 'var(--indigo)' }}>PEM</span>
+            <LogoMark size={36} />
           </Link>
           <button className="mob-close" onClick={() => setDrawerOpen(false)}>✕</button>
         </div>
@@ -290,47 +281,101 @@ export default function MarketingShell({ children }: { children: React.ReactNode
         <div className="cta-orb cta-orb-1" />
         <div className="cta-orb cta-orb-2" />
         <div className="cta-orb cta-orb-3" />
-        <div className="cta-mesh-grid" />
+        <div className="cta-aurora" />
 
         <div className="container cta-inner">
-          <div className="cta-badge-row">
-            <span className="cta-badge">🚀 Free Demo · No Credit Card Required</span>
-          </div>
-          <h2 className="cta-headline">
-            Ready to Take Control of<br />
-            <span className="cta-gradient-text">Your Project Finances?</span>
-          </h2>
-          <p className="cta-sub">
-            Join 30+ architecture and construction firms already using ARC PEM to track budgets, manage vendors, and generate professional reports — without a single spreadsheet.
-          </p>
-          <div className="cta-actions">
-            <button className="cta-btn-primary" onClick={openDemo}>
-              <span>Talk to an Expert</span>
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-            </button>
-            <Link href="/pricing" className="cta-btn-secondary">
-              <span>Book Free Demo</span>
-            </Link>
-          </div>
-          <div className="cta-trust-strip">
-            <div className="cta-trust-item">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-              <span>Bank-grade Security</span>
+          <div className="cta-card">
+            <div className="cta-card-sheen" />
+
+            <span className="cta-badge">
+              <span className="cta-badge-dot" />
+              Free Demo · No Credit Card Required
+            </span>
+
+            <h2 className="cta-headline">
+              Ready to take control of<br />
+              <span className="cta-gradient-text">your project finances?</span>
+            </h2>
+            <p className="cta-sub">
+              Join 30+ architecture and construction firms already using ARC PEM to track budgets,
+              manage vendors, and generate professional reports — without a single spreadsheet.
+            </p>
+
+            {/* Actions + social proof on one row */}
+            <div className="cta-action-row">
+              <div className="cta-actions">
+                <button className="cta-btn-primary" onClick={openDemo}>
+                  <span>Talk to an Expert</span>
+                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </button>
+                <Link href="/pricing" className="cta-btn-secondary">
+                  <span>Book Free Demo</span>
+                </Link>
+              </div>
+              <div className="cta-social">
+                <div className="cta-avatars">
+                  {[
+                    { l: 'R', c: 'linear-gradient(135deg,#3b82f6,#1d4ed8)' },
+                    { l: 'K', c: 'linear-gradient(135deg,#6366f1,#4338ca)' },
+                    { l: 'A', c: 'linear-gradient(135deg,#8b5cf6,#6d28d9)' },
+                    { l: 'S', c: 'linear-gradient(135deg,#0ea5e9,#0369a1)' },
+                  ].map(({ l, c }) => (
+                    <span key={l} className="cta-avatar" style={{ background: c }}>{l}</span>
+                  ))}
+                  <span className="cta-avatar cta-avatar-more">+30</span>
+                </div>
+                <div className="cta-social-meta">
+                  <div className="cta-stars">★★★★★</div>
+                  <span className="cta-social-label">Rated 4.9 / 5 · 30+ teams</span>
+                </div>
+              </div>
             </div>
-            <div className="cta-trust-divider" />
-            <div className="cta-trust-item">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-              <span>Works 100% Offline</span>
-            </div>
-            <div className="cta-trust-divider" />
-            <div className="cta-trust-item">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-              <span>+91-8810235570</span>
-            </div>
-            <div className="cta-trust-divider" />
-            <div className="cta-trust-item">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-              <span>hashxlabs.info@gmail.com</span>
+
+            <div className="cta-divider" />
+
+            {/* Feature + contact tiles */}
+            <div className="cta-meta">
+              <div className="cta-meta-tile">
+                <span className="cta-meta-ico ico-indigo">
+                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                </span>
+                <div className="cta-meta-text">
+                  <strong>Bank-grade Security</strong>
+                  <small>256-bit encrypted &amp; local</small>
+                </div>
+              </div>
+
+              <div className="cta-meta-tile">
+                <span className="cta-meta-ico ico-amber">
+                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </span>
+                <div className="cta-meta-text">
+                  <strong>Works 100% Offline</strong>
+                  <small>No internet required</small>
+                </div>
+              </div>
+
+              <a href="tel:+918810235570" className="cta-meta-tile cta-meta-link">
+                <span className="cta-meta-ico ico-blue">
+                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                </span>
+                <div className="cta-meta-text">
+                  <strong>+91 88102 35570</strong>
+                  <small>Talk to sales · Mon–Sat</small>
+                </div>
+                <svg className="cta-meta-arrow" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
+
+              <a href="mailto:hashxlabs.info@gmail.com" className="cta-meta-tile cta-meta-link">
+                <span className="cta-meta-ico ico-violet">
+                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                </span>
+                <div className="cta-meta-text">
+                  <strong>hashxlabs.info@gmail.com</strong>
+                  <small>We reply within 24 hours</small>
+                </div>
+                <svg className="cta-meta-arrow" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
             </div>
           </div>
         </div>
@@ -343,8 +388,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
           <div className="fv2-top">
             <div className="fv2-brand">
               <div className="fv2-logo">
-                <LogoMark size={30} />
-                <span className="fv2-logo-text">ARC <span style={{ color: 'var(--indigo)' }}>PEM</span></span>
+                <LogoMark size={34} onDark />
               </div>
               <p className="fv2-tagline">Project expense management software built for Indian architecture consultancies and construction firms.</p>
               <div className="fv2-newsletter">
