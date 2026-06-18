@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { company } from '@/lib/company'
 
 interface Plan {
   id: string
@@ -169,6 +170,15 @@ export default function PricingPage() {
 
         <p style={{ textAlign: 'center', fontSize: '.84rem', color: 'var(--gray-400)', marginTop: '28px' }}>
           All plans include a 14-day free trial · No credit card required · Cancel anytime
+        </p>
+        <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--gray-400)', marginTop: '8px' }}>
+          All prices are in Indian Rupees (₹).{' '}
+          {company.pricesIncludeGst
+            ? `Inclusive of ${company.gstRatePct}% GST.`
+            : `Exclusive of ${company.gstRatePct}% GST, which is added at checkout where applicable.`}{' '}
+          Secure payments by Razorpay. See our{' '}
+          <a href="/refund" style={{ color: 'var(--indigo)' }}>Refund Policy</a> and{' '}
+          <a href="/terms" style={{ color: 'var(--indigo)' }}>Terms</a>.
         </p>
       </div>
     </section>

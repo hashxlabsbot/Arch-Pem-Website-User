@@ -110,7 +110,7 @@ export default function HomePage() {
               Platform
             </h1>
             <p className="hero-sub">
-              ARC PEM unifies BOQ, vendor bills, labour tracking, contractor ledgers and GST into one offline desktop platform — built specifically for Indian construction firms.
+              ARC PEM unifies BOQ, vendor bills, labour tracking, contractor ledgers and GST into one offline desktop platform  built specifically for Indian construction firms.
             </p>
             <div className="hero-ctas">
               <button className="btn btn-primary btn-lg" onClick={openDemo}>Talk to an Expert</button>

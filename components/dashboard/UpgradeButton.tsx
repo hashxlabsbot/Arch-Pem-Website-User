@@ -153,6 +153,12 @@ export default function UpgradeButton({ planId, planName, userName, userEmail }:
         {verifying ? 'Confirming…' : loading ? 'Loading…' : 'Upgrade →'}
       </button>
 
+      <p style={{ fontSize: '0.66rem', color: '#94a3b8', textAlign: 'center', marginTop: '8px', lineHeight: 1.4 }}>
+        By upgrading you agree to our{' '}
+        <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#6366f1' }}>Terms</a> and{' '}
+        <a href="/refund" target="_blank" rel="noopener noreferrer" style={{ color: '#6366f1' }}>Refund Policy</a>.
+      </p>
+
       {error && !success && (
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: '#dc2626', fontSize: '0.72rem', marginTop: '8px', lineHeight: 1.4 }}>
           <AlertCircle size={12} style={{ flexShrink: 0, marginTop: '1px' }} /> {error}
