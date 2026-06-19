@@ -1,39 +1,45 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Content-Security-Policy. The app relies on inline styles/<style> tags and
-// Google Fonts, and Razorpay Checkout loads its script + opens an iframe, so
-// those origins are explicitly allowed. ('unsafe-inline'/'unsafe-eval' are
-// required by Next's runtime + Razorpay; tighten with nonces later if needed.)
-const CSP = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' https://fonts.gstatic.com data:",
-  "img-src 'self' data: blob: https:",
-  "connect-src 'self' https://*.razorpay.com https://api.brevo.com",
-  "frame-src https://*.razorpay.com https://api.razorpay.com",
-  "form-action 'self'",
-  "base-uri 'self'",
-  "object-src 'none'",
-  "frame-ancestors 'self'",
-].join('; ')
+const isProd = process.env.NODE_ENV === 'production'
 
-const SEC_HEADERS: Record<string, string> = {
+function generateNonce(): string {
+  const bytes = new Uint8Array(16)
+  crypto.getRandomValues(bytes)
+  return Buffer.from(bytes).toString('base64')
+}
+
+// 'strict-dynamic' + nonce replaces 'unsafe-inline': trusted scripts (nonce-bearing)
+// can load additional scripts (e.g. Razorpay checkout.js added via createElement).
+// Domain allowlist is kept as fallback for older browsers that ignore strict-dynamic.
+function buildCSP(nonce: string): string {
+  return [
+    "default-src 'self'",
+    `script-src 'nonce-${nonce}' 'strict-dynamic'${isProd ? '' : " 'unsafe-eval'"} https://checkout.razorpay.com`,
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com data:",
+    "img-src 'self' data: blob: https:",
+    "connect-src 'self' https://*.razorpay.com https://api.brevo.com",
+    "frame-src https://*.razorpay.com https://api.razorpay.com",
+    "form-action 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+  ].join('; ')
+}
+
+const STATIC_HEADERS: Record<string, string> = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options':        'SAMEORIGIN',
   'Referrer-Policy':        'strict-origin-when-cross-origin',
-  'Content-Security-Policy': CSP,
   'Permissions-Policy':     'camera=(), microphone=(), geolocation=()',
   'X-DNS-Prefetch-Control': 'on',
-}
-
-function withSecHeaders(res: NextResponse): NextResponse {
-  Object.entries(SEC_HEADERS).forEach(([k, v]) => res.headers.set(k, v))
-  return res
+  ...(isProd ? { 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload' } : {}),
 }
 
 export async function middleware(req: NextRequest) {
+  const nonce = generateNonce()
+
   const token = await getToken({
     req,
     secret:     process.env.NEXTAUTH_SECRET,
@@ -62,7 +68,14 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  return withSecHeaders(NextResponse.next())
+  // Forward nonce so Next.js can attach it to its own injected <script> tags
+  const requestHeaders = new Headers(req.headers)
+  requestHeaders.set('x-nonce', nonce)
+
+  const res = NextResponse.next({ request: { headers: requestHeaders } })
+  Object.entries(STATIC_HEADERS).forEach(([k, v]) => res.headers.set(k, v))
+  res.headers.set('Content-Security-Policy', buildCSP(nonce))
+  return res
 }
 
 export const config = {
