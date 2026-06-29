@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 })
   }
 
-  const { name, whatsapp, company, role, teamSize } = await req.json()
+  const { name, whatsapp, company, role, teamSize, date, time } = await req.json()
   if (!name?.trim() || !whatsapp?.trim()) {
     return NextResponse.json({ error: 'Name and WhatsApp number are required.' }, { status: 400 })
   }
@@ -30,6 +30,8 @@ export async function POST(req: NextRequest) {
       company:  company ? String(company).trim() : undefined,
       role:     role ? String(role).trim() : undefined,
       teamSize: teamSize ? String(teamSize).trim() : undefined,
+      date:     date ? String(date).trim() : undefined,
+      time:     time ? String(time).trim() : undefined,
     })
   } catch (err) {
     logger.error('demo request email failed', err)

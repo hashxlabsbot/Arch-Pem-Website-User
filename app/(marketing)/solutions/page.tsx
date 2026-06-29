@@ -2,6 +2,12 @@
 
 import { useState } from 'react'
 import { useDemoModal } from '@/components/marketing/DemoModalContext'
+import {
+  ClipboardIcon, WalletIcon, BoltIcon, BuildingIcon, CompassIcon, FolderIcon,
+  DashboardIcon, RefreshIcon, ExportIcon, StoreIcon, HardHatIcon, UsersIcon,
+  ReceiptIcon, ClockIcon, DownloadIcon, SearchIcon, LockIcon, SaveIcon,
+  GlobeIcon, TruckIcon,
+} from '@/components/icons'
 
 export default function SolutionsPage() {
   const openDemo = useDemoModal()
@@ -30,9 +36,9 @@ export default function SolutionsPage() {
           </div>
           <div className="sol-grid">
             {[
-              { id: 'project-mgmt', icon: '📋', cls: 'si-blue', title: 'Project & Budget Management', desc: 'Build precise cost estimates, track project status, and generate client-ready budget summaries with automatic GST and cost-per-sq.ft.', modal: 'modal-boq', cta: 'Explore BOQ Features', feats: [['b','Bill of Quantities (BOQ)'],['b','Project Dashboard & Status Tracking'],['b','BOQ Templates (Reusable)'],['b','Duplicate Projects'],['b','Cost Per Sq.Ft Calculator'],['b','Contingency & GST Auto-Compute'],['b','PDF & Excel Export']] },
-              { id: 'expense-mgmt', icon: '💰', cls: 'si-sky', title: 'Expense & Finance Management', desc: 'Track every rupee across vendor bills, labour wages, contractor invoices, and site expenses. Auto-compute GST and export directly to Tally.', modal: 'modal-expense', cta: 'Explore Finance Tools', feats: [['s','Vendor Ledger with GST Toggle'],['s','Labour Tracking (Daily Headcount)'],['s','Contractor Bill Management'],['s','Site Expense Tracking'],['s','GST Purchase Register'],['s','Pending Payments Dashboard'],['s','Tally ERP / Prime CSV Export']] },
-              { id: 'power-feat',   icon: '⚡', cls: 'si-green', title: 'Power & Productivity Features', desc: 'Enterprise-grade tools built for the field — offline operation, multi-user sharing, global search, and machine-locked security.', modal: 'modal-power', cta: 'Explore Power Tools', feats: [['g','Global Search (Ctrl+K)'],['g','Multi-User Database Sharing'],['g','PDF Manpower Report Import'],['g','Vendor Directory & Autocomplete'],['g','PIN Lock & RSA-2048 Licensing'],['g','Auto-Backup & JSON Export'],['g','Silent Auto-Update']] },
+              { id: 'project-mgmt', icon: <ClipboardIcon size={26} color="#4f46e5" />, cls: 'si-blue', title: 'Project & Budget Management', desc: 'Build precise cost estimates, track project status, and generate client-ready budget summaries with automatic GST and cost-per-sq.ft.', modal: 'modal-boq', cta: 'Explore BOQ Features', feats: [['b','Bill of Quantities (BOQ)'],['b','Project Dashboard & Status Tracking'],['b','BOQ Templates (Reusable)'],['b','Duplicate Projects'],['b','Cost Per Sq.Ft Calculator'],['b','Contingency & GST Auto-Compute'],['b','PDF & Excel Export']] },
+              { id: 'expense-mgmt', icon: <WalletIcon size={26} color="#0ea5e9" />, cls: 'si-sky', title: 'Expense & Finance Management', desc: 'Track every rupee across vendor bills, labour wages, contractor invoices, and site expenses. Auto-compute GST and export directly to Tally.', modal: 'modal-expense', cta: 'Explore Finance Tools', feats: [['s','Vendor Ledger with GST Toggle'],['s','Labour Tracking (Daily Headcount)'],['s','Contractor Bill Management'],['s','Site Expense Tracking'],['s','GST Purchase Register'],['s','Pending Payments Dashboard'],['s','Tally ERP / Prime CSV Export']] },
+              { id: 'power-feat', icon: <BoltIcon size={26} color="#10b981" />, cls: 'si-green', title: 'Power & Productivity Features', desc: 'Enterprise-grade tools built for the field — offline operation, multi-user sharing, global search, and machine-locked security.', modal: 'modal-power', cta: 'Explore Power Tools', feats: [['g','Global Search (Ctrl+K)'],['g','Multi-User Database Sharing'],['g','PDF Manpower Report Import'],['g','Vendor Directory & Autocomplete'],['g','PIN Lock & RSA-2048 Licensing'],['g','Auto-Backup & JSON Export'],['g','Silent Auto-Update']] },
             ].map((s, i) => (
               <div key={s.id} className={`sol-card fade-up${i===1?' d1':i===2?' d2':''}`} id={s.id}>
                 <div className={`sol-icon ${s.cls}`}>{s.icon}</div>
@@ -150,18 +156,23 @@ export default function SolutionsPage() {
             <div className="feat-panel">
               <div className="fp-label">Global Search — Ctrl+K</div>
               <div className="search-box">
-                <div className="search-bar"><span style={{ color: 'rgba(255,255,255,.4)', fontSize: '.85rem' }}>🔍</span><span className="search-input">Resident Villa</span><span className="search-kbd">⌘K</span></div>
+                <div className="search-bar"><span style={{ color: 'rgba(255,255,255,.4)', fontSize: '.85rem' }}><SearchIcon size={13} color="rgba(255,255,255,0.4)" /></span><span className="search-input">Resident Villa</span><span className="search-kbd">⌘K</span></div>
                 <div className="search-results">
                   <div className="sr-group-label">Projects</div>
-                  <div className="sr-item active"><span className="sr-item-icon">🏠</span><div><div className="sr-item-name">Resident Villa — Delhi</div><div className="sr-item-sub">M.K Thakur · Plot 403_B, Delhi-101110 · <span style={{ color: '#10b981', fontWeight: 700 }}>Active</span></div></div><span className="sr-item-arrow">Open →</span></div>
+                  <div className="sr-item active"><span className="sr-item-icon"><BuildingIcon size={15} color="#475569" /></span><div><div className="sr-item-name">Resident Villa — Delhi</div><div className="sr-item-sub">M.K Thakur · Plot 403_B, Delhi-101110 · <span style={{ color: '#10b981', fontWeight: 700 }}>Active</span></div></div><span className="sr-item-arrow">Open →</span></div>
                   <div className="sr-group-label">Contractors</div>
-                  <div className="sr-item"><span className="sr-item-icon">🚛</span><div><div className="sr-item-name">Aggarwal RMC Contractor</div><div className="sr-item-sub">Cheque: Rs.5,000 · <span style={{ color: '#f59e0b', fontWeight: 700 }}>Pending: Rs.5,266</span></div></div></div>
+                  <div className="sr-item"><span className="sr-item-icon"><TruckIcon size={15} color="#475569" /></span><div><div className="sr-item-name">Aggarwal RMC Contractor</div><div className="sr-item-sub">Cheque: Rs.5,000 · <span style={{ color: '#f59e0b', fontWeight: 700 }}>Pending: Rs.5,266</span></div></div></div>
                   <div className="sr-group-label">Expenses</div>
-                  <div className="sr-item"><span className="sr-item-icon">🧾</span><div><div className="sr-item-name">Site Expenses — Rs.58,881</div><div className="sr-item-sub">Resident Villa · Period: 01-01-2024 – 31-12-2027</div></div><div style={{ marginLeft: 'auto', flexShrink: 0, fontSize: '.62rem', background: 'var(--amber-lt)', color: '#92400e', padding: '2px 7px', borderRadius: '100px', fontWeight: 700 }}>Pending Rs.28,615</div></div>
+                  <div className="sr-item"><span className="sr-item-icon"><ReceiptIcon size={15} color="#475569" /></span><div><div className="sr-item-name">Site Expenses — Rs.58,881</div><div className="sr-item-sub">Resident Villa · Period: 01-01-2024 – 31-12-2027</div></div><div style={{ marginLeft: 'auto', flexShrink: 0, fontSize: '.62rem', background: 'var(--amber-lt)', color: '#92400e', padding: '2px 7px', borderRadius: '100px', fontWeight: 700 }}>Pending Rs.28,615</div></div>
                 </div>
               </div>
               <div className="sec-tiles">
-                {[['🔒','RSA-2048','Machine-locked license'],['🌐','100% Offline','No cloud, no internet'],['👥','Multi-User','LAN / Google Drive'],['🔄','Auto-Update','Silent background']].map(([ico,name,sub])=>(
+                {[
+                  { ico: <LockIcon size={18} color="#4f46e5" />,    name: 'RSA-2048',     sub: 'Machine-locked license' },
+                  { ico: <GlobeIcon size={18} color="#4f46e5" />,   name: '100% Offline', sub: 'No cloud, no internet' },
+                  { ico: <UsersIcon size={18} color="#4f46e5" />,   name: 'Multi-User',   sub: 'LAN / Google Drive' },
+                  { ico: <RefreshIcon size={18} color="#4f46e5" />, name: 'Auto-Update',  sub: 'Silent background' },
+                ].map(({ ico, name, sub }) => (
                   <div key={name} className="sec-tile"><span className="st-icon">{ico}</span><div><div className="st-name">{name}</div><div className="st-sub">{sub}</div></div></div>
                 ))}
               </div>
@@ -172,29 +183,29 @@ export default function SolutionsPage() {
 
       {/* ── Feature Modals ── */}
       {[
-        { id: 'modal-boq', cls: 'si-blue', icon: '📋', title: 'Project & Budget Management', sub: 'Precision BOQ engine built for Indian construction firms', cards: [
-          {i:'🏗️',t:'Bill of Quantities (BOQ)',d:'Structured line items with units, rates, and colour-coded categories — Civil, MEP, Finishing, Landscaping. Live subtotal, contingency, and GST.'},
-          {i:'📐',t:'Cost-Per-Sq.Ft Calculator',d:'Automatically computes and displays cost per sq.ft as you enter BOQ items. Instant benchmark for client negotiations.'},
-          {i:'📁',t:'Reusable BOQ Templates',d:'Save any BOQ as a template. Apply it to future projects in one click — perfect for standard villa, office, or fit-out budgets.'},
-          {i:'📊',t:'Project Dashboard',d:'Live status board showing budget vs. actual spend, % complete, and outstanding payments — all in real time.'},
-          {i:'🔄',t:'Duplicate Projects',d:'Copy an entire project structure — BOQ, categories, team — to kickstart similar projects without starting from zero.'},
-          {i:'📤',t:'PDF & Excel Export',d:'Generate a client-ready PDF BOQ or detailed Excel export. Professional formatting with your firm name and project details.'},
+        { id: 'modal-boq', cls: 'si-blue', icon: <ClipboardIcon size={26} color="#4f46e5" />, title: 'Project & Budget Management', sub: 'Precision BOQ engine built for Indian construction firms', cards: [
+          {i:<BuildingIcon size={20} color="#4f46e5" />,t:'Bill of Quantities (BOQ)',d:'Structured line items with units, rates, and colour-coded categories — Civil, MEP, Finishing, Landscaping. Live subtotal, contingency, and GST.'},
+          {i:<CompassIcon size={20} color="#4f46e5" />,t:'Cost-Per-Sq.Ft Calculator',d:'Automatically computes and displays cost per sq.ft as you enter BOQ items. Instant benchmark for client negotiations.'},
+          {i:<FolderIcon size={20} color="#4f46e5" />,t:'Reusable BOQ Templates',d:'Save any BOQ as a template. Apply it to future projects in one click — perfect for standard villa, office, or fit-out budgets.'},
+          {i:<DashboardIcon size={20} color="#4f46e5" />,t:'Project Dashboard',d:'Live status board showing budget vs. actual spend, % complete, and outstanding payments — all in real time.'},
+          {i:<RefreshIcon size={20} color="#4f46e5" />,t:'Duplicate Projects',d:'Copy an entire project structure — BOQ, categories, team — to kickstart similar projects without starting from zero.'},
+          {i:<ExportIcon size={20} color="#4f46e5" />,t:'PDF & Excel Export',d:'Generate a client-ready PDF BOQ or detailed Excel export. Professional formatting with your firm name and project details.'},
         ]},
-        { id: 'modal-expense', cls: 'si-sky', icon: '💰', title: 'Expense & Finance Management', sub: 'Track every rupee across vendors, labour, contractors, and site', cards: [
-          {i:'🏪',t:'Vendor Ledger with GST',d:'Log vendor bills with GSTIN, invoice number, and GST rate. Toggle between GST-inclusive and exclusive views. Auto-fills CGST/SGST split.'},
-          {i:'👷',t:'Labour Tracking',d:'Daily headcount entry for every site. Weekly payment summaries, skill-wise breakdowns, and exportable attendance sheets.'},
-          {i:'🤝',t:'Contractor Bill Management',d:'Manage civil, MEP, and interior contractors with running bill tracking, retention amounts, and advance deduction calculations.'},
-          {i:'🧾',t:'GST Purchase Register',d:'Auto-generated monthly GST detail sheet — ready to share with your CA for GST filing. Exportable to Excel and PDF.'},
-          {i:'⏳',t:'Pending Payments Dashboard',d:'See all unpaid bills across every project in one view. Overdue alerts with days-past-due counter.'},
-          {i:'📥',t:'Tally ERP / Prime Export',d:'One-click CSV export formatted for Tally ERP 9 and Tally Prime. Eliminates manual double-entry and CA reconciliation time.'},
+        { id: 'modal-expense', cls: 'si-sky', icon: <WalletIcon size={26} color="#0ea5e9" />, title: 'Expense & Finance Management', sub: 'Track every rupee across vendors, labour, contractors, and site', cards: [
+          {i:<StoreIcon size={20} color="#0ea5e9" />,t:'Vendor Ledger with GST',d:'Log vendor bills with GSTIN, invoice number, and GST rate. Toggle between GST-inclusive and exclusive views. Auto-fills CGST/SGST split.'},
+          {i:<HardHatIcon size={20} color="#0ea5e9" />,t:'Labour Tracking',d:'Daily headcount entry for every site. Weekly payment summaries, skill-wise breakdowns, and exportable attendance sheets.'},
+          {i:<UsersIcon size={20} color="#0ea5e9" />,t:'Contractor Bill Management',d:'Manage civil, MEP, and interior contractors with running bill tracking, retention amounts, and advance deduction calculations.'},
+          {i:<ReceiptIcon size={20} color="#0ea5e9" />,t:'GST Purchase Register',d:'Auto-generated monthly GST detail sheet — ready to share with your CA for GST filing. Exportable to Excel and PDF.'},
+          {i:<ClockIcon size={20} color="#0ea5e9" />,t:'Pending Payments Dashboard',d:'See all unpaid bills across every project in one view. Overdue alerts with days-past-due counter.'},
+          {i:<DownloadIcon size={20} color="#0ea5e9" />,t:'Tally ERP / Prime Export',d:'One-click CSV export formatted for Tally ERP 9 and Tally Prime. Eliminates manual double-entry and CA reconciliation time.'},
         ]},
-        { id: 'modal-power', cls: 'si-green', icon: '⚡', title: 'Power & Productivity Features', sub: 'Enterprise tools for the field — offline, secure, and fast', cards: [
-          {i:'🔍',t:'Global Search (Ctrl+K)',d:'Search across every project, vendor, bill, and entry in milliseconds. Fuzzy match finds records even with partial names.'},
-          {i:'👥',t:'Multi-User Sharing',d:'Share the database via LAN, Google Drive, or OneDrive. Multiple team members access the same data simultaneously.'},
-          {i:'🔐',t:'RSA-2048 Machine Lock',d:'License is tied to your hardware. Even if the software is copied, it will not run on another machine.'},
-          {i:'📋',t:'PDF Manpower Import',d:'Import labour attendance from standard PDF reports. Auto-parses headcount, skill categories, and daily wages — zero manual entry.'},
-          {i:'💾',t:'Auto-Backup & JSON Export',d:'Scheduled automatic backups to a folder of your choice. Full JSON export lets you migrate data or keep an off-site archive.'},
-          {i:'🔄',t:'Silent Auto-Update',d:'New features and bug fixes deploy silently in the background. You always have the latest version without disrupting your workflow.'},
+        { id: 'modal-power', cls: 'si-green', icon: <BoltIcon size={26} color="#10b981" />, title: 'Power & Productivity Features', sub: 'Enterprise tools for the field — offline, secure, and fast', cards: [
+          {i:<SearchIcon size={20} color="#10b981" />,t:'Global Search (Ctrl+K)',d:'Search across every project, vendor, bill, and entry in milliseconds. Fuzzy match finds records even with partial names.'},
+          {i:<UsersIcon size={20} color="#10b981" />,t:'Multi-User Sharing',d:'Share the database via LAN, Google Drive, or OneDrive. Multiple team members access the same data simultaneously.'},
+          {i:<LockIcon size={20} color="#10b981" />,t:'RSA-2048 Machine Lock',d:'License is tied to your hardware. Even if the software is copied, it will not run on another machine.'},
+          {i:<ClipboardIcon size={20} color="#10b981" />,t:'PDF Manpower Import',d:'Import labour attendance from standard PDF reports. Auto-parses headcount, skill categories, and daily wages — zero manual entry.'},
+          {i:<SaveIcon size={20} color="#10b981" />,t:'Auto-Backup & JSON Export',d:'Scheduled automatic backups to a folder of your choice. Full JSON export lets you migrate data or keep an off-site archive.'},
+          {i:<RefreshIcon size={20} color="#10b981" />,t:'Silent Auto-Update',d:'New features and bug fixes deploy silently in the background. You always have the latest version without disrupting your workflow.'},
         ]},
       ].map(m => (
         <div key={m.id} id={m.id} className={`modal-overlay${openModal===m.id?' open':''}`} onClick={e=>{if(e.target===e.currentTarget)hideModal()}}>

@@ -1,3 +1,5 @@
+import { env } from '@/lib/env'
+
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email'
 
 export async function sendOtpEmail({ to, name, otp }: { to: string; name: string; otp: string }) {
@@ -39,7 +41,8 @@ export async function sendOtpEmail({ to, name, otp }: { to: string; name: string
     </body></html>
   `)
 }
-const FROM = { name: 'ARC PEM', email: process.env.BREVO_SENDER_EMAIL ?? 'vashisth0052@gmail.com' }
+// Sender falls back to noreply@arcpem.com (via env helper) — never a personal inbox.
+const FROM = { name: 'ARC PEM', email: env.brevoSender() }
 
 async function sendMail(to: string, toName: string, subject: string, html: string) {
   const res = await fetch(BREVO_API, {
@@ -134,14 +137,16 @@ export async function sendPasswordResetEmail({
 }
 
 export async function sendDemoRequestEmail({
-  to, name, whatsapp, company, role, teamSize,
-}: { to: string; name: string; whatsapp: string; company?: string; role?: string; teamSize?: string }) {
+  to, name, whatsapp, company, role, teamSize, date, time,
+}: { to: string; name: string; whatsapp: string; company?: string; role?: string; teamSize?: string; date?: string; time?: string }) {
   const rows = [
-    ['Name',       name],
-    ['WhatsApp',   whatsapp],
-    ['Company',    company || '—'],
-    ['Role',       role || '—'],
-    ['Team Size',  teamSize || '—'],
+    ['Name',           name],
+    ['WhatsApp',       whatsapp],
+    ['Preferred date', date || '—'],
+    ['Preferred time', time || '—'],
+    ['Company',        company || '—'],
+    ['Role',           role || '—'],
+    ['Team Size',      teamSize || '—'],
   ]
 
   await sendMail(to, 'ARC PEM Team', `New demo request — ${name}`, `
@@ -165,56 +170,6 @@ export async function sendDemoRequestEmail({
       </div>
       <div style="background:#f8fafc;border-top:1px solid #f1f5f9;padding:20px 36px;text-align:center;">
         <p style="font-size:12px;color:#94a3b8;margin:0;">© 2026 ARCPEM · Demo request notification</p>
-      </div>
-    </div>
-    </body></html>
-  `)
-}
-
-export async function sendPaymentReceivedEmail({
-  to, name, planName, amount, utr,
-}: { to: string; name: string; planName: string; amount: number; utr: string }) {
-  const rows = [
-    ['Plan',               planName],
-    ['Amount',             `₹${amount.toLocaleString('en-IN')}`],
-    ['UTR / Transaction',  utr],
-    ['Status',             'Under Verification'],
-  ]
-
-  await sendMail(to, name, "Payment received — we're verifying your transaction", `
-    <!DOCTYPE html><html>
-    <body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',Arial,sans-serif;">
-    <div style="max-width:540px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
-      <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);padding:32px 36px;">
-        <h1 style="color:white;font-size:22px;font-weight:700;margin:0 0 6px;">Payment Received ✓</h1>
-        <p style="color:rgba(255,255,255,0.75);font-size:14px;margin:0;">We've received your payment details and are verifying the transaction.</p>
-      </div>
-      <div style="padding:32px 36px;">
-        <p style="font-size:15px;color:#1e293b;margin:0 0 20px;">Hi <strong>${name}</strong>,</p>
-        <p style="font-size:14px;color:#475569;margin:0 0 24px;line-height:1.6;">
-          Thank you for submitting your payment. Our team will verify your UPI transaction and activate your plan within <strong>2–4 business hours</strong>. You'll receive a confirmation email once it's done.
-        </p>
-        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
-          <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 14px;">Payment Details</p>
-          ${rows.map(([label, value]) => `
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;">
-              <span style="font-size:13px;color:#64748b;">${label}</span>
-              <span style="font-size:13px;font-weight:700;color:${label === 'Status' ? '#f59e0b' : '#0f172a'};">${value}</span>
-            </div>`).join('')}
-        </div>
-        <div style="background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:10px;padding:14px 18px;margin-bottom:24px;">
-          <p style="font-size:13px;color:#1e40af;margin:0;line-height:1.5;">
-            <strong>What happens next?</strong><br/>
-            Once verified, your <strong>${planName}</strong> plan will be activated and you'll receive your license key by email.
-          </p>
-        </div>
-        <p style="font-size:13px;color:#94a3b8;margin:0;">
-          If you have any questions, reply to this email or contact our support team.<br/>
-          <strong style="color:#1e293b;">ARC PEM Support</strong>
-        </p>
-      </div>
-      <div style="background:#f8fafc;border-top:1px solid #f1f5f9;padding:20px 36px;text-align:center;">
-        <p style="font-size:12px;color:#94a3b8;margin:0;">© 2026 ARCPEM. All rights reserved.<br/>You received this because you have an account with ARCPEM.</p>
       </div>
     </div>
     </body></html>

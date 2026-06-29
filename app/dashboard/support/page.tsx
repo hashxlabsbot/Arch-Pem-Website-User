@@ -5,14 +5,14 @@ import {
   Phone, Mail, MessageCircle, BookOpen, Video, FileText,
   ChevronDown, ArrowRight, Clock, Headphones, Zap,
 } from 'lucide-react'
-import { company } from '@/lib/company'
+import { company, phoneTel, whatsappLink } from '@/lib/company'
 
 const CHANNELS = [
   {
     icon: Phone,
     label: 'Call Us',
-    value: '+91-8810235570',
-    action: 'tel:+918810235570',
+    value: company.phone,
+    action: phoneTel,
     badge: 'Mon–Fri, 10am–6pm IST',
     accent: '#16a34a',
     bg: 'rgba(22,163,74,0.08)',
@@ -21,8 +21,8 @@ const CHANNELS = [
   {
     icon: MessageCircle,
     label: 'WhatsApp',
-    value: '+91-8810235570',
-    action: 'https://wa.me/918810235570',
+    value: company.phone,
+    action: whatsappLink,
     badge: 'Quick replies, Mon–Fri',
     accent: '#059669',
     bg: 'rgba(5,150,105,0.08)',
@@ -67,25 +67,19 @@ const RESOURCES = [
   {
     icon: BookOpen,
     label: 'User Guide',
-    desc: 'Complete documentation with screenshots',
-    href: '#',
-    accent: '#6366f1',
+    desc: 'Complete documentation with screenshots',    accent: '#6366f1',
     bg: 'rgba(99,102,241,0.08)',
   },
   {
     icon: Video,
     label: 'Video Tutorials',
-    desc: 'Step-by-step walkthroughs for every feature',
-    href: '#',
-    accent: '#0ea5e9',
+    desc: 'Step-by-step walkthroughs for every feature',    accent: '#0ea5e9',
     bg: 'rgba(14,165,233,0.08)',
   },
   {
     icon: FileText,
     label: 'BOQ Templates',
-    desc: 'Free pre-built templates for all project types',
-    href: '#',
-    accent: '#f59e0b',
+    desc: 'Free pre-built templates for all project types',    accent: '#f59e0b',
     bg: 'rgba(245,158,11,0.08)',
   },
 ]
@@ -249,15 +243,14 @@ export default function SupportPage() {
           Self-Help Resources
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-          {RESOURCES.map(({ icon: Icon, label, desc, href, accent, bg }) => (
-            <a
+          {RESOURCES.map(({ icon: Icon, label, desc, accent, bg }) => (
+            <div
               key={label}
-              href={href}
               className="resource-card"
               style={{
                 background: 'white', borderRadius: '16px',
                 border: '1.5px solid #e2e8f0', padding: '18px',
-                textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '10px',
+                display: 'flex', flexDirection: 'column', gap: '10px',
               }}
             >
               <div style={{
@@ -270,11 +263,14 @@ export default function SupportPage() {
                 <div style={{ fontSize: '0.86rem', fontWeight: 700, color: '#1e293b', marginBottom: '3px' }}>{label}</div>
                 <div style={{ fontSize: '0.76rem', color: '#94a3b8', lineHeight: 1.5 }}>{desc}</div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: 'auto' }}>
-                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: accent }}>Explore</span>
-                <ArrowRight size={13} color={accent} />
-              </div>
-            </a>
+              <span style={{
+                marginTop: 'auto', alignSelf: 'flex-start',
+                fontSize: '0.68rem', fontWeight: 700, color: '#94a3b8',
+                background: '#f1f5f9', borderRadius: '6px', padding: '3px 9px',
+              }}>
+                Coming soon
+              </span>
+            </div>
           ))}
         </div>
       </div>

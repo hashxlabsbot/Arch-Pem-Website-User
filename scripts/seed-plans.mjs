@@ -12,8 +12,10 @@ import { PrismaClient } from '@prisma/client'
 
 const db = new PrismaClient()
 
-// Monthly price only. The website derives the annual price (−20%) at render time,
-// so admin only ever has to set the monthly price here / in the admin UI.
+// Monthly BASE price only. ARC PEM is sold as a one-year license: the website
+// charges and displays the annual price (= monthly base × 12, no discount) at
+// render time, so admin only ever has to set the monthly base price here / in
+// the admin UI. See lib/pricing.ts (annualPrice).
 const plans = [
   {
     name: 'Solo',

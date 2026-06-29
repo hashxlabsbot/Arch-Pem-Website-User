@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { useRef, useState, useEffect } from 'react'
 import { Bell, ChevronRight, Zap, Download, X, ArrowRight, Menu } from 'lucide-react'
+import { company } from '@/lib/company'
 
 const TITLES: Record<string, { label: string; desc: string }> = {
   '/dashboard':              { label: 'Dashboard',    desc: 'Overview of your account'  },
@@ -21,7 +22,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const initials = session?.user?.name
     ?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() ?? '?'
 
-  const isFree = !session?.user?.planName || session.user.planName === 'Free Trial'
+  const isFree = !session?.user?.planName
 
   const NOTIFS = [
     ...(isFree ? [{
@@ -40,8 +41,8 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
       icon: Download,
       iconBg: 'rgba(59,130,246,0.1)',
       iconColor: '#3b82f6',
-      title: 'ARC PEM v1.0.0 is available',
-      body: 'The initial release is live. Download from the Downloads page.',
+      title: `ARC PEM v${company.product.version} is available`,
+      body: 'The latest version is live. Download from the Downloads page.',
       href: '/dashboard/downloads',
       cta: 'Download',
       time: 'New',
@@ -191,7 +192,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
               {session?.user?.name ?? 'User'}
             </div>
             <div className="text-[10px]" style={{ color: '#94a3b8' }}>
-              {session?.user?.planName ?? 'Free Trial'}
+              {session?.user?.planName ?? 'No Plan'}
             </div>
           </div>
           <div

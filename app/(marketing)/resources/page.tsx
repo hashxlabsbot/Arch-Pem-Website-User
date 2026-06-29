@@ -1,4 +1,10 @@
 import type { Metadata } from 'next'
+import {
+  DocumentIcon, VideoIcon, DashboardIcon, DownloadIcon,
+  ReceiptIcon, CompareIcon, BellIcon, ChatIcon,
+} from '@/components/icons'
+
+const ICON = { size: 26, color: '#4f46e5' }
 
 export const metadata: Metadata = {
   title: 'Resources — ARC PEM Guides, Templates & Support',
@@ -24,14 +30,14 @@ export default function ResourcesPage() {
         </div>
         <div className="res-grid">
           {[
-            {i:'📝',t:'User Guide',d:'Complete 860-page documentation covering every feature with step-by-step screenshots.',delay:''},
-            {i:'📹',t:'Video Tutorials',d:'Step-by-step walkthroughs for BOQ creation, expense entry, and report generation.',delay:' d1'},
-            {i:'📊',t:'Case Studies',d:'How 30+ firms reduced budget overruns and streamlined accounting with ARC PEM.',delay:' d2'},
-            {i:'📥',t:'BOQ Templates',d:'Pre-built Bill of Quantities templates for residential, commercial, and MEP projects.',delay:' d3'},
-            {i:'🧾',t:'GST Guide',d:'How to set up GST categories, generate the Purchase Register, and export to Tally.',delay:''},
-            {i:'🆚',t:'ARC PEM vs. Others',d:'Side-by-side comparison with Excel, Tally, and other construction management tools.',delay:' d1'},
-            {i:'🔔',t:'Product Updates',d:'Changelog, new features, and release notes for every ARC PEM version.',delay:' d2'},
-            {i:'💬',t:'Help Centre',d:'FAQs, troubleshooting guides, and live support from the HashX Labs team.',delay:' d3'},
+            {i:<DocumentIcon {...ICON} />, t:'User Guide',d:'Complete 860-page documentation covering every feature with step-by-step screenshots.',delay:''},
+            {i:<VideoIcon {...ICON} />,    t:'Video Tutorials',d:'Step-by-step walkthroughs for BOQ creation, expense entry, and report generation.',delay:' d1'},
+            {i:<DashboardIcon {...ICON} />,t:'Case Studies',d:'How 30+ firms reduced budget overruns and streamlined accounting with ARC PEM.',delay:' d2'},
+            {i:<DownloadIcon {...ICON} />, t:'BOQ Templates',d:'Pre-built Bill of Quantities templates for residential, commercial, and MEP projects.',delay:' d3'},
+            {i:<ReceiptIcon {...ICON} />,  t:'GST Guide',d:'How to set up GST categories, generate the Purchase Register, and export to Tally.',delay:''},
+            {i:<CompareIcon {...ICON} />,  t:'ARC PEM vs. Others',d:'Side-by-side comparison with Excel, Tally, and other construction management tools.',delay:' d1'},
+            {i:<BellIcon {...ICON} />,     t:'Product Updates',d:'Changelog, new features, and release notes for every ARC PEM version.',delay:' d2'},
+            {i:<ChatIcon {...ICON} />,     t:'Help Centre',d:'FAQs, troubleshooting guides, and live support from the HashX Labs team.',delay:' d3'},
           ].map(r=>(
             <div key={r.t} className={`res-tile fade-up${r.delay}`}>
               <div className="res-tile-icon">{r.i}</div>

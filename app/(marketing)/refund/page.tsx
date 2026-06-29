@@ -14,15 +14,15 @@ export default function RefundPage() {
   return (
     <LegalPage title="Refund & Cancellation Policy" updated={UPDATED}>
       <p>
-        This policy explains how refunds and cancellations work for {company.brand} subscriptions, provided by{' '}
-        {company.legalName}. We want you to be confident in your purchase, so please read this carefully and try the
-        free trial before subscribing.
+        This policy explains how refunds and cancellations work for {company.brand} licenses, provided by{' '}
+        {company.legalName}. We want you to be confident in your purchase, so please read this carefully. We recommend
+        booking a demo before purchasing.
       </p>
 
-      <h2>1. Free trial</h2>
+      <h2>1. Try before you buy</h2>
       <p>
-        {company.brand} offers a free trial so you can evaluate the software before paying. We strongly recommend using
-        the trial to confirm the product meets your needs.
+        {company.brand} is sold as a one-year license. Before purchasing, you can book a free live demo so you can see
+        the software in action and confirm it meets your needs.
       </p>
 
       <h2>2. Refund window</h2>
@@ -43,7 +43,7 @@ export default function RefundPage() {
       ) : (
         <p>
           Because {company.brand} is a digital product delivered immediately and accessible in full upon payment, all
-          sales are <strong>final and non-refundable</strong>. Please use the free trial to evaluate the product before
+          sales are <strong>final and non-refundable</strong>. Please book a demo to evaluate the product before
           purchasing.
         </p>
       )}
@@ -63,8 +63,8 @@ export default function RefundPage() {
 
       <h2>5. Cancellation</h2>
       <p>
-        You may cancel your subscription at any time by contacting us. Cancellation stops future renewals; your plan
-        remains active for the period already paid for. {days > 0 ? 'Cancellation outside the refund window does not entitle you to a refund of the current period.' : ''}
+        You may cancel at any time by contacting us. Your license stays valid for the one-year period already paid for —
+        there is no auto-renewal, and we'll remind you before it expires so you can choose to renew. {days > 0 ? 'Cancellation outside the refund window does not entitle you to a refund of the current period.' : ''}
       </p>
 
       <h2>6. Contact</h2>

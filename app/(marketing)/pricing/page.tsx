@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { company } from '@/lib/company'
+import { annualPrice } from '@/lib/pricing'
 
 interface Plan {
   id: string
@@ -15,10 +16,6 @@ interface Plan {
   maxProjects: number
   maxUsers: number
 }
-
-// Annual billing discount. Admin sets only the monthly price; the annual price
-// is derived here so the "20% off" rule lives in one place.
-const ANNUAL_DISCOUNT = 0.2
 
 function inr(n: number) {
   return n.toLocaleString('en-IN')
@@ -38,7 +35,6 @@ export default function PricingPage() {
   const { data: session } = useSession()
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
-  const [annual, setAnnual] = useState(false)
 
   useEffect(() => {
     let active = true
@@ -67,11 +63,10 @@ export default function PricingPage() {
   }, [loading])
 
   function openSignupWithPlan(planName: string) {
-    const billing = annual ? 'annual' : 'monthly'
     if (session) {
-      router.push(`/dashboard/subscription?plan=${encodeURIComponent(planName)}&billing=${billing}`)
+      router.push(`/dashboard/subscription?plan=${encodeURIComponent(planName)}`)
     } else {
-      router.push(`/register?plan=${encodeURIComponent(planName)}&billing=${billing}`)
+      router.push(`/register?plan=${encodeURIComponent(planName)}`)
     }
   }
 
@@ -81,48 +76,7 @@ export default function PricingPage() {
         <div className="sec-hd fade-up">
           <span className="badge badge-indigo">Pricing</span>
           <h2>Simple, Transparent Pricing</h2>
-          <p>One license. One machine. No hidden fees. Cancel anytime. Updates included for 12 months. Your data stays yours — always.</p>
-        </div>
-
-        {/* Monthly / Annual toggle */}
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '14px', margin: '8px 0 40px' }}>
-          <span style={{ fontWeight: annual ? 400 : 600, color: annual ? 'var(--gray-500)' : 'var(--gray-900)' }}>
-            Monthly
-          </span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={annual}
-            aria-label="Toggle annual billing"
-            onClick={() => setAnnual((v) => !v)}
-            style={{
-              position: 'relative',
-              width: '52px',
-              height: '28px',
-              borderRadius: '999px',
-              border: 'none',
-              cursor: 'pointer',
-              background: annual ? 'var(--indigo)' : 'var(--gray-300, #cbd5e1)',
-              transition: 'background .2s',
-            }}
-          >
-            <span
-              style={{
-                position: 'absolute',
-                top: '3px',
-                left: annual ? '27px' : '3px',
-                width: '22px',
-                height: '22px',
-                borderRadius: '50%',
-                background: '#fff',
-                transition: 'left .2s',
-              }}
-            />
-          </button>
-          <span style={{ fontWeight: annual ? 600 : 400, color: annual ? 'var(--gray-900)' : 'var(--gray-500)' }}>
-            Annual
-          </span>
-          <span className="badge badge-indigo" style={{ marginLeft: '2px' }}>Save 20%</span>
+          <p>One license. One machine. Billed once a year — no hidden fees. Updates included for 12 months. Your data stays yours — always.</p>
         </div>
 
         {loading ? (
@@ -136,8 +90,7 @@ export default function PricingPage() {
             {plans.map((plan, i) => {
               const popular = plans.length === 3 && i === 1
               const features = parseFeatures(plan.features)
-              const perMonth = annual ? Math.round(plan.price * (1 - ANNUAL_DISCOUNT)) : plan.price
-              const yearlyTotal = Math.round(plan.price * 12 * (1 - ANNUAL_DISCOUNT))
+              const yearly = annualPrice(plan.price)
 
               return (
                 <div key={plan.id} className={`pricing-card fade-up${popular ? ' pop' : ''}`}>
@@ -147,11 +100,11 @@ export default function PricingPage() {
                   </div>
                   <div className="plan-price">
                     <span className="plan-cur">₹</span>
-                    <span className="plan-num">{inr(perMonth)}</span>
-                    <span className="plan-per">/month</span>
+                    <span className="plan-num">{inr(yearly)}</span>
+                    <span className="plan-per">/year</span>
                   </div>
                   <p style={{ fontSize: '.8rem', color: 'var(--gray-400)', minHeight: '18px', marginTop: '-6px' }}>
-                    {annual ? `₹${inr(yearlyTotal)} billed yearly` : ' '}
+                    ≈ ₹{inr(plan.price)}/mo · billed annually
                   </p>
                   <p className="plan-desc">{plan.description}</p>
                   <ul className="plan-feats">
@@ -175,7 +128,7 @@ export default function PricingPage() {
         )}
 
         <p style={{ textAlign: 'center', fontSize: '.84rem', color: 'var(--gray-400)', marginTop: '28px' }}>
-          All plans include a 14-day free trial · No credit card required · Cancel anytime
+          One-year license · 12 months of updates included · Secure checkout by Razorpay
         </p>
         <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--gray-400)', marginTop: '8px' }}>
           All prices are in Indian Rupees (₹).{' '}

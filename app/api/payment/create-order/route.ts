@@ -6,6 +6,7 @@ import { rateLimit } from '@/lib/rate-limit'
 import { env } from '@/lib/env'
 import { logger } from '@/lib/logger'
 import { getRazorpay } from '@/lib/payment'
+import { annualPrice } from '@/lib/pricing'
 
 export const dynamic = 'force-dynamic'
 
@@ -33,8 +34,9 @@ export async function POST(req: NextRequest) {
   if (!plan) return NextResponse.json({ error: 'Plan not found' }, { status: 404 })
   if (plan.price <= 0) return NextResponse.json({ error: 'Contact sales for this plan' }, { status: 400 })
 
+  // Sold as a one-year license: charge 12× the stored monthly base price.
   // Razorpay requires an integer amount in paise; Float * 100 can drift.
-  const amountPaise = Math.round(plan.price * 100)
+  const amountPaise = Math.round(annualPrice(plan.price) * 100)
 
   try {
     const order = await razorpay.orders.create({
@@ -42,7 +44,7 @@ export async function POST(req: NextRequest) {
       currency: 'INR',
       receipt: `rcpt_${session.user.id.slice(-8)}_${Date.now()}`,
       // Server-set binding — verify/webhook trust ONLY these, never the client.
-      notes: { userId: session.user.id, planId: plan.id, planName: plan.name },
+      notes: { userId: session.user.id, planId: plan.id, planName: plan.name, term: 'annual' },
     })
 
     return NextResponse.json({

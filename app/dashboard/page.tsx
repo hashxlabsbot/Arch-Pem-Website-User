@@ -3,6 +3,9 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { Download, CreditCard, HelpCircle, ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Calendar } from 'lucide-react'
 import OnboardingChecklist from '@/components/dashboard/OnboardingChecklist'
+import { company } from '@/lib/company'
+import { annualPrice } from '@/lib/pricing'
+import { RocketIcon, ClipboardIcon, DashboardIcon } from '@/components/icons'
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
@@ -15,7 +18,7 @@ export default async function DashboardPage() {
 
   const firstName = session.user.name?.split(' ')[0] ?? 'there'
   const initials  = session.user.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() ?? '?'
-  const planName  = user?.plan?.name ?? 'Free Trial'
+  const planName  = user?.plan?.name ?? 'No Plan'
   const memberSince = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
     : '—'
@@ -28,7 +31,7 @@ export default async function DashboardPage() {
       href: '/dashboard/downloads',
       gradient: 'linear-gradient(135deg, #3b82f6, #2563eb)',
       colorKey: 'blue',
-      badge: 'v2.0.1 available',
+      badge: `v${company.product.version} available`,
     },
     {
       icon: CreditCard,
@@ -75,10 +78,12 @@ export default async function DashboardPage() {
               </div>
               <div
                 className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1"
-                style={{ background: 'rgba(16,185,129,0.2)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.25)' }}
+                style={user?.plan
+                  ? { background: 'rgba(16,185,129,0.2)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.25)' }
+                  : { background: 'rgba(245,158,11,0.2)', color: '#fcd34d', border: '1px solid rgba(245,158,11,0.25)' }}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                Active
+                <span className={`w-1.5 h-1.5 rounded-full inline-block ${user?.plan ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                {user?.plan ? 'Active' : 'Inactive'}
               </div>
             </div>
             <h2 className="text-2xl font-black mb-1.5 tracking-tight">
@@ -87,7 +92,7 @@ export default async function DashboardPage() {
             <p className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.55)' }}>
               {user?.plan
                 ? `You're on the ${user.plan.name} plan — enjoy full access to all features.`
-                : 'You\'re on a free trial. Upgrade to unlock premium features and downloads.'}
+                : 'You don\'t have an active license yet. Purchase a plan to unlock downloads and your license key.'}
             </p>
             {!user?.plan && (
               <a
@@ -126,7 +131,7 @@ export default async function DashboardPage() {
             icon: CreditCard,
             label: 'Current Plan',
             value: planName,
-            sub: user?.plan ? `₹${user.plan.price.toLocaleString('en-IN')}/mo` : 'Free — no card needed',
+            sub: user?.plan ? `₹${annualPrice(user.plan.price).toLocaleString('en-IN')}/yr` : 'No active license',
             iconBg: 'linear-gradient(135deg, #3b82f6, #6366f1)',
             valueCls: '#1e293b',
           },
@@ -159,7 +164,7 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* ── Onboarding checklist (free trial only) ── */}
+      {/* ── Onboarding checklist (no active plan only) ── */}
       <OnboardingChecklist hasPlan={!!user?.plan} />
 
       {/* ── Quick Actions ── */}
@@ -226,21 +231,21 @@ export default async function DashboardPage() {
             <span style={{
               fontSize: '0.68rem', fontWeight: 700, color: '#6366f1',
               background: 'rgba(99,102,241,0.1)', padding: '2px 8px', borderRadius: '6px',
-            }}>v1.0.0</span>
+            }}>v{company.product.version}</span>
           </div>
           <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>June 2026</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
           {[
-            { emoji: '🚀', title: 'Initial Release', desc: 'ARC PEM is now live for Windows.' },
-            { emoji: '📐', title: 'BOQ Builder',     desc: 'Full bill of quantities with line items.' },
-            { emoji: '📊', title: 'Reports',          desc: 'Export estimates as PDF & Excel.' },
-          ].map(({ emoji, title, desc }, i) => (
+            { icon: <RocketIcon size={22} color="#6366f1" />,    title: 'Latest Release', desc: 'ARC PEM is now live for Windows.' },
+            { icon: <ClipboardIcon size={22} color="#6366f1" />, title: 'BOQ Builder',    desc: 'Full bill of quantities with line items.' },
+            { icon: <DashboardIcon size={22} color="#6366f1" />, title: 'Reports',        desc: 'Export estimates as PDF & Excel.' },
+          ].map(({ icon, title, desc }, i) => (
             <div key={title} style={{
               padding: '16px 18px',
               borderRight: i < 2 ? '1px solid #f1f5f9' : 'none',
             }}>
-              <div style={{ fontSize: '1.4rem', marginBottom: '8px' }}>{emoji}</div>
+              <div style={{ marginBottom: '8px' }}>{icon}</div>
               <div style={{ fontSize: '0.83rem', fontWeight: 700, color: '#1e293b', marginBottom: '3px' }}>{title}</div>
               <div style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.5 }}>{desc}</div>
             </div>

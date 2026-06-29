@@ -313,7 +313,7 @@ export default function RegisterPage() {
           Create your account
         </h2>
         <p style={{ fontSize: '0.82rem', color: '#94a3b8', fontWeight: 500 }}>
-          Start your 14-day free trial — no credit card needed
+          Create your account to purchase and download ARC PEM
         </p>
       </div>
 
@@ -420,7 +420,7 @@ export default function RegisterPage() {
 
         {/* Trust bullets */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', paddingTop: '4px' }}>
-          {['✓ Free 14-day trial', '✓ No credit card', '✓ Cancel anytime'].map(t => (
+          {['✓ One-year license', '✓ 12 months of updates', '✓ Secure checkout'].map(t => (
             <span key={t} style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 500 }}>{t}</span>
           ))}
         </div>

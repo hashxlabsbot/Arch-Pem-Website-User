@@ -21,6 +21,7 @@ import { db } from '@/lib/db'
 import { env } from '@/lib/env'
 import { logger } from '@/lib/logger'
 import { sendPaymentSuccessEmail } from '@/lib/email'
+import { annualPrice } from '@/lib/pricing'
 
 /** Lazily build a Razorpay client; returns null when keys are not configured. */
 export function getRazorpay(): Razorpay | null {
@@ -109,9 +110,10 @@ export async function activatePaidPlan({
 
   const plan = await db.plan.findUnique({ where: { id: planId } })
   if (!plan) return { ok: false, status: 400, error: 'Plan no longer exists.' }
-  // Cross-check the captured amount against the current plan price (paise).
-  if (Number(order.amount) !== Math.round(plan.price * 100)) {
-    logger.warn('activatePaidPlan: amount does not match plan price', { orderId, orderAmount: order.amount, planPrice: plan.price })
+  // Cross-check the captured amount against the current annual plan price (paise).
+  const yearly = annualPrice(plan.price)
+  if (Number(order.amount) !== Math.round(yearly * 100)) {
+    logger.warn('activatePaidPlan: amount does not match annual plan price', { orderId, orderAmount: order.amount, yearly })
     return { ok: false, status: 400, error: 'Paid amount does not match the plan price.' }
   }
 
@@ -133,7 +135,7 @@ export async function activatePaidPlan({
           userId,
           planId: plan.id,
           planName: plan.name,
-          amount: plan.price,
+          amount: yearly,
           utr: paymentId,
           status: 'paid',
         },
@@ -154,7 +156,7 @@ export async function activatePaidPlan({
     to: user.email,
     name: user.name ?? 'there',
     planName: plan.name,
-    amount: plan.price,
+    amount: yearly,
     paymentId,
   }).catch((err: unknown) => logger.error('payment success email failed', err))
 

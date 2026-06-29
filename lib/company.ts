@@ -11,6 +11,12 @@ export const company = {
   /** Public product/brand name. */
   brand: 'ARC PEM',
 
+  /** Desktop app release info — single source of truth for every version label. */
+  product: {
+    version: '2.0.1',
+    releaseLabel: 'Jun 2026',
+  },
+
   /** Registered legal entity that holds the Razorpay account. */
   legalName: 'HashX Labs', // TODO: full registered name, e.g. "HashX Labs Private Limited"
 
@@ -22,6 +28,7 @@ export const company = {
     state: '', // TODO
     pincode: '', // TODO
     country: 'India',
+
   },
 
   /** Prefer a support address on your own domain over a Gmail address. */
@@ -66,3 +73,10 @@ export const hasAddress = () =>
   Object.values(company.address as Record<string, string>).some(
     (v) => v && v !== 'India' && v.trim() !== '',
   )
+
+/** Phone digits only (no '+' or separators) — used to build tel:/wa.me links. */
+export const phoneDigits = company.phone.replace(/\D/g, '')
+/** `tel:` href derived from the company phone. */
+export const phoneTel = `tel:+${phoneDigits}`
+/** WhatsApp chat link derived from the company phone. */
+export const whatsappLink = `https://wa.me/${phoneDigits}`

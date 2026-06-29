@@ -15,7 +15,7 @@
 | **Founder** | Ankit Sharma |
 | **Founder's Email** | ansharma1292@gmail.com |
 | **Company Email** | hashxlabs.info@gmail.com |
-| **Phone / WhatsApp** | +91-8810233570 |
+| **Phone / WhatsApp** | +91-8810235570 |
 | **Headquarters** | India |
 
 ### About HashX Labs
@@ -174,7 +174,7 @@ The **keystone** is the central wedge-shaped stone at the crown of an arch — t
 | **Name** | Ankit Sharma |
 | **Role** | Founder, HashX Labs |
 | **Email** | ansharma1292@gmail.com |
-| **Phone / WhatsApp** | +91-8810233570 |
+| **Phone / WhatsApp** | +91-8810235570 |
 | **Company Email** | hashxlabs.info@gmail.com |
 
 ---
@@ -201,5 +201,5 @@ The **keystone** is the central wedge-shaped stone at the crown of an arch — t
 ---
 
 *Document prepared for Event Management Team — June 20, 2026 Exhibitor Submission*
-*HashX Labs | hashxlabs.info@gmail.com | +91-8810233570*
+*HashX Labs | hashxlabs.info@gmail.com | +91-8810235570*
 *Founder: Ankit Sharma | ansharma1292@gmail.com*

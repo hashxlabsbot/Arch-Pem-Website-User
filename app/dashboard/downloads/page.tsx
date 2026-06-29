@@ -71,13 +71,13 @@ export default async function DownloadsPage() {
                   ARC PEM Desktop
                 </div>
                 <div style={{ color: 'white', fontSize: '1.6rem', fontWeight: 900, lineHeight: 1.1 }}>
-                  Version 1.0.0
+                  Version {company.product.version}
                 </div>
               </div>
             </div>
 
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '6px' }}>
-              {['Windows 10 / 11', '64-bit', 'Jun 2026'].map(tag => (
+              {['Windows 10 / 11', '64-bit', company.product.releaseLabel].map(tag => (
                 <span key={tag} style={{
                   fontSize: '0.7rem', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
                   background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)',
@@ -196,7 +196,7 @@ export default async function DownloadsPage() {
                 fontSize: '0.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: '100px',
                 background: 'rgba(245,158,11,0.1)', color: '#d97706', border: '1px solid rgba(245,158,11,0.2)',
               }}>
-                Trial
+                No License
               </span>
             )}
           </div>
@@ -227,8 +227,8 @@ export default async function DownloadsPage() {
           ) : (
             <div>
               <div style={{ fontSize: '0.76rem', color: '#94a3b8', lineHeight: 1.55, marginBottom: '10px' }}>
-                Upgrade to a paid plan to receive a device-locked license key. Until then the app
-                runs in trial mode.
+                Purchase a plan to receive a device-locked license key. Until then the app
+                runs with limited access.
               </div>
               <a href="/dashboard/subscription" style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
@@ -297,7 +297,7 @@ export default async function DownloadsPage() {
         ))}
       </div>
 
-      {/* ── Free trial warning ── */}
+      {/* ── No-license notice ── */}
       {!hasActivePlan && (
         <div style={{
           display: 'flex', alignItems: 'flex-start', gap: '10px',
@@ -306,11 +306,11 @@ export default async function DownloadsPage() {
         }}>
           <AlertTriangle size={15} style={{ color: '#f59e0b', flexShrink: 0, marginTop: '1px' }} />
           <div style={{ fontSize: '0.78rem', color: '#78350f' }}>
-            <strong>Free Trial:</strong> You can download and install, but the app will run in trial mode until you enter a license key.{' '}
+            <strong>No active license:</strong> You can download and install, but you&apos;ll need a license key to unlock full access.{' '}
             <a href="/dashboard/subscription" style={{ color: '#d97706', fontWeight: 700, textDecoration: 'underline' }}>
-              Upgrade now
+              Purchase a plan
             </a>{' '}
-            to get your key instantly.
+            to receive your key.
           </div>
         </div>
       )}

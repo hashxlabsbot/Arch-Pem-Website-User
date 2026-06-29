@@ -1,4 +1,6 @@
 import LogoMark from '@/components/LogoMark'
+import { company } from '@/lib/company'
+import { ClipboardIcon, ReceiptIcon, FileIcon, CompassIcon } from '@/components/icons'
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -67,7 +69,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               borderRadius: '100px', padding: '4px 12px',
             }}>
               <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#34d399', display: 'inline-block' }} />
-              <span style={{ fontSize: '0.67rem', color: '#93c5fd', fontWeight: 600 }}>v1.0 live · Trusted by 30+ firms</span>
+              <span style={{ fontSize: '0.67rem', color: '#93c5fd', fontWeight: 600 }}>v{company.product.version} live · Trusted by 30+ firms</span>
             </div>
             <h1 style={{ fontSize: '1.85rem', fontWeight: 900, color: 'white', lineHeight: 1.18, margin: '0 0 9px', letterSpacing: '-0.04em' }}>
               India&apos;s smartest<br />
@@ -99,10 +101,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           {/* ── Feature pills ── */}
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
             {[
-              { icon: '⬡', label: 'BOQ Builder' },
-              { icon: '🧾', label: 'GST Auto-calc' },
-              { icon: '📄', label: 'PDF Export' },
-              { icon: '📐', label: 'Quantity Takeoff' },
+              { icon: <ClipboardIcon size={12} color="rgba(255,255,255,0.55)" />, label: 'BOQ Builder' },
+              { icon: <ReceiptIcon size={12} color="rgba(255,255,255,0.55)" />,   label: 'GST Auto-calc' },
+              { icon: <FileIcon size={12} color="rgba(255,255,255,0.55)" />,      label: 'PDF Export' },
+              { icon: <CompassIcon size={12} color="rgba(255,255,255,0.55)" />,   label: 'Quantity Takeoff' },
             ].map(({ icon, label }) => (
               <div key={label} style={{
                 display: 'inline-flex', alignItems: 'center', gap: '5px',
@@ -111,7 +113,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 border: '1px solid rgba(255,255,255,0.09)',
                 fontSize: '0.7rem', color: 'rgba(255,255,255,0.55)', fontWeight: 500,
               }}>
-                <span style={{ fontSize: '10px' }}>{icon}</span>
+                {icon}
                 {label}
               </div>
             ))}

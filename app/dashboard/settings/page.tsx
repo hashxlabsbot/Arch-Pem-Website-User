@@ -168,7 +168,7 @@ export default function SettingsPage() {
             padding: '2px 8px', borderRadius: '6px',
             border: '1px solid rgba(99,102,241,0.3)',
           }}>
-            {session?.user?.planName ?? 'Free Trial'}
+            {session?.user?.planName ?? 'No Plan'}
           </span>
         </div>
       </div>
@@ -316,7 +316,7 @@ export default function SettingsPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {[
             { label: 'Account Status', value: 'Active',                                   color: '#10b981' },
-            { label: 'Current Plan',   value: session?.user?.planName ?? 'Free Trial',    color: '#6366f1' },
+            { label: 'Current Plan',   value: session?.user?.planName ?? 'No Plan',    color: '#6366f1' },
             { label: 'Account ID',     value: (session?.user?.id ?? '—').slice(0, 12) + '…', color: '#64748b' },
           ].map(({ label, value, color }) => (
             <div key={label} style={{

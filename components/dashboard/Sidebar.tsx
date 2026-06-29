@@ -26,7 +26,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
   const initials = session?.user?.name
     ?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() ?? '?'
 
-  const planName = session?.user?.planName ?? 'Free Trial'
+  const planName = session?.user?.planName ?? 'No Plan'
 
   return (
     <>

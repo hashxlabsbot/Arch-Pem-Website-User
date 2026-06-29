@@ -20,7 +20,6 @@
     "razorpay": "^2.9.6",
     "react": "^18",
     "react-dom": "^18",
-    "react-qr-code": "^2.2.0",
     "tailwind-merge": "^2.1.0"
   },
   "devDependencies": {

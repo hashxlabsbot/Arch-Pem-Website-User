@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { CheckCircle2, ArrowRight, Zap, Star } from 'lucide-react'
 import UpgradeButton from '@/components/dashboard/UpgradeButton'
 import { company } from '@/lib/company'
+import { annualPrice } from '@/lib/pricing'
 
 const POPULAR_PLAN = 'Studio'
 
@@ -42,7 +43,7 @@ export default async function SubscriptionPage() {
               <div className="text-sm" style={{ color: '#64748b' }}>
                 {user.plan.price === 0
                   ? 'Custom pricing'
-                  : `₹${user.plan.price.toLocaleString('en-IN')} / ${user.plan.period}`}
+                  : `₹${annualPrice(user.plan.price).toLocaleString('en-IN')} / year`}
               </div>
               <div className="text-xs mt-1" style={{ color: '#94a3b8' }}>{user.plan.description}</div>
             </div>
@@ -58,16 +59,16 @@ export default async function SubscriptionPage() {
           <div className="flex items-center gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-2xl font-black" style={{ color: '#0f172a' }}>Free Trial</span>
+                <span className="text-2xl font-black" style={{ color: '#0f172a' }}>No Active Plan</span>
                 <span
                   className="text-xs font-bold px-2.5 py-1 rounded-full"
                   style={{ background: 'rgba(245,158,11,0.1)', color: '#d97706', border: '1px solid rgba(245,158,11,0.2)' }}
                 >
-                  14 days
+                  Inactive
                 </span>
               </div>
               <p className="text-sm" style={{ color: '#64748b' }}>
-                Upgrade below to get a license key and unlock all features.
+                Purchase a plan below to get your license key and unlock all features.
               </p>
             </div>
           </div>
@@ -139,9 +140,9 @@ export default async function SubscriptionPage() {
                   ) : (
                     <div className="flex items-end gap-1">
                       <span className="text-3xl font-black" style={{ color: '#0f172a' }}>
-                        ₹{plan.price.toLocaleString('en-IN')}
+                        ₹{annualPrice(plan.price).toLocaleString('en-IN')}
                       </span>
-                      <span className="text-xs mb-1.5" style={{ color: '#94a3b8' }}>/{plan.period}</span>
+                      <span className="text-xs mb-1.5" style={{ color: '#94a3b8' }}>/year</span>
                     </div>
                   )}
                 </div>
@@ -192,7 +193,7 @@ export default async function SubscriptionPage() {
       <p className="text-xs mt-5 text-center" style={{ color: '#cbd5e1' }}>
         Secure payments powered by Razorpay · For help email{' '}
         <a href={`mailto:${company.supportEmail}`} style={{ color: '#6366f1' }}>{company.supportEmail}</a>{' '}
-        or call <strong style={{ color: '#94a3b8' }}>+91-8810235570</strong>
+        or call <strong style={{ color: '#94a3b8' }}>{company.phone}</strong>
       </p>
     </div>
   )

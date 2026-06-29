@@ -243,7 +243,7 @@ export default function LoginPage() {
             </div>
             <div>
               <div style={{ fontSize: '0.83rem', fontWeight: 700, color: '#0f172a' }}>New to ARC PEM?</div>
-              <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Free 14-day trial · No card needed</div>
+              <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>One-year license · Secure checkout</div>
             </div>
           </div>
           <span style={{ fontSize: '0.82rem', color: '#6366f1', fontWeight: 800 }}>Create Account →</span>
