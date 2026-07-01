@@ -22,6 +22,10 @@ export default async function DashboardPage() {
   const memberSince = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
     : '—'
+  const planExpiry = user?.planExpiresAt
+    ? user.planExpiresAt.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null
+  const planExpired = !!user?.planExpiresAt && user.planExpiresAt < new Date()
 
   const quickLinks = [
     {
@@ -91,7 +95,9 @@ export default async function DashboardPage() {
             </h2>
             <p className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.55)' }}>
               {user?.plan
-                ? `You're on the ${user.plan.name} plan — enjoy full access to all features.`
+                ? planExpiry
+                  ? `You're on the ${user.plan.name} plan — ${planExpired ? `your license expired on ${planExpiry}. Renew to keep access.` : `active until ${planExpiry}.`}`
+                  : `You're on the ${user.plan.name} plan — enjoy full access to all features.`
                 : 'You don\'t have an active license yet. Purchase a plan to unlock downloads and your license key.'}
             </p>
             {!user?.plan && (
@@ -131,7 +137,11 @@ export default async function DashboardPage() {
             icon: CreditCard,
             label: 'Current Plan',
             value: planName,
-            sub: user?.plan ? `₹${annualPrice(user.plan.price).toLocaleString('en-IN')}/yr` : 'No active license',
+            sub: user?.plan
+              ? planExpiry
+                ? `${planExpired ? 'Expired' : 'Valid till'} ${planExpiry}`
+                : `₹${annualPrice(user.plan.price).toLocaleString('en-IN')}/yr`
+              : 'No active license',
             iconBg: 'linear-gradient(135deg, #3b82f6, #6366f1)',
             valueCls: '#1e293b',
           },

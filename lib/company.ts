@@ -18,7 +18,7 @@ export const company = {
   },
 
   /** Registered legal entity that holds the Razorpay account. */
-  legalName: 'HashX Labs', // TODO: full registered name, e.g. "HashX Labs Private Limited"
+  legalName: 'Hash X Labs', // TODO: full registered name, e.g. "HashX Labs Private Limited"
 
   /** Verifiable business address (Razorpay requires this publicly). */
   address: {

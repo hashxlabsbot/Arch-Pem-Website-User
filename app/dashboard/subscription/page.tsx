@@ -46,6 +46,12 @@ export default async function SubscriptionPage() {
                   : `₹${annualPrice(user.plan.price).toLocaleString('en-IN')} / year`}
               </div>
               <div className="text-xs mt-1" style={{ color: '#94a3b8' }}>{user.plan.description}</div>
+              {user.planExpiresAt && (
+                <div className="text-xs mt-2 font-semibold" style={{ color: '#475569' }}>
+                  {user.planExpiresAt < new Date() ? 'Expired on ' : 'Renews / expires on '}
+                  {user.planExpiresAt.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </div>
+              )}
             </div>
             <a
               href={`mailto:${company.supportEmail}`}

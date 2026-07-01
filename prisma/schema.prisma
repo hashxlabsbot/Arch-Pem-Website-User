@@ -30,6 +30,10 @@ model User {
   tokenVersion Int      @default(0)
   planId       String?
   plan         Plan?    @relation(fields: [planId], references: [id])
+  // End of the current one-year license term. OWNED by the admin app, which sets
+  // it on paid activation; this app only READS it (mirror field — never migrate
+  // from here). Null = no active paid license.
+  planExpiresAt DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
