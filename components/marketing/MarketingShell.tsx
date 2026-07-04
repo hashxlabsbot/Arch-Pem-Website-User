@@ -494,7 +494,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                   <div className="mf-row"><label>Full Name *</label><input type="text" placeholder=" John Doe" required value={demoForm.name} onChange={e => setDemoForm(f => ({ ...f, name: e.target.value }))} /></div>
                   <div className="mf-row"><label>WhatsApp Number *</label><input type="tel" placeholder="+91 98765 43210" required value={demoForm.whatsapp} onChange={e => setDemoForm(f => ({ ...f, whatsapp: e.target.value }))} /></div>
                 </div>
-                <div className="mf-row"><label>Firm / Company Name</label><input type="text" placeholder="Skyline Architects" value={demoForm.company} onChange={e => setDemoForm(f => ({ ...f, company: e.target.value }))} /></div>
+                <div className="mf-row"><label>Firm / Company Name</label><input type="text" placeholder="Skyline Constructions" value={demoForm.company} onChange={e => setDemoForm(f => ({ ...f, company: e.target.value }))} /></div>
                 <div className="mf-2col">
                   <div className="mf-row"><label>Your Role</label><select value={demoForm.role} onChange={e => setDemoForm(f => ({ ...f, role: e.target.value }))}><option>Principal Architect</option><option>Project Manager</option><option>Accountant / Admin</option><option>Site Engineer</option><option>Owner / Director</option></select></div>
                   <div className="mf-row"><label>Team Size</label><select value={demoForm.teamSize} onChange={e => setDemoForm(f => ({ ...f, teamSize: e.target.value }))}><option>Just me</option><option>2–5 people</option><option>6–20 people</option><option>20+ people</option></select></div>
