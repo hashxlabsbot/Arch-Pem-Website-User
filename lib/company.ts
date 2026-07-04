@@ -57,8 +57,9 @@ export const company = {
     youtube: '',  // TODO
   },
 
-  /** Used for canonical URLs, sitemap, OG tags. */
-  siteUrl: 'https://arcpem.com', // TODO: production URL
+  /** Used for canonical URLs, sitemap, OG tags. Must match the domain that
+   *  actually serves the site (arcpem.com 308-redirects here in production). */
+  siteUrl: 'https://www.arcpem.com',
 } as const
 
 /** "City, State – PIN, Country", skipping any empty parts. */
