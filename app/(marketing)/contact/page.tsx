@@ -5,6 +5,7 @@ import { company, formatAddress, hasAddress } from '@/lib/company'
 export const metadata: Metadata = {
   title: 'Contact Us',
   description: 'Get in touch with the ARC PEM team for sales, support, or billing questions.',
+  alternates: { canonical: '/contact' },
 }
 
 export default function ContactPage() {

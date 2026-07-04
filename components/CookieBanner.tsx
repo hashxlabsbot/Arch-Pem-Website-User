@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react'
 const STORAGE_KEY = 'arcpem.cookieConsent'
 
 /**
- * Minimal cookie-consent notice. We only use essential cookies (auth/session),
- * so this is an acknowledgement rather than a granular opt-in. The choice is
+ * Minimal cookie-consent notice. We use essential cookies (auth/session) plus
+ * Google Analytics for aggregate usage stats — no ad-targeting cookies — so
+ * this is an acknowledgement rather than a granular opt-in. The choice is
  * persisted in localStorage so it shows once.
  */
 export default function CookieBanner() {
@@ -42,7 +43,7 @@ export default function CookieBanner() {
       }}
     >
       <span style={{ flex: 1, minWidth: '220px' }}>
-        We use only essential cookies to keep you signed in and operate the service. See our{' '}
+        We use essential cookies to keep you signed in, plus Google Analytics to understand site usage. See our{' '}
         <a href="/privacy" style={{ color: '#93c5fd' }}>Privacy Policy</a>.
       </span>
       <button

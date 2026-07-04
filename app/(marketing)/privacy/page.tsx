@@ -5,9 +5,10 @@ import { company, formatAddress } from '@/lib/company'
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'How ARC PEM collects, uses, stores and protects your personal and business data.',
+  alternates: { canonical: '/privacy' },
 }
 
-const UPDATED = '18 June 2026'
+const UPDATED = '4 July 2026'
 
 export default function PrivacyPage() {
   const addr = formatAddress()
@@ -42,6 +43,7 @@ export default function PrivacyPage() {
         <li><strong>Razorpay</strong> — payment processing.</li>
         <li><strong>Brevo</strong> — transactional email delivery.</li>
         <li><strong>Cloud database hosting</strong> — to store account and subscription records.</li>
+        <li><strong>Google Analytics</strong> — aggregated, anonymised website usage statistics (pages visited, general location, device type) to help us understand how visitors use our site. This does not include payment or account data.</li>
       </ul>
       <p>We do not sell your personal data to anyone.</p>
 
@@ -66,8 +68,9 @@ export default function PrivacyPage() {
 
       <h2>7. Cookies</h2>
       <p>
-        We use only essential cookies required to keep you signed in and to operate the service. We do not use
-        third-party advertising cookies.
+        We use essential cookies required to keep you signed in and to operate the service, and Google Analytics
+        cookies to understand aggregate website traffic and usage. We do not use third-party advertising cookies,
+        and Analytics data is not used to serve ads.
       </p>
 
       <h2>8. Changes to this policy</h2>

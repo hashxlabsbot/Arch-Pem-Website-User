@@ -17,6 +17,8 @@ type EnvKey =
   | 'BREVO_SENDER_EMAIL'
   | 'UPSTASH_REDIS_REST_URL'
   | 'UPSTASH_REDIS_REST_TOKEN'
+  | 'NEXT_PUBLIC_GA_MEASUREMENT_ID'
+  | 'GOOGLE_SITE_VERIFICATION'
 
 const REQUIRED: EnvKey[] = ['DATABASE_URL', 'NEXTAUTH_SECRET', 'NEXTAUTH_URL']
 
@@ -54,4 +56,6 @@ export const env = {
   brevoSender: () => get('BREVO_SENDER_EMAIL') ?? 'noreply@arcpem.com',
   upstashUrl: () => get('UPSTASH_REDIS_REST_URL'),
   upstashToken: () => get('UPSTASH_REDIS_REST_TOKEN'),
+  gaMeasurementId: () => get('NEXT_PUBLIC_GA_MEASUREMENT_ID'),
+  googleSiteVerification: () => get('GOOGLE_SITE_VERIFICATION'),
 }

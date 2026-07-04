@@ -19,7 +19,8 @@ function buildCSP(nonce: string): string {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
-    "connect-src 'self' https://*.razorpay.com https://api.brevo.com",
+    // https://*.daily.co / wss://*.daily.co — Vapi's voice widget runs its WebRTC call over Daily.co.
+    "connect-src 'self' https://*.razorpay.com https://api.brevo.com https://api.vapi.ai wss://api.vapi.ai https://*.daily.co wss://*.daily.co",
     "frame-src https://*.razorpay.com https://api.razorpay.com",
     "form-action 'self'",
     "base-uri 'self'",
@@ -32,7 +33,7 @@ const STATIC_HEADERS: Record<string, string> = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options':        'SAMEORIGIN',
   'Referrer-Policy':        'strict-origin-when-cross-origin',
-  'Permissions-Policy':     'camera=(), microphone=(), geolocation=()',
+  'Permissions-Policy':     'camera=(), microphone=(self), geolocation=()',
   'X-DNS-Prefetch-Control': 'on',
   ...(isProd ? { 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload' } : {}),
 }

@@ -5,6 +5,7 @@ import { company } from '@/lib/company'
 export const metadata: Metadata = {
   title: 'Refund & Cancellation Policy',
   description: 'Our policy on refunds and cancellations for ARC PEM subscriptions.',
+  alternates: { canonical: '/refund' },
 }
 
 const UPDATED = '18 June 2026'

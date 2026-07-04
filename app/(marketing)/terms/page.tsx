@@ -5,6 +5,7 @@ import { company } from '@/lib/company'
 export const metadata: Metadata = {
   title: 'Terms & Conditions',
   description: 'The terms and conditions governing your use of ARC PEM software and services.',
+  alternates: { canonical: '/terms' },
 }
 
 const UPDATED = '18 June 2026'

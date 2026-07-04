@@ -2582,6 +2582,105 @@ section, header, div.ann-bar, .trusted, .stats-band, .footer { position: relativ
   .back-top { bottom: 80px; }
 }
 
+/* ════════════════════════════════════
+   VAPI VOICE ASSISTANT WIDGET
+════════════════════════════════════ */
+.vapi-fab {
+  position: fixed; left: 22px; bottom: 28px; z-index: 900;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--indigo), var(--indigo-d));
+  color: white; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 22px rgba(79,70,229,.4);
+  transition: transform .18s, box-shadow .18s;
+}
+.vapi-fab::before {
+  content: ''; position: absolute; inset: -6px; border-radius: 50%;
+  border: 2px solid var(--indigo-md); opacity: .6;
+  animation: vapiPulse 2.4s ease-out infinite;
+}
+.vapi-fab:hover   { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(79,70,229,.5); }
+.vapi-fab:disabled{ cursor: wait; opacity: .8; }
+.vapi-fab.active  { background: var(--navy); }
+.vapi-fab.active::before { display: none; }
+.vapi-fab-stop { width: 15px; height: 15px; border-radius: 3px; background: white; display: block; }
+
+@keyframes vapiPulse {
+  0%   { transform: scale(0.9); opacity: .6; }
+  70%  { transform: scale(1.35); opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.vapi-panel {
+  position: fixed; left: 22px; bottom: 96px; z-index: 900;
+  width: 340px; max-width: calc(100vw - 44px);
+  background: var(--white); border-radius: var(--r-xl);
+  box-shadow: var(--sh-xl); border: 1px solid var(--gray-100);
+  display: flex; flex-direction: column; overflow: hidden;
+  animation: vapiPanelIn .22s ease-out;
+}
+@keyframes vapiPanelIn {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.vapi-panel-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 14px; background: var(--navy); color: white;
+}
+.vapi-orb {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--indigo), var(--indigo-d));
+  display: flex; align-items: center; justify-content: center;
+  transition: box-shadow .15s;
+}
+.vapi-orb.speaking { box-shadow: 0 0 0 6px rgba(99,102,241,.35); }
+.vapi-panel-head-text { flex: 1; min-width: 0; }
+.vapi-panel-title  { font-size: .85rem; font-weight: 700; }
+.vapi-panel-status { font-size: .72rem; color: rgba(255,255,255,.6); }
+.vapi-panel-close {
+  background: none; border: none; color: rgba(255,255,255,.7); cursor: pointer;
+  font-size: .85rem; padding: 4px 6px; line-height: 1; flex-shrink: 0;
+}
+.vapi-panel-close:hover { color: white; }
+
+.vapi-transcript {
+  flex: 1; min-height: 120px; max-height: 280px; overflow-y: auto;
+  padding: 14px; display: flex; flex-direction: column; gap: 8px;
+}
+.vapi-transcript-hint { font-size: .78rem; color: var(--gray-400); line-height: 1.5; }
+.vapi-line {
+  font-size: .8rem; line-height: 1.5; padding: 8px 11px; border-radius: 12px;
+  max-width: 88%;
+}
+.vapi-line-assistant { align-self: flex-start; background: var(--gray-100); color: var(--navy); }
+.vapi-line-user      { align-self: flex-end; background: var(--indigo-lt); color: var(--indigo-d); }
+
+.vapi-panel-actions {
+  display: flex; gap: 8px; padding: 10px 14px 14px; border-top: 1px solid var(--gray-100);
+}
+.vapi-mute-btn, .vapi-end-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: .78rem; font-weight: 700; padding: 9px 10px; border-radius: 100px;
+  border: 1.5px solid var(--gray-200); background: white; color: var(--navy);
+  cursor: pointer; transition: border-color .15s, color .15s;
+}
+.vapi-mute-btn:hover { border-color: var(--indigo); color: var(--indigo); }
+.vapi-end-btn        { background: var(--red); border-color: var(--red); color: white; }
+.vapi-end-btn:hover   { background: #dc2626; border-color: #dc2626; }
+
+.vapi-error-toast {
+  position: fixed; left: 22px; bottom: 96px; z-index: 900;
+  max-width: 280px; background: var(--navy); color: white;
+  font-size: .78rem; line-height: 1.5; padding: 10px 14px; border-radius: var(--r);
+  box-shadow: var(--sh-lg);
+}
+
+@media (max-width: 768px) {
+  .vapi-fab   { left: 16px; bottom: 84px; }
+  .vapi-panel, .vapi-error-toast { left: 16px; bottom: 148px; width: calc(100vw - 32px); }
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    PREMIUM PHOTOGRAPHY
    Industry showcase gallery, image hero bands & feature photo accents.

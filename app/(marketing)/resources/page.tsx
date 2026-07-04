@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import {
   DocumentIcon, VideoIcon, DashboardIcon, DownloadIcon,
   ReceiptIcon, CompareIcon, BellIcon, ChatIcon,
@@ -9,6 +10,7 @@ const ICON = { size: 26, color: '#4f46e5' }
 export const metadata: Metadata = {
   title: 'Resources — ARC PEM Guides, Templates & Support',
   description: 'User guides, video tutorials, BOQ templates, GST export guides, and the help centre — everything you need to get the most out of ARC PEM.',
+  alternates: { canonical: '/resources' },
 }
 
 export default function ResourcesPage() {
@@ -16,7 +18,7 @@ export default function ResourcesPage() {
     <section className="section" id="about" style={{ paddingTop: '120px' }}>
       <div className="container">
         <div className="img-hero fade-up">
-          <img src="/images/blueprint-plans.jpg" alt="Architect working on construction blueprints" loading="lazy" />
+          <Image src="/images/blueprint-plans.jpg" alt="Architect working on construction blueprints" fill priority sizes="100vw" />
           <div className="img-hero-inner">
             <span className="badge badge-indigo">Resources</span>
             <h1>Everything you need to master ARC PEM</h1>

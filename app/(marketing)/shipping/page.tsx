@@ -5,6 +5,7 @@ import { company } from '@/lib/company'
 export const metadata: Metadata = {
   title: 'Shipping & Delivery Policy',
   description: 'How ARC PEM, a digital software product, is delivered to customers.',
+  alternates: { canonical: '/shipping' },
 }
 
 const UPDATED = '18 June 2026'

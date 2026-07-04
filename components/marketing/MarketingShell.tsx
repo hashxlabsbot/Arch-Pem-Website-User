@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import LogoMark from '@/components/LogoMark'
+import VapiAssistant from './VapiAssistant'
 import { DemoModalContext } from './DemoModalContext'
 import { company, phoneTel } from '@/lib/company'
 import {
@@ -525,6 +526,8 @@ export default function MarketingShell({ children }: { children: React.ReactNode
 
       {/* Outside click closes user dropdown */}
       {userDropOpen && <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => setUserDropOpen(false)} />}
+
+      <VapiAssistant />
 
       {/* ── Back to top ── */}
       <button

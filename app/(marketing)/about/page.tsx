@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'About Us — ARC PEM Customer Success Stories',
   description: 'See how architecture studios and construction firms across India use ARC PEM to reduce costs, speed up accounting, and take control of project finances.',
+  alternates: { canonical: '/about' },
 }
 
 export default function AboutPage() {
@@ -10,7 +12,7 @@ export default function AboutPage() {
     <section className="section bg-gray" id="testimonials" style={{ paddingTop: '120px' }}>
       <div className="container">
         <div className="img-hero fade-up">
-          <img src="/images/management-team.jpg" alt="Construction and architecture team reviewing a project" loading="lazy" />
+          <Image src="/images/management-team.jpg" alt="Construction and architecture team reviewing a project" fill priority sizes="100vw" />
           <div className="img-hero-inner">
             <span className="badge badge-indigo">About ARC PEM</span>
             <h1>Software built alongside India&apos;s builders</h1>

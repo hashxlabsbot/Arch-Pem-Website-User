@@ -377,3 +377,30 @@ export function CompareIcon(p: P) {
     </S>
   )
 }
+
+/** Microphone — Voice assistant */
+export function MicIcon(p: P) {
+  return (
+    <S {...p}>
+      <rect x="9" y="2" width="6" height="12" rx="3" />
+      <path d="M5 10v1a7 7 0 0 0 14 0v-1" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+      <line x1="8" y1="22" x2="16" y2="22" />
+    </S>
+  )
+}
+
+/** Microphone with slash — Muted state */
+export function MicOffIcon(p: P) {
+  return (
+    <S {...p}>
+      <line x1="2" y1="2" x2="22" y2="22" />
+      <path d="M9 9v3a3 3 0 0 0 4.24 2.73" />
+      <path d="M15 8.34V5a3 3 0 0 0-5.94-.6" />
+      <path d="M5 10v1a7 7 0 0 0 10.34 6.13" />
+      <path d="M19 10v1a7 7 0 0 1-.11 1.23" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+      <line x1="8" y1="22" x2="16" y2="22" />
+    </S>
+  )
+}
