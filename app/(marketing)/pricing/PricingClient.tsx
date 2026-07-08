@@ -652,7 +652,7 @@ export default function PricingClient() {
           </p>
 
           <motion.a
-            href="mailto:ansharma1292@gmail.com"
+            href={`mailto:${company.salesEmail}`}
             initial="rest"
             whileHover="hover"
             whileTap={{ scale: 0.97 }}

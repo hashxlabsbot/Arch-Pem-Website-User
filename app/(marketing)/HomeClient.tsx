@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useDemoModal } from '@/components/marketing/DemoModalContext'
+import Comparison3D from '@/components/marketing/Comparison3D'
 import {
   DashboardIcon, FolderIcon, WalletIcon, ClockIcon, ReceiptIcon,
   DocumentIcon, UsersIcon, SettingsIcon, BuildingIcon, LockIcon,
@@ -461,61 +462,7 @@ export default function HomeClient() {
             <h2>One Platform Replaces Them All</h2>
             <p>Stop managing your construction projects across disconnected Excel sheets, Tally entries, and WhatsApp threads. ARC PEM unifies everything — out of the box.</p>
           </div>
-          <div className="cmp-flex">
-            <div className="cmp-col fade-up">
-              <div className="cmp-before">
-                <svg className="cmp-svg" viewBox="0 0 340 340" fill="none">
-                  <circle cx="170" cy="170" r="50" stroke="rgba(255,255,255,0.04)" strokeWidth="1"/>
-                  <circle cx="170" cy="170" r="100" stroke="rgba(255,255,255,0.04)" strokeWidth="1"/>
-                  <circle cx="170" cy="170" r="148" stroke="rgba(255,255,255,0.04)" strokeWidth="1"/>
-                  <line x1="170" y1="170" x2="170" y2="60" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" strokeDasharray="4 3"/>
-                  <line x1="170" y1="170" x2="60" y2="170" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" strokeDasharray="4 3"/>
-                  <line x1="170" y1="170" x2="280" y2="170" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" strokeDasharray="4 3"/>
-                  <line x1="170" y1="170" x2="170" y2="280" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" strokeDasharray="4 3"/>
-                  <circle cx="170" cy="170" r="5" fill="rgba(255,255,255,0.2)"/>
-                </svg>
-                {cmpNodes.map(n=>(
-                  <div key={n.cls} className={`cmp-node ${n.cls}`}><div className="cmp-node-ring"><div className="cmp-node-circle">{n.ico}</div></div><span>{n.lbl.split('\n').map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</span></div>
-                ))}
-                <div className="tool-chip tc-1"><span className="tc-dot" style={{ background: '#1D6F42' }} />Excel</div>
-                <div className="tool-chip tc-2">Tally</div>
-                <div className="tool-chip tc-3" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><PhoneIcon size={11} color="currentColor" /> WhatsApp</div>
-                <div className="tool-chip tc-4" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><FileIcon size={11} color="currentColor" /> Paper Bills</div>
-                <div className="tool-chip tc-5" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><ClipboardIcon size={11} color="currentColor" /> Registers</div>
-                <div className="tool-chip tc-6" style={{ color: '#e24c4b', display: 'flex', alignItems: 'center', gap: '4px' }}><FolderIcon size={11} color="#e24c4b" /> PDF Files</div>
-              </div>
-              <div className="cmp-label-block"><h3>Different Software for every use case</h3><p>NEVER ENDING SPREADSHEET CHAOS</p></div>
-            </div>
-            <div className="cmp-arrow fade-up">
-              <div className="cmp-chevrons">
-                <svg width="64" height="44" viewBox="0 0 64 44" fill="none">
-                  <path d="M2 4 L22 22 L2 40" stroke="rgba(255,255,255,0.22)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M20 4 L40 22 L20 40" stroke="rgba(255,255,255,0.40)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M38 4 L58 22 L38 40" stroke="rgba(255,255,255,0.65)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-            </div>
-            <div className="cmp-col fade-up">
-              <div className="cmp-after">
-                <div className="cmp-outer-ring">
-                  <svg className="cmp-ring-text" viewBox="0 0 360 360" aria-hidden="true">
-                    <defs>
-                      <path id="cmpRingPath" d="M180,180 m-169,0 a169,169 0 1,1 338,0 a169,169 0 1,1 -338,0" />
-                    </defs>
-                    <text textAnchor="middle">
-                      <textPath href="#cmpRingPath" startOffset="25%">SMART EXPENSE MANAGEMENT</textPath>
-                    </text>
-                  </svg>
-                </div>
-                <div className="cmp-glow" />
-                {cmpPetals.map(p=>(
-                  <div key={p.cls} className={`cmp-petal ${p.cls}`}><div className="cp-icon">{p.ico}</div><div className="cp-text">{p.lbl.split('\n').map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div></div>
-                ))}
-                <div className="cmp-center"><div className="cmp-center-icon"><BoltIcon size={26} color="white" /></div><div className="cmp-center-name">Arch<br/>PEM</div></div>
-              </div>
-              <div className="cmp-label-block"><h3>Everything on ARC PEM</h3><p>ALL SET IN UNDER 15 MINUTES</p></div>
-            </div>
-          </div>
+          <Comparison3D />
         </div>
       </section>
 
