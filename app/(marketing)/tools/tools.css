@@ -379,6 +379,88 @@ a.tool-card:hover {
 .tool-card.soon { opacity: 0.68; }
 .tool-card.soon .tool-card-icon { background: var(--gray-100); }
 
+/* ── Share link button ── */
+.share-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 100px;
+  background: #fff;
+  color: var(--gray-600);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.share-link-btn:hover { border-color: var(--indigo-md); color: var(--indigo); background: var(--indigo-lt); }
+
+/* ── Cost breakdown donut chart ── */
+.pie-wrap {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+.pie-chart {
+  position: relative;
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.25s;
+}
+.pie-hole {
+  position: absolute;
+  inset: 20px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--gray-100);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px;
+}
+.pie-hole-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.pie-hole-value {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 0.86rem;
+  color: var(--navy);
+  margin-top: 3px;
+  line-height: 1.2;
+}
+.pie-legend { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 220px; }
+.pie-legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.84rem; }
+.pie-dot { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
+.pie-legend-label { color: var(--gray-700); flex: 1; }
+.pie-legend-pct {
+  font-weight: 800;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+  width: 38px;
+  text-align: right;
+}
+.pie-legend-amt {
+  font-size: 0.78rem;
+  color: var(--gray-400);
+  font-variant-numeric: tabular-nums;
+  width: 78px;
+  text-align: right;
+}
+
 /* ── Invoice preview sheet ── */
 .inv-sheet {
   background: #fff;

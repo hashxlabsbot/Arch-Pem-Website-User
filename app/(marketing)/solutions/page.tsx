@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import SolutionsClient from './SolutionsClient'
 
-const TITLE = 'Solutions'
+const TITLE = 'BOQ, GST & Contractor Ledger Software for Architects & Builders'
 const DESCRIPTION =
-  'Explore ARC PEM features: BOQ & budget management, vendor and labour expense tracking, GST purchase registers, Tally exports, and multi-user security — built for Indian construction firms.'
+  'ARC PEM solutions: BOQ & budget software, vendor bill and labour expense tracking, GST purchase registers, contractor ledger management, and Tally exports — built for Indian architecture and construction firms, fully offline.'
 
 export const metadata: Metadata = {
   title: TITLE,

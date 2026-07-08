@@ -25,15 +25,15 @@ export default function SolutionsClient() {
           <div className="img-hero fade-up">
             <Image src="/images/construction-crane.jpg" alt="Construction site managed with ARC PEM" fill priority sizes="100vw" />
             <div className="img-hero-inner">
-              <span className="badge badge-indigo">Solutions</span>
-              <h1>One platform for every financial workflow on site</h1>
-              <p>BOQ and budgets, vendor and labour expenses, GST and Tally exports, multi-user security — built for Indian architecture and construction firms, fully offline.</p>
+              <span className="badge badge-indigo">Architecture &amp; Construction Software</span>
+              <h1>Construction &amp; Architecture Software for Every Financial Workflow</h1>
+              <p>BOQ and budgets, vendor and labour expenses, GST and Tally exports, multi-user security — built for Indian architecture firms, contractors, and builders, fully offline.</p>
             </div>
           </div>
           <div className="sec-hd fade-up">
             <span className="badge badge-indigo">All Your Construction Management</span>
             <h2>Everything Your Firm Needs, Out of the Box</h2>
-            <p>From the first sketch budget to the final handover report — ARC PEM covers every financial workflow your team needs, without spreadsheets or an internet connection.</p>
+            <p>From the first sketch budget to the final handover report — ARC PEM covers every financial workflow your architecture or construction team needs, without spreadsheets or an internet connection.</p>
           </div>
           <div className="sol-grid">
             {[

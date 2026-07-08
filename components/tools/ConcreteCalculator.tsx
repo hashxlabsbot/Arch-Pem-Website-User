@@ -1,6 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import ShareButton from './ShareButton'
 
 /** Nominal mix proportions — cement : sand : aggregate. */
 const GRADES = {
@@ -20,11 +22,38 @@ const SAND_T_PER_M3 = 1.6        // dry river sand bulk density
 const AGG_T_PER_M3 = 1.45        // 20 mm coarse aggregate bulk density
 
 export default function ConcreteCalculator() {
-  const [shape, setShape] = useState<'rect' | 'round'>('rect')
-  const [unit, setUnit] = useState<'m' | 'ft'>('ft')
-  const [dims, setDims] = useState({ length: '10', width: '10', depth: '0.5', dia: '1.25', height: '10' })
-  const [count, setCount] = useState('1')
-  const [grade, setGrade] = useState<GradeKey>('M20')
+  const params = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const [shape, setShape] = useState<'rect' | 'round'>(() => (params.get('shape') === 'round' ? 'round' : 'rect'))
+  const [unit, setUnit] = useState<'m' | 'ft'>(() => (params.get('unit') === 'm' ? 'm' : 'ft'))
+  const [dims, setDims] = useState(() => ({
+    length: params.get('length') ?? '10',
+    width: params.get('width') ?? '10',
+    depth: params.get('depth') ?? '0.5',
+    dia: params.get('dia') ?? '1.25',
+    height: params.get('height') ?? '10',
+  }))
+  const [count, setCount] = useState(() => params.get('count') ?? '1')
+  const [grade, setGrade] = useState<GradeKey>(() => {
+    const g = params.get('grade')
+    return g && g in GRADES ? (g as GradeKey) : 'M20'
+  })
+
+  // Debounced URL sync — lets a contractor share a link that reproduces this exact calculation.
+  const syncTimer = useRef<ReturnType<typeof setTimeout>>()
+  useEffect(() => {
+    if (syncTimer.current) clearTimeout(syncTimer.current)
+    syncTimer.current = setTimeout(() => {
+      const qs = new URLSearchParams({
+        shape, unit, length: dims.length, width: dims.width, depth: dims.depth,
+        dia: dims.dia, height: dims.height, count, grade,
+      })
+      router.replace(`${pathname}?${qs.toString()}`, { scroll: false })
+    }, 350)
+    return () => { if (syncTimer.current) clearTimeout(syncTimer.current) }
+  }, [shape, unit, dims, count, grade, router, pathname])
 
   const r = useMemo(() => {
     const n = (v: string) => parseFloat(v) || 0
@@ -160,6 +189,10 @@ export default function ConcreteCalculator() {
               <div className="tr-tile-num">{has ? `${f(r.waterL, 0)} L` : '—'}</div>
               <div className="tr-tile-sub">at w/c ratio ≈ 0.5</div>
             </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+            <ShareButton />
           </div>
 
           <p className="tool-disclaimer">

@@ -1,6 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import ShareButton from './ShareButton'
 
 /** 2026 pan-India base rates (₹ per sq ft of built-up area, structure + finishing). */
 const QUALITY = {
@@ -16,13 +18,13 @@ const LOCATION = {
   tier3: { label: 'Tier-3 city / town / rural', mult: 0.88 },
 } as const
 
-/** Typical share of total cost for an Indian residential build. */
-const BREAKDOWN: Array<[string, number]> = [
-  ['Structure & masonry (RCC, walls, plaster)', 0.42],
-  ['Finishing (flooring, tiles, paint, kitchen)', 0.28],
-  ['Electrical & plumbing', 0.14],
-  ['Doors & windows', 0.09],
-  ['Site work & miscellaneous', 0.07],
+/** Typical share of total cost for an Indian residential build, paired with a chart colour. */
+const BREAKDOWN: Array<[string, number, string]> = [
+  ['Structure & masonry (RCC, walls, plaster)', 0.42, '#4f46e5'],
+  ['Finishing (flooring, tiles, paint, kitchen)', 0.28, '#0ea5e9'],
+  ['Electrical & plumbing', 0.14, '#10b981'],
+  ['Doors & windows', 0.09, '#f59e0b'],
+  ['Site work & miscellaneous', 0.07, '#8b5cf6'],
 ]
 
 /** Widely used thumb rules — quantity per sq ft of built-up area (RCC framed). */
@@ -48,11 +50,35 @@ function fmtMoney(n: number): string {
 }
 
 export default function CostCalculator() {
-  const [area, setArea] = useState('1000')
-  const [unit, setUnit] = useState<'sqft' | 'sqm'>('sqft')
-  const [floors, setFloors] = useState(1)
-  const [quality, setQuality] = useState<QualityKey>('standard')
-  const [location, setLocation] = useState<LocationKey>('tier2')
+  const params = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const [area, setArea] = useState(() => params.get('area') ?? '1000')
+  const [unit, setUnit] = useState<'sqft' | 'sqm'>(() => (params.get('unit') === 'sqm' ? 'sqm' : 'sqft'))
+  const [floors, setFloors] = useState(() => {
+    const f = Number(params.get('floors'))
+    return f >= 1 && f <= 5 ? f : 1
+  })
+  const [quality, setQuality] = useState<QualityKey>(() => {
+    const q = params.get('quality')
+    return q && q in QUALITY ? (q as QualityKey) : 'standard'
+  })
+  const [location, setLocation] = useState<LocationKey>(() => {
+    const l = params.get('location')
+    return l && l in LOCATION ? (l as LocationKey) : 'tier2'
+  })
+
+  // Debounced URL sync — lets a contractor share a link that reproduces this exact estimate.
+  const syncTimer = useRef<ReturnType<typeof setTimeout>>()
+  useEffect(() => {
+    if (syncTimer.current) clearTimeout(syncTimer.current)
+    syncTimer.current = setTimeout(() => {
+      const qs = new URLSearchParams({ area, unit, floors: String(floors), quality, location })
+      router.replace(`${pathname}?${qs.toString()}`, { scroll: false })
+    }, 350)
+    return () => { if (syncTimer.current) clearTimeout(syncTimer.current) }
+  }, [area, unit, floors, quality, location, router, pathname])
 
   const r = useMemo(() => {
     const perFloor = (parseFloat(area) || 0) * (unit === 'sqm' ? 10.764 : 1)
@@ -63,6 +89,16 @@ export default function CostCalculator() {
   }, [area, unit, floors, quality, location])
 
   const hasInput = r.totalSqft > 0
+
+  const pieGradient = useMemo(() => {
+    let acc = 0
+    const stops = BREAKDOWN.map(([, share, color]) => {
+      const from = acc * 100
+      acc += share
+      return `${color} ${from}% ${acc * 100}%`
+    })
+    return `conic-gradient(${stops.join(', ')})`
+  }, [])
 
   return (
     <div className="tool-panel fade-up in">
@@ -147,25 +183,27 @@ export default function CostCalculator() {
             </div>
           </div>
 
-          <div className="tool-table-wrap">
-            <table className="tool-table">
-              <thead>
-                <tr>
-                  <th>Cost Head</th>
-                  <th className="num">Share</th>
-                  <th className="num">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {BREAKDOWN.map(([head, share]) => (
-                  <tr key={head}>
-                    <td>{head}</td>
-                    <td className="num">{Math.round(share * 100)}%</td>
-                    <td className="num">{hasInput ? fmtMoney(r.cost * share) : '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="pie-wrap">
+            <div className="pie-chart" style={{ background: pieGradient }}>
+              <div className="pie-hole">
+                <div className="pie-hole-label">Cost Split</div>
+                <div className="pie-hole-value">{hasInput ? fmtMoney(r.cost) : '—'}</div>
+              </div>
+            </div>
+            <div className="pie-legend">
+              {BREAKDOWN.map(([head, share, color]) => (
+                <div className="pie-legend-item" key={head}>
+                  <span className="pie-dot" style={{ background: color }} />
+                  <span className="pie-legend-label">{head}</span>
+                  <span className="pie-legend-pct">{Math.round(share * 100)}%</span>
+                  <span className="pie-legend-amt">{hasInput ? fmtMoney(r.cost * share) : '—'}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+            <ShareButton />
           </div>
 
           <div className="tool-table-wrap">

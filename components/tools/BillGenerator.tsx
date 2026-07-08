@@ -213,7 +213,7 @@ export default function BillGenerator() {
       </div>
 
       <div className="inv-brand">
-        Generated free at arcpem.com/tools · ARC PEM — project expense management for construction firms
+        Generated using ARC PEM Free Tools (arcpem.com/tools) — offline billing &amp; ledger software for builders
       </div>
     </div>
   )
