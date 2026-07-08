@@ -25,12 +25,14 @@ const REQUIRED: EnvKey[] = ['DATABASE_URL', 'NEXTAUTH_SECRET', 'NEXTAUTH_URL']
 
 export const isProd = process.env.NODE_ENV === 'production'
 
-const missing = REQUIRED.filter((k) => !process.env[k] || process.env[k]!.trim() === '')
-if (missing.length > 0) {
-  const msg = `[env] Missing required environment variables: ${missing.join(', ')}`
-  if (isProd) throw new Error(msg)
-  // eslint-disable-next-line no-console
-  console.warn(`${msg} (continuing in non-production)`)
+if (typeof window === 'undefined') {
+  const missing = REQUIRED.filter((k) => !process.env[k] || process.env[k]!.trim() === '')
+  if (missing.length > 0) {
+    const msg = `[env] Missing required environment variables: ${missing.join(', ')}`
+    if (isProd) throw new Error(msg)
+    // eslint-disable-next-line no-console
+    console.warn(`${msg} (continuing in non-production)`)
+  }
 }
 
 function get(key: EnvKey): string | undefined {
