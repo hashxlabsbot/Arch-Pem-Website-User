@@ -10,7 +10,7 @@ import { DemoModalContext } from './DemoModalContext'
 import { company, phoneTel } from '@/lib/company'
 import {
   ClipboardIcon, WalletIcon, BoltIcon, DocumentIcon, VideoIcon,
-  DashboardIcon, DownloadIcon, ReceiptIcon, ChatIcon,
+  DashboardIcon, DownloadIcon, ReceiptIcon, ChatIcon, CalculatorIcon,
 } from '@/components/icons'
 
 // Demo time slots the customer can request (IST, Mon–Sat).
@@ -211,10 +211,12 @@ export default function MarketingShell({ children }: { children: React.ReactNode
               </div>
             </div>
             <Link href="/pricing" className="nav-link">Pricing</Link>
+            <Link href="/tools" className="nav-link">Free Tools</Link>
             <Link href="/about" className="nav-link">About Us</Link>
             <div className="nav-item">
               <button className="nav-link">Resources <span className="nav-chevron">▼</span></button>
               <div className="dropdown dropdown-wide">
+                <Link href="/tools" className="dd-item"><div className="dd-icon amb"><CalculatorIcon size={18} color="#f59e0b" /></div><div><div className="dd-title">Free Tools &amp; Calculators</div><div className="dd-sub">GST bills, cost &amp; concrete calculators</div></div></Link>
                 <Link href="/resources" className="dd-item"><div className="dd-icon ind"><DocumentIcon size={18} color="#4f46e5" /></div><div><div className="dd-title">User Guide</div><div className="dd-sub">Full documentation</div></div></Link>
                 <Link href="/resources" className="dd-item"><div className="dd-icon sky"><VideoIcon size={18} color="#0ea5e9" /></div><div><div className="dd-title">Video Tutorials</div><div className="dd-sub">Step-by-step walkthroughs</div></div></Link>
                 <Link href="/about" className="dd-item"><div className="dd-icon grn"><DashboardIcon size={18} color="#10b981" /></div><div><div className="dd-title">Case Studies</div><div className="dd-sub">Customer success stories</div></div></Link>
@@ -276,6 +278,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
           <Link href="/solutions#power-feat" className="mob-link">Power Features</Link>
         </div>
         <Link href="/pricing" className="mob-link">Pricing</Link>
+        <Link href="/tools" className="mob-link">Free Tools</Link>
         <Link href="/about" className="mob-link">About Us</Link>
         <Link href="/resources" className="mob-link">Resources</Link>
         <div className="mob-actions">
@@ -445,6 +448,13 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                 <Link href="/pricing" className="fv2-link">Pricing</Link>
                 <Link href="/resources" className="fv2-link">Help Centre</Link>
                 <Link href="/dashboard/downloads" className="fv2-link">Download App</Link>
+              </div>
+              <div className="fv2-col">
+                <h4 className="fv2-col-title">Free Tools</h4>
+                <Link href="/tools/contractor-bill-generator" className="fv2-link">GST Bill Generator</Link>
+                <Link href="/tools/construction-cost-calculator" className="fv2-link">Construction Cost Calculator</Link>
+                <Link href="/tools/concrete-calculator" className="fv2-link">Concrete Calculator</Link>
+                <Link href="/tools" className="fv2-link">All Free Tools</Link>
               </div>
               <div className="fv2-col">
                 <h4 className="fv2-col-title">Resources</h4>

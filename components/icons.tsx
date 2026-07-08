@@ -404,3 +404,82 @@ export function MicOffIcon(p: P) {
     </S>
   )
 }
+
+/** Calculator — Free tools, cost calculator */
+export function CalculatorIcon(p: P) {
+  return (
+    <S {...p}>
+      <rect x="4" y="2" width="16" height="20" rx="2" />
+      <line x1="8" y1="6.5" x2="16" y2="6.5" />
+      <circle cx="8.5" cy="11" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="11" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="11" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="8.5" cy="14.5" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="14.5" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="8.5" cy="18" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="18" r="0.9" fill="currentColor" stroke="none" />
+      <line x1="15.5" y1="14.5" x2="15.5" y2="18" strokeWidth="2" />
+    </S>
+  )
+}
+
+/** Rupee symbol — Bill generator, money tools */
+export function RupeeIcon(p: P) {
+  return (
+    <S {...p}>
+      <path d="M6 3h12" />
+      <path d="M6 8h12" />
+      <path d="M6 13l8.5 8" />
+      <path d="M6 13h3" />
+      <path d="M9 13c6.667 0 6.667-10 0-10" />
+    </S>
+  )
+}
+
+/** 3D cube — Concrete / volume calculator */
+export function CubeIcon(p: P) {
+  return (
+    <S {...p}>
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+      <line x1="12" y1="22.08" x2="12" y2="12" />
+    </S>
+  )
+}
+
+/** Brick wall — Brick calculator */
+export function BricksIcon(p: P) {
+  return (
+    <S {...p}>
+      <rect x="3" y="5" width="18" height="14" rx="1" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="12" y1="5" x2="12" y2="12" />
+      <line x1="7.5" y1="12" x2="7.5" y2="19" />
+      <line x1="16.5" y1="12" x2="16.5" y2="19" />
+    </S>
+  )
+}
+
+/** TMT bar bundle (cross-section) — Steel weight calculator */
+export function SteelIcon(p: P) {
+  return (
+    <S {...p}>
+      <circle cx="8.5" cy="8.5" r="3.4" />
+      <circle cx="15.5" cy="8.5" r="3.4" />
+      <circle cx="12" cy="15.5" r="3.4" />
+    </S>
+  )
+}
+
+/** Diagonal ruler — Area / unit converter */
+export function RulerIcon(p: P) {
+  return (
+    <S {...p}>
+      <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0Z" />
+      <path d="m14.5 12.5 2-2" />
+      <path d="m11.5 9.5 2-2" />
+      <path d="m8.5 6.5 2-2" />
+      <path d="m17.5 15.5 2-2" />
+    </S>
+  )
+}

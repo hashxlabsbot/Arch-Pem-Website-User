@@ -1,0 +1,533 @@
+/* ═══════════════════════════════════════════════════════════════
+   Free Tools (/tools) — calculators, bill generator, tool pages
+   Reuses the landing.css design tokens (:root variables).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Page hero ── */
+.tool-hero {
+  padding: 132px 0 0;
+  text-align: center;
+  max-width: 840px;
+  margin: 0 auto;
+}
+.tool-hero .badge { margin-bottom: 16px; }
+.tool-hero h1 {
+  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.tool-hero p {
+  font-size: 1.02rem;
+  color: var(--gray-500);
+  line-height: 1.8;
+}
+.tool-crumb {
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.tool-crumb a { color: var(--indigo); }
+.tool-crumb a:hover { text-decoration: underline; }
+
+/* ── Calculator panel ── */
+.tool-wrap { max-width: 1160px; margin: 40px auto 0; }
+.tool-panel {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: 20px;
+  box-shadow: 0 12px 44px rgba(15, 23, 42, 0.07);
+  padding: 30px;
+}
+.tool-grid2 {
+  display: grid;
+  grid-template-columns: 430px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+/* ── Tool form (standalone twin of the modal .mf-row styles) ── */
+.tf { display: flex; flex-direction: column; gap: 13px; }
+.tf-row { display: flex; flex-direction: column; gap: 5px; }
+.tf-row label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--gray-600);
+  letter-spacing: 0.04em;
+}
+.tf-row input,
+.tf-row select,
+.tf-row textarea {
+  padding: 11px 14px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  color: var(--navy);
+  background: rgba(255, 255, 255, 0.8);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+.tf-row textarea { resize: vertical; }
+.tf-row input:focus,
+.tf-row select:focus,
+.tf-row textarea:focus {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+.tf-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tf-sec-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-top: 1px solid var(--gray-100);
+  padding-top: 16px;
+  margin-top: 6px;
+}
+.tf-sec-title.first { border-top: none; padding-top: 0; margin-top: 0; }
+.tf-note { font-size: 0.73rem; color: var(--gray-400); line-height: 1.6; }
+
+/* Work-item rows (bill generator) */
+.item-row {
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--gray-50);
+}
+.item-row input,
+.item-row select {
+  padding: 9px 11px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.83rem;
+  color: var(--navy);
+  background: #fff;
+  outline: none;
+  width: 100%;
+  height: 38px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.item-row input:focus,
+.item-row select:focus {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+/* Strip native number spinners — they made Qty/Rate taller than the other fields */
+.item-row input[type='number']::-webkit-inner-spin-button,
+.item-row input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.item-row input[type='number'] { -moz-appearance: textfield; }
+.item-row-grid {
+  display: grid;
+  grid-template-columns: 82px 1fr 1fr 1.1fr 26px;
+  gap: 8px;
+  align-items: center;
+}
+.item-del {
+  border: none;
+  background: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 4px;
+}
+.item-del:hover { color: #dc2626; }
+.add-item-btn {
+  border: 1.5px dashed var(--gray-300);
+  background: none;
+  color: var(--indigo);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 12px;
+  padding: 11px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.add-item-btn:hover { border-color: var(--indigo); background: var(--indigo-lt); }
+
+/* ── Results ── */
+.tr-big {
+  background: linear-gradient(135deg, var(--indigo), #1d4ed8);
+  color: #fff;
+  border-radius: 16px;
+  padding: 22px 26px;
+  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.28);
+}
+.tr-big-label {
+  font-size: 0.72rem;
+  opacity: 0.85;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.tr-big-num {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.45rem, 2.6vw, 2.05rem);
+  letter-spacing: -0.01em;
+  margin-top: 4px;
+}
+.tr-big-sub { font-size: 0.8rem; opacity: 0.85; margin-top: 4px; }
+.tr-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.tr-tile {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.tr-tile-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tr-tile-num {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 1.12rem;
+  color: var(--navy);
+  margin-top: 3px;
+}
+.tr-tile-sub { font-size: 0.72rem; color: var(--gray-400); margin-top: 2px; }
+.tool-disclaimer {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  line-height: 1.65;
+  margin-top: 18px;
+  border-top: 1px dashed var(--gray-200);
+  padding-top: 12px;
+}
+
+/* ── Tables (results + SEO content) ── */
+.tool-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--gray-200);
+  border-radius: 14px;
+  margin: 16px 0;
+  background: #fff;
+}
+.tool-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.tool-table th {
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--gray-50);
+  color: var(--gray-600);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--gray-200);
+  white-space: nowrap;
+}
+.tool-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+.tool-table tr:last-child td { border-bottom: none; }
+.tool-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ── SEO content below the tool ── */
+.tool-prose { max-width: 830px; margin: 70px auto 0; }
+.tool-prose h2 {
+  font-size: 1.55rem;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+  margin: 44px 0 14px;
+}
+.tool-prose h2:first-child { margin-top: 0; }
+.tool-prose h3 { font-size: 1.08rem; color: var(--navy); margin: 26px 0 10px; }
+.tool-prose p {
+  color: var(--gray-600);
+  line-height: 1.85;
+  font-size: 0.95rem;
+  margin-bottom: 14px;
+}
+.tool-prose ul, .tool-prose ol { padding-left: 24px; margin: 12px 0 16px; }
+.tool-prose li {
+  color: var(--gray-600);
+  line-height: 1.8;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+.tool-prose strong { color: var(--navy); }
+.tool-prose a { color: var(--indigo); font-weight: 600; }
+.tool-prose a:hover { text-decoration: underline; }
+
+/* FAQ accordion (native details/summary — zero JS) */
+.tool-faq details {
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+.tool-faq summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--navy);
+  padding: 15px 18px;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.tool-faq summary::-webkit-details-marker { display: none; }
+.tool-faq summary::after {
+  content: '+';
+  font-size: 1.15rem;
+  color: var(--gray-400);
+  font-weight: 400;
+  flex-shrink: 0;
+}
+.tool-faq details[open] summary::after { content: '−'; }
+.tool-faq details[open] summary { border-bottom: 1px solid var(--gray-100); }
+.tool-faq .faq-a {
+  padding: 13px 18px 16px;
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+/* ── Inline CTA band ── */
+.tool-cta-band {
+  margin: 64px auto 0;
+  max-width: 1160px;
+  background: var(--navy);
+  border-radius: 20px;
+  padding: 34px 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.tool-cta-band h3 {
+  color: #fff;
+  font-size: 1.32rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+.tool-cta-band p {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  max-width: 560px;
+}
+.tool-cta-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ── Tools index grid ── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.tool-card {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: 18px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  text-decoration: none;
+}
+a.tool-card:hover {
+  box-shadow: var(--sh);
+  border-color: var(--indigo-md);
+  transform: translateY(-3px);
+}
+.tool-card-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: var(--indigo-lt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tool-card-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--navy);
+}
+.tool-card-desc { font-size: 0.84rem; color: var(--gray-500); line-height: 1.65; flex: 1; }
+.tool-card-link { font-size: 0.82rem; font-weight: 700; color: var(--indigo); }
+.tool-card.soon { opacity: 0.68; }
+.tool-card.soon .tool-card-icon { background: var(--gray-100); }
+
+/* ── Invoice preview sheet ── */
+.inv-sheet {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 36px 40px;
+  font-size: 0.82rem;
+  color: var(--gray-900);
+  box-shadow: 0 8px 34px rgba(15, 23, 42, 0.09);
+}
+.inv-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 2.5px solid var(--navy);
+  padding-bottom: 14px;
+}
+.inv-firm-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 1.08rem;
+  color: var(--navy);
+}
+.inv-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.16em;
+  color: var(--navy);
+}
+.inv-muted {
+  color: var(--gray-500);
+  font-size: 0.76rem;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.inv-h {
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.inv-cols { display: flex; justify-content: space-between; gap: 24px; margin: 16px 0 12px; }
+.inv-strong { font-weight: 700; color: var(--navy); font-size: 0.86rem; }
+.inv-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.inv-table th {
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 8px 9px;
+  text-align: left;
+}
+.inv-table td {
+  border-bottom: 1px solid var(--gray-200);
+  padding: 8px 9px;
+  vertical-align: top;
+  line-height: 1.55;
+}
+.inv-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.inv-totals { margin-left: auto; width: 270px; margin-top: 12px; font-size: 0.8rem; }
+.inv-trow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+  color: var(--gray-700);
+}
+.inv-grand {
+  border-top: 2px solid var(--navy);
+  margin-top: 6px;
+  padding-top: 9px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: var(--navy);
+}
+.inv-words { margin-top: 12px; font-size: 0.78rem; color: var(--gray-700); }
+.inv-words strong { color: var(--navy); }
+.inv-foot { display: flex; justify-content: space-between; gap: 24px; margin-top: 30px; align-items: flex-end; }
+.inv-sign { text-align: center; font-size: 0.75rem; color: var(--gray-500); }
+.inv-sign-line {
+  width: 180px;
+  border-top: 1.5px solid var(--gray-400);
+  margin-top: 46px;
+  padding-top: 6px;
+}
+.inv-brand {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.66rem;
+  color: var(--gray-400);
+  border-top: 1px dashed var(--gray-200);
+  padding-top: 9px;
+}
+
+/* ── Print: only the invoice sheet ──
+   The bill generator portals a copy of the invoice (.inv-print-root) directly
+   under <body>. In print we display:none everything else, which removes it
+   from the layout flow entirely — the document is exactly one invoice tall,
+   so no blank pages. (The old visibility:hidden trick left the full page
+   height in place and printed 5+ mostly-empty pages.) */
+.inv-print-root { display: none; }
+
+@media print {
+  html:has(.inv-print-root),
+  body:has(.inv-print-root) { background: #fff !important; }
+  body:has(.inv-print-root) > *:not(.inv-print-root) { display: none !important; }
+  body:has(.inv-print-root)::before,
+  body:has(.inv-print-root)::after { display: none !important; }
+  .inv-print-root { display: block !important; }
+  .inv-print-root .inv-sheet {
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* Stay legible even when the browser strips background colors */
+  .inv-print-root .inv-table th {
+    background: none !important;
+    color: var(--navy) !important;
+    border-bottom: 2px solid var(--navy);
+  }
+  .inv-print-root .inv-table tr,
+  .inv-print-root .inv-totals,
+  .inv-print-root .inv-words,
+  .inv-print-root .inv-foot { break-inside: avoid; }
+}
+@page { size: A4; margin: 12mm 10mm; }
+
+/* ── Responsive ── */
+@media (max-width: 1080px) {
+  .tool-grid2 { grid-template-columns: 1fr; }
+  .tools-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .tools-grid { grid-template-columns: 1fr; }
+  .tool-panel { padding: 20px; }
+  .inv-sheet { padding: 22px 20px; }
+  .tf-2col { grid-template-columns: 1fr; }
+  .item-row-grid { grid-template-columns: 70px 1fr 1fr 1fr 24px; }
+  .tool-cta-band { padding: 26px 24px; }
+  .inv-cols { flex-direction: column; gap: 14px; }
+  .inv-totals { width: 100%; }
+}
