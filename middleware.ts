@@ -12,10 +12,13 @@ function generateNonce(): string {
 // 'strict-dynamic' + nonce replaces 'unsafe-inline': trusted scripts (nonce-bearing)
 // can load additional scripts (e.g. Razorpay checkout.js added via createElement).
 // Domain allowlist is kept as fallback for older browsers that ignore strict-dynamic.
+// 'unsafe-eval' is required even in prod: Vapi's voice widget loads Daily.co's
+// call-machine-object-bundle.js, which uses eval() internally to load its WebRTC
+// runtime — without it the bundle load fails and the assistant can't connect.
 function buildCSP(nonce: string): string {
   return [
     "default-src 'self'",
-    `script-src 'nonce-${nonce}' 'strict-dynamic'${isProd ? '' : " 'unsafe-eval'"} https://checkout.razorpay.com https://api.vapi.ai`,
+    `script-src 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' https://checkout.razorpay.com https://api.vapi.ai`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
