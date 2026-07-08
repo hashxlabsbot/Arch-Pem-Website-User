@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import type Vapi from '@vapi-ai/web'
 import { MicIcon, MicOffIcon } from '@/components/icons'
 import { VAPI_ASSISTANT_CONFIG } from '@/lib/vapiAssistant'
+import { env } from '@/lib/env'
 
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY
+const PUBLIC_KEY = env.vapiPublicKey()
 
 type CallStatus = 'idle' | 'connecting' | 'active'
 

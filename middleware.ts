@@ -15,12 +15,14 @@ function generateNonce(): string {
 function buildCSP(nonce: string): string {
   return [
     "default-src 'self'",
-    `script-src 'nonce-${nonce}' 'strict-dynamic'${isProd ? '' : " 'unsafe-eval'"} https://checkout.razorpay.com`,
+    `script-src 'nonce-${nonce}' 'strict-dynamic'${isProd ? '' : " 'unsafe-eval'"} https://checkout.razorpay.com https://api.vapi.ai`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
     // https://*.daily.co / wss://*.daily.co — Vapi's voice widget runs its WebRTC call over Daily.co.
     "connect-src 'self' https://*.razorpay.com https://api.brevo.com https://api.vapi.ai wss://api.vapi.ai https://*.daily.co wss://*.daily.co",
+    // media-src required for WebRTC audio tracks piped through Daily.co
+    "media-src 'self' blob: https://*.daily.co",
     "frame-src https://*.razorpay.com https://api.razorpay.com",
     "form-action 'self'",
     "base-uri 'self'",

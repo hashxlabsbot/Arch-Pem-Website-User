@@ -19,6 +19,7 @@ type EnvKey =
   | 'UPSTASH_REDIS_REST_TOKEN'
   | 'NEXT_PUBLIC_GA_MEASUREMENT_ID'
   | 'GOOGLE_SITE_VERIFICATION'
+  | 'NEXT_PUBLIC_VAPI_PUBLIC_KEY'
 
 const REQUIRED: EnvKey[] = ['DATABASE_URL', 'NEXTAUTH_SECRET', 'NEXTAUTH_URL']
 
@@ -58,4 +59,5 @@ export const env = {
   upstashToken: () => get('UPSTASH_REDIS_REST_TOKEN'),
   gaMeasurementId: () => get('NEXT_PUBLIC_GA_MEASUREMENT_ID'),
   googleSiteVerification: () => get('GOOGLE_SITE_VERIFICATION'),
+  vapiPublicKey: () => get('NEXT_PUBLIC_VAPI_PUBLIC_KEY'),
 }
