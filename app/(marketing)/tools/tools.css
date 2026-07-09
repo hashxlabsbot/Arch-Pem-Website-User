@@ -461,6 +461,101 @@ a.tool-card:hover {
   text-align: right;
 }
 
+/* ── Plot-based calculator ── */
+.plot-toggle-link {
+  background: none;
+  border: none;
+  color: var(--indigo);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  padding: 2px 0;
+  margin-top: -4px;
+}
+.plot-toggle-link:hover { text-decoration: underline; }
+.plot-panel {
+  background: var(--indigo-lt);
+  border: 1.5px solid var(--indigo-md);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.plot-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--indigo-d);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.plot-panel-close {
+  background: none;
+  border: none;
+  color: var(--indigo);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 2px 4px;
+  line-height: 1;
+}
+.plot-result {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.plot-result div { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--gray-600); }
+.plot-result strong { color: var(--navy); font-weight: 700; }
+
+/* ── Save & compare estimates ── */
+.save-name-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.save-name-row input {
+  flex: 1;
+  min-width: 140px;
+  padding: 9px 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 9px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--navy);
+  outline: none;
+}
+.save-name-row input:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12); }
+.saved-list { display: flex; flex-direction: column; gap: 8px; }
+.saved-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+.saved-item-name { font-size: 0.82rem; font-weight: 700; color: var(--navy); }
+.saved-item-meta { font-size: 0.72rem; color: var(--gray-500); margin-top: 2px; }
+.saved-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.saved-item-actions button {
+  border: 1px solid var(--gray-200);
+  background: #fff;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--indigo);
+  cursor: pointer;
+}
+.saved-item-actions button:hover { background: var(--indigo-lt); }
+.saved-item-actions button.danger { color: var(--gray-400); padding: 5px 8px; }
+.saved-item-actions button.danger:hover { color: #dc2626; background: rgba(239,68,68,0.06); }
+
 /* ── Invoice preview sheet ── */
 .inv-sheet {
   background: #fff;
@@ -578,13 +673,18 @@ a.tool-card:hover {
   body:has(.inv-print-root)::after { display: none !important; }
   .inv-print-root { display: block !important; }
   .inv-print-root .inv-sheet {
+    display: flex;
+    flex-direction: column;
+    min-height: 273mm; /* A4 height minus the 12mm top/bottom padding below */
     border: none;
     box-shadow: none;
     border-radius: 0;
-    padding: 0;
+    padding: 12mm 10mm;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+  /* Pushes the "Generated using ARC PEM" line to the true bottom of the page */
+  .inv-print-root .inv-brand { margin-top: auto; }
   /* Stay legible even when the browser strips background colors */
   .inv-print-root .inv-table th {
     background: none !important;
@@ -596,7 +696,9 @@ a.tool-card:hover {
   .inv-print-root .inv-words,
   .inv-print-root .inv-foot { break-inside: avoid; }
 }
-@page { size: A4; margin: 12mm 10mm; }
+/* margin: 0 leaves no room for the browser's own print header/footer
+   (page title, timestamp, URL) — the invoice's own padding above replaces it. */
+@page { size: A4; margin: 0; }
 
 /* ── Responsive ── */
 @media (max-width: 1080px) {

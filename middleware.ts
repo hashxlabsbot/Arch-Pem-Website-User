@@ -15,7 +15,18 @@ function generateNonce(): string {
 // 'unsafe-eval' is required even in prod: Vapi's voice widget loads Daily.co's
 // call-machine-object-bundle.js, which uses eval() internally to load its WebRTC
 // runtime — without it the bundle load fails and the assistant can't connect.
-function buildCSP(nonce: string): string {
+//
+// Nonce-based CSP only works on routes Next.js renders per-request: there's no
+// per-request context to embed a nonce into a statically-generated HTML file,
+// so a nonce baked into a static page can never match the fresh nonce this
+// middleware sets on the *next* request's header — every script gets blocked
+// (Next.js's own docs note nonces disable static rendering for this reason).
+// /dashboard and /api stay dynamic (auth-gated per request) and keep the
+// strict nonce + 'strict-dynamic' policy below. Every other route is now
+// statically generated for caching/TTFB, so it needs the nonce-free, 'self'
+// + 'unsafe-inline' policy in buildStaticCSP — still no third-party script
+// hosts beyond the same explicit allowlist, just without nonce enforcement.
+function buildDynamicCSP(nonce: string): string {
   return [
     "default-src 'self'",
     `script-src 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' https://checkout.razorpay.com https://api.vapi.ai`,
@@ -25,6 +36,23 @@ function buildCSP(nonce: string): string {
     // https://*.daily.co / wss://*.daily.co — Vapi's voice widget runs its WebRTC call over Daily.co.
     "connect-src 'self' https://*.razorpay.com https://api.brevo.com https://api.vapi.ai wss://api.vapi.ai https://*.daily.co wss://*.daily.co https://*.google-analytics.com https://*.analytics.google.com https://www.google.com",
     // media-src required for WebRTC audio tracks piped through Daily.co
+    "media-src 'self' blob: https://*.daily.co",
+    "frame-src https://*.razorpay.com https://api.razorpay.com",
+    "form-action 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+  ].join('; ')
+}
+
+function buildStaticCSP(): string {
+  return [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.vapi.ai https://www.googletagmanager.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com data:",
+    "img-src 'self' data: blob: https:",
+    "connect-src 'self' https://*.razorpay.com https://api.brevo.com https://api.vapi.ai wss://api.vapi.ai https://*.daily.co wss://*.daily.co https://*.google-analytics.com https://*.analytics.google.com https://www.google.com",
     "media-src 'self' blob: https://*.daily.co",
     "frame-src https://*.razorpay.com https://api.razorpay.com",
     "form-action 'self'",
@@ -53,6 +81,7 @@ export async function middleware(req: NextRequest) {
   })
 
   const { pathname } = req.nextUrl
+  const isDynamicRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/api')
 
   if (pathname.startsWith('/dashboard')) {
     if (!token) {
@@ -75,12 +104,13 @@ export async function middleware(req: NextRequest) {
   }
 
   // Forward nonce so Next.js can attach it to its own injected <script> tags
+  // (only meaningful on dynamic routes — see buildDynamicCSP/buildStaticCSP above)
   const requestHeaders = new Headers(req.headers)
   requestHeaders.set('x-nonce', nonce)
 
   const res = NextResponse.next({ request: { headers: requestHeaders } })
   Object.entries(STATIC_HEADERS).forEach(([k, v]) => res.headers.set(k, v))
-  res.headers.set('Content-Security-Policy', buildCSP(nonce))
+  res.headers.set('Content-Security-Policy', isDynamicRoute ? buildDynamicCSP(nonce) : buildStaticCSP())
   return res
 }
 

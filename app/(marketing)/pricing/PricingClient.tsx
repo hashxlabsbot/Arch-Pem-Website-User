@@ -231,7 +231,7 @@ export default function PricingClient() {
         <div className="container">
           <div className="sec-hd fade-up">
             <span className="badge badge-indigo">Pricing</span>
-            <h2>Simple Pricing for Every Firm Size</h2>
+            <h1>Simple Pricing for Every Firm Size</h1>
             <p>Choose your plan based on how many machines you need. All the essentials are included from day one.</p>
           </div>
 

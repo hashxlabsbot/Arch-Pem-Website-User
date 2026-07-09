@@ -101,7 +101,7 @@ button { font-family: inherit; cursor: pointer; }
 /* ── Section header ── */
 .sec-hd { text-align: center; max-width: 680px; margin: 0 auto 60px; }
 .sec-hd .badge { margin-bottom: 14px; }
-.sec-hd h2 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); margin-bottom: 18px; }
+.sec-hd h1, .sec-hd h2 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); margin-bottom: 18px; }
 .sec-hd p  { font-size: 1.05rem; color: var(--gray-500); line-height: 1.8; }
 
 /* ════════════════════════════════════

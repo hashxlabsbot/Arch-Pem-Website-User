@@ -9,16 +9,16 @@ import {
   RupeeIcon, CalculatorIcon, CubeIcon, BricksIcon, SteelIcon, RulerIcon,
 } from '@/components/icons'
 
-const TITLE = 'Free Construction Tools & Calculators for Builders and Architects'
+const TITLE = 'Free Construction Tools & Calculators'
 const DESCRIPTION =
-  'Free online tools for Indian builders, contractors and architects — GST contractor bill generator, construction cost calculator, and concrete material calculator. No sign-up, no limits.'
+  'Free tools for Indian builders, contractors and architects — GST bill generator, cost calculator, concrete calculator. No sign-up, no limits.'
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: '/tools' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools' },
-  twitter: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
 }
 
 const TOOL_ICONS: Record<string, React.ReactNode> = {

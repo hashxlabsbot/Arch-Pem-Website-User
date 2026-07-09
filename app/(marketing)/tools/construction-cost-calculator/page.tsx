@@ -6,16 +6,16 @@ import CostCalculator from '@/components/tools/CostCalculator'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
 
-const TITLE = 'Construction Cost Calculator India (2026) — Cost Per Sq Ft'
+const TITLE = 'Construction Cost Calculator — Cost Per Sq Ft'
 const DESCRIPTION =
-  'Estimate house construction cost in India: per sq ft rates for basic, standard, premium and luxury quality, city-wise adjustment, full cost breakdown, and cement, steel, sand & brick quantities. Free, no sign-up.'
+  'Estimate house construction cost in India: per sq ft rates by quality and city, full cost breakdown, and material quantities. Free, no sign-up.'
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: '/tools/construction-cost-calculator' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/construction-cost-calculator' },
-  twitter: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/construction-cost-calculator', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
 }
 
 const FAQS = [

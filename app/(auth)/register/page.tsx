@@ -1,12 +1,20 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, Loader2, AlertCircle, Mail, ShieldCheck, User, Building2, Lock, X, ExternalLink } from 'lucide-react'
 import LogoMark from '@/components/LogoMark'
 import { DocumentIcon } from '@/components/icons'
 
 export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
+  )
+}
+
+function RegisterForm() {
   const router  = useRouter()
   const params  = useSearchParams()
   const preplan = params.get('plan') ?? ''

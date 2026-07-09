@@ -3,9 +3,9 @@ import JsonLd from '@/components/seo/JsonLd'
 import { company } from '@/lib/company'
 import HomeClient from './HomeClient'
 
-const TITLE = 'ARC PEM — Project Expense Management Software for Indian Construction Firms'
+const TITLE = 'ARC PEM — Construction Expense Management Software · India'
 const DESCRIPTION =
-  'ARC PEM unifies BOQ, vendor bills, labour tracking, contractor ledgers, GST, and Tally exports into one offline desktop platform built for Indian architects, builders, and construction firms.'
+  'ARC PEM unifies BOQ, vendor bills, labour, GST and Tally exports into one offline platform built for Indian architects and construction firms.'
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -15,10 +15,13 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
     url: '/',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
   twitter: {
+    card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
+    images: ['/og-image.jpg'],
   },
 }
 

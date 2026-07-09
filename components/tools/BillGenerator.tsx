@@ -121,7 +121,7 @@ export default function BillGenerator() {
           <tr>
             <th style={{ width: 26 }}>#</th>
             <th>Description of Work</th>
-            <th style={{ width: 56 }}>SAC</th>
+            <th style={{ width: 66 }}>SAC/HSN</th>
             <th className="num" style={{ width: 58 }}>Qty</th>
             <th style={{ width: 54 }}>Unit</th>
             <th className="num" style={{ width: 76 }}>Rate (₹)</th>
@@ -299,7 +299,7 @@ export default function BillGenerator() {
                 placeholder='Description — e.g. Brickwork in CM 1:6, 9" thick wall'
               />
               <div className="item-row-grid">
-                <input value={it.sac} onChange={(e) => updateItem(it.id, { sac: e.target.value })} placeholder="SAC" aria-label="SAC / HSN code" />
+                <input value={it.sac} onChange={(e) => updateItem(it.id, { sac: e.target.value })} placeholder="SAC/HSN" aria-label="SAC / HSN code" />
                 <input type="number" min="0" value={it.qty} onChange={(e) => updateItem(it.id, { qty: e.target.value })} placeholder="Qty" aria-label="Quantity" />
                 <select value={it.unit} onChange={(e) => updateItem(it.id, { unit: e.target.value })} aria-label="Unit">
                   {UNITS.map((u) => (

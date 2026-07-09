@@ -415,7 +415,7 @@ export default function HomeClient() {
                     {/* Summary Sheet Pane */}
                     <div id="pane-summary" className={`app-pane${activePane === 'pane-summary' ? ' active' : ''}`} style={{ display: activePane === 'pane-summary' ? 'flex' : 'none', flexDirection: 'column', padding: '16px', overflow: 'auto', background: '#f8fafc' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                        <div><h1 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Summary Sheet</h1><p style={{ fontSize: '0.68rem', color: '#64748b', margin: '2px 0 0' }}>Skyline Residency • Mr. Mehta • Pune, MH</p></div>
+                        <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Summary Sheet</div><p style={{ fontSize: '0.68rem', color: '#64748b', margin: '2px 0 0' }}>Skyline Residency • Mr. Mehta • Pune, MH</p></div>
                         <div style={{ display: 'flex', gap: '6px' }}>
                           {[
                             { key: 'excel', icon: <ExportIcon size={10} />,  label: 'Excel' },

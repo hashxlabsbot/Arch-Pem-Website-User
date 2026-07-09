@@ -6,16 +6,16 @@ import ConcreteCalculator from '@/components/tools/ConcreteCalculator'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
 
-const TITLE = 'Concrete Calculator — Cement, Sand & Aggregate (M10–M25)'
+const TITLE = 'Concrete Calculator — Cement, Sand & Aggregate'
 const DESCRIPTION =
-  'Calculate cement bags, sand, aggregate and water for slabs, beams, columns and footings. M10, M15, M20 and M25 mix ratios, feet or metre inputs, instant results. Free, no sign-up.'
+  'Calculate cement bags, sand, aggregate and water for slabs, beams, columns and footings. M10–M25 mixes, instant results. Free, no sign-up.'
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: '/tools/concrete-calculator' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/concrete-calculator' },
-  twitter: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/concrete-calculator', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
 }
 
 const FAQS = [

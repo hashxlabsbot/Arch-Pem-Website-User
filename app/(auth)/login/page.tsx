@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle, Mail, Lock, ShieldCheck } from 'lucide-react'
@@ -18,6 +18,14 @@ function validatePassword(v: string) {
 }
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  )
+}
+
+function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
 

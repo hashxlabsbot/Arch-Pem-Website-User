@@ -537,7 +537,9 @@ export default function MarketingShell({ children }: { children: React.ReactNode
       {/* Outside click closes user dropdown */}
       {userDropOpen && <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => setUserDropOpen(false)} />}
 
-      <VapiAssistant />
+      {/* Sales voice assistant — relevant on demo-focused marketing pages, not on the
+          free tool pages where a visitor is mid-calculation, not shopping. */}
+      {!pathname.startsWith('/tools') && <VapiAssistant />}
 
       {/* ── Back to top ── */}
       <button
