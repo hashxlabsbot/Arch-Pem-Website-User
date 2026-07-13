@@ -58,8 +58,8 @@ export const company = {
   },
 
   /** Used for canonical URLs, sitemap, OG tags. Must match the domain that
-   *  actually serves the site (arcpem.com 308-redirects here in production). */
-  siteUrl: 'https://www.arcpem.com',
+   *  actually serves the site (www.arcpem.com 307-redirects here in production). */
+  siteUrl: 'https://arcpem.com',
 } as const
 
 /** "City, State – PIN, Country", skipping any empty parts. */

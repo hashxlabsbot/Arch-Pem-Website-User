@@ -82,3 +82,33 @@ model Plan {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// Blog / CMS — authored in Arc-Pem-Admin (which owns the migration), read here.
+// This is a mirror; run only `prisma generate` in this project (see warning above).
+model BlogPost {
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  title           String
+  description     String
+  contentMarkdown String
+  category        String
+  tags            String[]
+  authorName      String?
+  authorRole      String?
+  coverImage      String?
+  coverImageAlt   String?
+  seoTitle        String?
+  featured        Boolean   @default(false)
+  status          String    @default("DRAFT")
+  publishedAt     DateTime?
+  updatedDate     DateTime?
+  relatedTools    String[]
+  relatedPosts    String[]
+  faq             Json?
+  howto           Json?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([category])
+}

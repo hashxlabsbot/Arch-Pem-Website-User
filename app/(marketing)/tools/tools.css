@@ -312,7 +312,7 @@
 
 /* ── Inline CTA band ── */
 .tool-cta-band {
-  margin: 64px auto 0;
+  margin: 64px auto 100px;
   max-width: 1160px;
   background: var(--navy);
   border-radius: 20px;

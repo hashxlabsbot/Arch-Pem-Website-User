@@ -40,6 +40,10 @@ export default function MarketingShell({ children }: { children: React.ReactNode
   const initials = session?.user?.name
     ?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() ?? '??'
 
+  // Tool pages render their own <ToolCta> banner, so hide the global CTA there
+  // to avoid a duplicate "Book a Free Demo" section.
+  const hideGlobalCta = pathname?.startsWith('/tools')
+
   function openDemo() {
     setDemoSuccess(false); setDemoError(null)
     setDemoForm({ name: '', whatsapp: '', company: '', role: 'Principal Architect', teamSize: 'Just me', date: '', time: '' })
@@ -212,6 +216,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
             </div>
             <Link href="/pricing" className="nav-link">Pricing</Link>
             <Link href="/tools" className="nav-link">Free Tools</Link>
+            <Link href="/blog" className="nav-link">Blog</Link>
             <Link href="/about" className="nav-link">About Us</Link>
             <div className="nav-item">
               <button className="nav-link">Resources <span className="nav-chevron">▼</span></button>
@@ -279,6 +284,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
         </div>
         <Link href="/pricing" className="mob-link">Pricing</Link>
         <Link href="/tools" className="mob-link">Free Tools</Link>
+        <Link href="/blog" className="mob-link">Blog</Link>
         <Link href="/about" className="mob-link">About Us</Link>
         <Link href="/resources" className="mob-link">Resources</Link>
         <div className="mob-actions">
@@ -292,6 +298,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
       {children}
 
       {/* ── CTA Section — Premium Gradient Mesh ── */}
+      {!hideGlobalCta && (
       <div className="cta-premium">
         {/* Animated background orbs */}
         <div className="cta-orb cta-orb-1" />
@@ -393,6 +400,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
           </div>
         </div>
       </div>
+      )}
 
       {/* ── Footer ── */}
       <footer className="footer-v2">
@@ -444,6 +452,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
               <div className="fv2-col">
                 <h4 className="fv2-col-title">Company</h4>
                 <Link href="/about" className="fv2-link">About Us</Link>
+                <Link href="/blog" className="fv2-link">Blog</Link>
                 <Link href="/contact" className="fv2-link">Contact Us</Link>
                 <Link href="/pricing" className="fv2-link">Pricing</Link>
                 <Link href="/resources" className="fv2-link">Help Centre</Link>

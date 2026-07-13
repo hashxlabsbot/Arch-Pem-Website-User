@@ -6,7 +6,9 @@ const isProd = process.env.NODE_ENV === 'production'
 // (e.g. _next/static) where a nonce isn't needed.
 const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+  // X-Frame-Options is set in middleware.ts (SAMEORIGIN everywhere except the
+  // /blog/preview route, which the admin editor must be able to iframe). Setting
+  // it here too would re-add it on that route and block the preview iframe.
   { key: 'X-XSS-Protection', value: '1; mode=block' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=(self)' },

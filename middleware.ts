@@ -82,6 +82,9 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl
   const isDynamicRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/api')
+  // The admin editor's live preview iframes this one route. It must be framable by
+  // the admin origin only — everything else keeps frame-ancestors 'none'.
+  const isPreviewRoute = pathname.startsWith('/blog/preview')
 
   if (pathname.startsWith('/dashboard')) {
     if (!token) {
@@ -110,7 +113,16 @@ export async function middleware(req: NextRequest) {
 
   const res = NextResponse.next({ request: { headers: requestHeaders } })
   Object.entries(STATIC_HEADERS).forEach(([k, v]) => res.headers.set(k, v))
-  res.headers.set('Content-Security-Policy', isDynamicRoute ? buildDynamicCSP(nonce) : buildStaticCSP())
+
+  let csp = isDynamicRoute ? buildDynamicCSP(nonce) : buildStaticCSP()
+  if (isPreviewRoute) {
+    // X-Frame-Options can't allowlist a specific cross-origin, so drop it and rely
+    // on CSP frame-ancestors, which can. Only the admin origin may frame the preview.
+    res.headers.delete('X-Frame-Options')
+    const adminOrigin = process.env.ADMIN_ORIGIN || 'http://localhost:3000'
+    csp = csp.replace("frame-ancestors 'none'", `frame-ancestors 'self' ${adminOrigin}`)
+  }
+  res.headers.set('Content-Security-Policy', csp)
   return res
 }
 
