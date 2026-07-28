@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useRef, useState, Suspense } from 'react'
+import { signIn, getProviders } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, Loader2, AlertCircle, Mail, ShieldCheck, User, Building2, Lock, X, ExternalLink } from 'lucide-react'
 import LogoMark from '@/components/LogoMark'
-import { DocumentIcon } from '@/components/icons'
+import { DocumentIcon, GoogleIcon } from '@/components/icons'
 
 export default function RegisterPage() {
   return (
@@ -33,8 +34,19 @@ function RegisterForm() {
   const otpRefs = useRef<(HTMLInputElement | null)[]>([])
 
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+  const [googleEnabled, setGoogleEnabled] = useState(false)
   const [error,   setError]   = useState('')
   const [legalOpen, setLegalOpen] = useState<'terms' | 'privacy' | null>(null)
+
+  useEffect(() => {
+    getProviders().then(providers => setGoogleEnabled(!!providers?.google))
+  }, [])
+
+  function handleGoogleSignUp() {
+    setGoogleLoading(true)
+    signIn('google', { callbackUrl: '/dashboard' })
+  }
 
   useEffect(() => {
     if (cooldown <= 0) return
@@ -326,6 +338,33 @@ function RegisterForm() {
       </div>
 
       {ErrorBanner}
+
+      {/* Google sign-up */}
+      {googleEnabled && (
+        <>
+          <button
+            type="button" onClick={handleGoogleSignUp} disabled={googleLoading}
+            style={{
+              width: '100%', padding: '12px', marginBottom: '18px',
+              background: 'white', color: '#0f172a',
+              border: '1.5px solid #e2e8f0', borderRadius: '12px',
+              fontSize: '0.87rem', fontWeight: 700, cursor: googleLoading ? 'not-allowed' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+              fontFamily: 'inherit', transition: 'all 0.15s',
+              opacity: googleLoading ? 0.7 : 1,
+            }}
+          >
+            {googleLoading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite', color: '#94a3b8' }} /> : <GoogleIcon size={17} />}
+            {googleLoading ? 'Redirecting…' : 'Sign up with Google'}
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+            <span style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 600 }}>OR SIGN UP WITH EMAIL</span>
+            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+          </div>
+        </>
+      )}
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
 

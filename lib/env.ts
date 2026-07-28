@@ -20,6 +20,8 @@ type EnvKey =
   | 'NEXT_PUBLIC_GA_MEASUREMENT_ID'
   | 'GOOGLE_SITE_VERIFICATION'
   | 'NEXT_PUBLIC_VAPI_PUBLIC_KEY'
+  | 'GOOGLE_CLIENT_ID'
+  | 'GOOGLE_CLIENT_SECRET'
 
 const REQUIRED: EnvKey[] = ['DATABASE_URL', 'NEXTAUTH_SECRET', 'NEXTAUTH_URL']
 
@@ -62,4 +64,7 @@ export const env = {
   gaMeasurementId: () => get('NEXT_PUBLIC_GA_MEASUREMENT_ID'),
   googleSiteVerification: () => get('GOOGLE_SITE_VERIFICATION'),
   vapiPublicKey: () => get('NEXT_PUBLIC_VAPI_PUBLIC_KEY'),
+  // Both unset => Google button hidden and provider omitted (see lib/auth.ts).
+  googleClientId: () => get('GOOGLE_CLIENT_ID'),
+  googleClientSecret: () => get('GOOGLE_CLIENT_SECRET'),
 }

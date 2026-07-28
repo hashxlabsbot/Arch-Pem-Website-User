@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, Suspense } from 'react'
-import { signIn } from 'next-auth/react'
+import { useState, useEffect, Suspense } from 'react'
+import { signIn, getProviders } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle, Mail, Lock, ShieldCheck } from 'lucide-react'
 import LogoMark from '@/components/LogoMark'
+import { GoogleIcon } from '@/components/icons'
 
 function validateEmail(v: string) {
   if (!v.trim()) return 'Email is required'
@@ -33,9 +34,15 @@ function LoginForm() {
   const [password, setPassword] = useState('')
   const [showPw,   setShowPw]   = useState(false)
   const [loading,  setLoading]  = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+  const [googleEnabled, setGoogleEnabled] = useState(false)
   const [apiError, setApiError] = useState('')
   const [focused,  setFocused]  = useState<string | null>(null)
   const [touched,  setTouched]  = useState<Record<string, boolean>>({})
+
+  useEffect(() => {
+    getProviders().then(providers => setGoogleEnabled(!!providers?.google))
+  }, [])
 
   const registered = params.get('registered')
   const errParam   = params.get('error')
@@ -87,6 +94,18 @@ function LoginForm() {
     }
   }
 
+  function handleGoogleSignIn() {
+    setGoogleLoading(true)
+    signIn('google', { callbackUrl: params.get('callbackUrl') || '/dashboard' })
+  }
+
+  const googleErrorMsg =
+    errParam === 'AccessDenied'
+      ? 'That Google account is suspended, or access was denied. Please contact support.'
+      : errParam === 'OAuthSignin' || errParam === 'OAuthCallback' || errParam === 'OAuthAccountNotLinked'
+      ? 'Google sign-in failed. Please try again or sign in with your email and password.'
+      : ''
+
   return (
     <>
       {/* Brand icon + heading */}
@@ -115,7 +134,7 @@ function LoginForm() {
       )}
 
       {/* Error banner */}
-      {(apiError || errParam === 'unauthorized') && (
+      {(apiError || errParam === 'unauthorized' || googleErrorMsg) && (
         <div style={{
           display: 'flex', alignItems: 'flex-start', gap: '10px',
           background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)',
@@ -123,9 +142,36 @@ function LoginForm() {
         }}>
           <AlertCircle size={15} style={{ color: '#ef4444', flexShrink: 0, marginTop: '1px' }} />
           <span style={{ fontSize: '0.82rem', color: '#dc2626' }}>
-            {apiError || 'You do not have permission to access that area.'}
+            {apiError || googleErrorMsg || 'You do not have permission to access that area.'}
           </span>
         </div>
+      )}
+
+      {/* Google sign-in */}
+      {googleEnabled && (
+        <>
+          <button
+            type="button" onClick={handleGoogleSignIn} disabled={googleLoading}
+            style={{
+              width: '100%', padding: '12px', marginBottom: '20px',
+              background: 'white', color: '#0f172a',
+              border: '1.5px solid #e2e8f0', borderRadius: '12px',
+              fontSize: '0.87rem', fontWeight: 700, cursor: googleLoading ? 'not-allowed' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+              fontFamily: 'inherit', transition: 'all 0.15s',
+              opacity: googleLoading ? 0.7 : 1,
+            }}
+          >
+            {googleLoading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite', color: '#94a3b8' }} /> : <GoogleIcon size={17} />}
+            {googleLoading ? 'Redirecting…' : 'Continue with Google'}
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+            <span style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 600 }}>OR SIGN IN WITH EMAIL</span>
+            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+          </div>
+        </>
       )}
 
       <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

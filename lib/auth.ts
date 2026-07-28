@@ -1,6 +1,8 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 import { db } from './db'
 import { env, isProd } from './env'
 import { rateLimit } from './rate-limit'
@@ -58,8 +60,53 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
+    // Omitted entirely (not just disabled) when unconfigured, so the button
+    // can be hidden client-side by checking the providers list.
+    ...(env.googleClientId() && env.googleClientSecret()
+      ? [
+          GoogleProvider({
+            clientId: env.googleClientId()!,
+            clientSecret: env.googleClientSecret()!,
+          }),
+        ]
+      : []),
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account?.provider !== 'google') return true
+
+      const email = user.email?.trim().toLowerCase()
+      if (!email) return false
+
+      // Google only sets this when it's confirmed the address; refuse anything else.
+      const googleProfile = profile as { email_verified?: boolean } | undefined
+      if (googleProfile?.email_verified === false) return false
+
+      let dbUser = await db.user.findUnique({
+        where: { email },
+        include: { plan: { select: { name: true } } },
+      })
+
+      if (!dbUser) {
+        // Google users authenticate via OAuth only; this fills the (required,
+        // shared-schema) password column with a hash nobody can produce a match for.
+        const unusablePassword = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12)
+        dbUser = await db.user.create({
+          data: { name: user.name || email.split('@')[0], email, password: unusablePassword },
+          include: { plan: { select: { name: true } } },
+        })
+      }
+
+      if (dbUser.status === 'SUSPENDED') return false
+
+      // Carried onto the `user` object into the jwt callback below (initial sign-in branch).
+      user.id = dbUser.id
+      user.role = dbUser.role
+      user.planName = dbUser.plan?.name ?? null
+      user.tokenVersion = dbUser.tokenVersion
+
+      return true
+    },
     async jwt({ token, user, trigger, session }) {
       // Initial sign-in.
       if (user) {

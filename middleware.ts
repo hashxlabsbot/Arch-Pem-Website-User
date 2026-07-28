@@ -38,7 +38,10 @@ function buildDynamicCSP(nonce: string): string {
     // media-src required for WebRTC audio tracks piped through Daily.co
     "media-src 'self' blob: https://*.daily.co",
     "frame-src https://*.razorpay.com https://api.razorpay.com",
-    "form-action 'self'",
+    // accounts.google.com — NextAuth's Google sign-in submits a same-origin
+    // form that the server then redirects to Google; browsers check form-action
+    // against the final redirect target too, not just the initial form action.
+    "form-action 'self' https://accounts.google.com",
     "base-uri 'self'",
     "object-src 'none'",
     "frame-ancestors 'none'",
@@ -55,7 +58,7 @@ function buildStaticCSP(): string {
     "connect-src 'self' https://*.razorpay.com https://api.brevo.com https://api.vapi.ai wss://api.vapi.ai https://*.daily.co wss://*.daily.co https://*.google-analytics.com https://*.analytics.google.com https://www.google.com",
     "media-src 'self' blob: https://*.daily.co",
     "frame-src https://*.razorpay.com https://api.razorpay.com",
-    "form-action 'self'",
+    "form-action 'self' https://accounts.google.com",
     "base-uri 'self'",
     "object-src 'none'",
     "frame-ancestors 'none'",
