@@ -7,7 +7,7 @@ import {
   ClipboardIcon, WalletIcon, BoltIcon, BuildingIcon, CompassIcon, FolderIcon,
   DashboardIcon, RefreshIcon, ExportIcon, StoreIcon, HardHatIcon, UsersIcon,
   ReceiptIcon, ClockIcon, DownloadIcon, SearchIcon, LockIcon, SaveIcon,
-  GlobeIcon, TruckIcon,
+  GlobeIcon, TruckIcon, MilestoneIcon, GaugeIcon, BellIcon, WarningIcon,
 } from '@/components/icons'
 
 export default function SolutionsClient() {
@@ -35,11 +35,70 @@ export default function SolutionsClient() {
             <h2>Everything Your Firm Needs, Out of the Box</h2>
             <p>From the first sketch budget to the final handover report — ARC PEM covers every financial workflow your architecture or construction team needs, without spreadsheets or an internet connection.</p>
           </div>
+          {/* ── Lead feature: Project Control (full-width, above the pillar grid) ── */}
+          <div className="feat-row fade-up" style={{ paddingTop: 0, borderBottom: 'none', marginBottom: '8px' }}>
+            <div className="feat-text">
+              <span className="badge badge-amber">New — Project Control</span>
+              <h3>Know a project is overrunning while you can still fix it</h3>
+              <p>ARC PEM connects your BOQ estimate to what you have actually spent. Every project shows budget vs. actual, what is left, and how far along it is — and the app tells you the moment a project crosses its budget or a milestone slips past its date.</p>
+              <ul className="feat-bullets">
+                {['Budget vs. actual per project, per category — updated as you log expenses','Milestone tracker with target dates, progress states, and overdue flagging','Cash, cheque, and pending payment split at a glance','Desktop alerts for budget overruns and overdue milestones'].map(b=>(
+                  <li key={b} className="feat-bullet"><span className="fb-check">✓</span> {b}</li>
+                ))}
+              </ul>
+              <button className="sol-link" style={{ background: 'none', border: 'none' }} onClick={() => showModal('modal-control')}>Explore Project Control &nbsp;→</button>
+            </div>
+            <div className="feat-panel">
+              <div className="fp-label">Project Overview — Skyline Residency</div>
+              <div className="pc-stats">
+                {[
+                  { l: 'Estimated', v: '₹65,37,120', c: '' },
+                  { l: 'Spent',     v: '₹41,20,400', c: 'spent' },
+                  { l: 'Remaining', v: '₹24,16,720', c: 'left' },
+                  { l: 'Complete',  v: '63%',        c: '' },
+                ].map(s => (
+                  <div key={s.l} className="pc-stat">
+                    <div className="pc-stat-lbl">{s.l}</div>
+                    <div className={`pc-stat-val ${s.c}`}>{s.v}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="pc-prog"><div className="pc-prog-fill" style={{ width: '63%' }} /></div>
+              <div className="pc-prog-meta"><span>63% of budget used</span><span>₹24,16,720 left</span></div>
+              <div className="pc-split">
+                {[
+                  { l: 'Cash',    v: '₹18,40,000', c: '' },
+                  { l: 'Cheque',  v: '₹19,80,400', c: '' },
+                  { l: 'Pending', v: '₹3,00,000',  c: 'pend' },
+                ].map(s => (
+                  <div key={s.l} className="pc-split-item">
+                    <div className="pc-split-lbl">{s.l}</div>
+                    <div className={`pc-split-val ${s.c}`}>{s.v}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="pc-ms-label">Milestones</div>
+              {[
+                { n: 'Foundation',           s: 'done', t: 'Completed',   d: '12 Mar' },
+                { n: 'RCC Structure',        s: 'prog', t: 'In Progress', d: '28 Jul' },
+                { n: 'Electrical Rough-in',  s: 'late', t: 'Overdue',     d: '02 Jul' },
+                { n: 'Finishing & Interiors',s: 'wait', t: 'Pending',     d: '15 Sep' },
+              ].map(m => (
+                <div key={m.n} className={`pc-ms-row${m.s === 'late' ? ' overdue' : ''}`}>
+                  <div className={`pc-ms-dot ${m.s}`} />
+                  <div className="pc-ms-name">{m.n}</div>
+                  <div className={`pc-ms-state ${m.s}`}>{m.t}</div>
+                  <div className="pc-ms-date">{m.d}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="sol-grid">
             {[
               { id: 'project-mgmt', icon: <ClipboardIcon size={26} color="#4f46e5" />, cls: 'si-blue', title: 'Project & Budget Management', desc: 'Build precise cost estimates, track project status, and generate client-ready budget summaries with automatic GST and cost-per-sq.ft.', modal: 'modal-boq', cta: 'Explore BOQ Features', feats: [['b','Bill of Quantities (BOQ)'],['b','Project Dashboard & Status Tracking'],['b','BOQ Templates (Reusable)'],['b','Duplicate Projects'],['b','Cost Per Sq.Ft Calculator'],['b','Contingency & GST Auto-Compute'],['b','PDF & Excel Export']] },
               { id: 'expense-mgmt', icon: <WalletIcon size={26} color="#0ea5e9" />, cls: 'si-sky', title: 'Expense & Finance Management', desc: 'Track every rupee across vendor bills, labour wages, contractor invoices, and site expenses. Auto-compute GST and export directly to Tally.', modal: 'modal-expense', cta: 'Explore Finance Tools', feats: [['s','Vendor Ledger with GST Toggle'],['s','Labour Tracking (Daily Headcount)'],['s','Contractor Bill Management'],['s','Site Expense Tracking'],['s','GST Purchase Register'],['s','Pending Payments Dashboard'],['s','Tally ERP / Prime CSV Export']] },
-              { id: 'power-feat', icon: <BoltIcon size={26} color="#10b981" />, cls: 'si-green', title: 'Power & Productivity Features', desc: 'Enterprise-grade tools built for the field — offline operation, multi-user sharing, global search, and machine-locked security.', modal: 'modal-power', cta: 'Explore Power Tools', feats: [['g','Global Search (Ctrl+K)'],['g','Multi-User Database Sharing'],['g','PDF Manpower Report Import'],['g','Vendor Directory & Autocomplete'],['g','PIN Lock & RSA-2048 Licensing'],['g','Auto-Backup & JSON Export'],['g','Silent Auto-Update']] },
+              { id: 'power-feat', icon: <BoltIcon size={26} color="#10b981" />, cls: 'si-green', title: 'Power & Productivity Features', desc: 'Enterprise-grade tools built for the field — offline operation, multi-user sharing, global search, and machine-locked security.', modal: 'modal-power', cta: 'Explore Power Tools', feats: [['g','Global Search (Ctrl+K)'],['g','Multi-User Database Sharing'],['g','PDF Manpower Report Import'],['g','Party Directory & Autocomplete'],['g','PIN Lock & RSA-2048 Licensing'],['g','Auto-Backup (Daily, 30-Day Rolling)'],['g','Multi-Currency — 8 Currencies'],['g','Silent Auto-Update']] },
             ].map((s, i) => (
               <div key={s.id} className={`sol-card fade-up${i===1?' d1':i===2?' d2':''}`} id={s.id}>
                 <div className={`sol-icon ${s.cls}`}>{s.icon}</div>
@@ -182,6 +241,25 @@ export default function SolutionsClient() {
         </div>
       </section>
 
+      {/* ── Multi-currency ── */}
+      <section className="section bg-gray">
+        <div className="container">
+          <div className="sec-hd fade-up">
+            <span className="badge badge-indigo">Works Beyond India</span>
+            <h2>GST-ready for Indian firms. Currency-ready for everyone else.</h2>
+            <p>ARC PEM was built around Indian construction — GST purchase registers, Tally exports, lakh and crore formatting. But if you bill in Dirhams or Riyals, every amount in the app follows your chosen currency.</p>
+          </div>
+          <div className="cur-band fade-up">
+            {[
+              ['₹','INR'], ['$','USD'], ['€','EUR'], ['£','GBP'],
+              ['د.إ','AED'], ['﷼','SAR'], ['S$','SGD'], ['A$','AUD'],
+            ].map(([sym, code]) => (
+              <span key={code} className="cur-chip"><span className="sym">{sym}</span>{code}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Feature Modals ── */}
       {[
         { id: 'modal-boq', cls: 'si-blue', icon: <ClipboardIcon size={26} color="#4f46e5" />, title: 'Project & Budget Management', sub: 'Precision BOQ engine built for Indian construction firms', cards: [
@@ -207,6 +285,14 @@ export default function SolutionsClient() {
           {i:<ClipboardIcon size={20} color="#10b981" />,t:'PDF Manpower Import',d:'Import labour attendance from standard PDF reports. Auto-parses headcount, skill categories, and daily wages — zero manual entry.'},
           {i:<SaveIcon size={20} color="#10b981" />,t:'Auto-Backup & JSON Export',d:'Scheduled automatic backups to a folder of your choice. Full JSON export lets you migrate data or keep an off-site archive.'},
           {i:<RefreshIcon size={20} color="#10b981" />,t:'Silent Auto-Update',d:'New features and bug fixes deploy silently in the background. You always have the latest version without disrupting your workflow.'},
+        ]},
+        { id: 'modal-control', cls: 'si-amber', icon: <GaugeIcon size={26} color="#f59e0b" />, title: 'Project Control & Alerts', sub: 'Catch overruns and slipped milestones before they cost you', cards: [
+          {i:<GaugeIcon size={20} color="#f59e0b" />,t:'Budget vs. Actual',d:'Your BOQ estimate sits alongside real logged expenses. See amount spent, amount remaining, and percentage of budget used — for the whole project and broken down by category.'},
+          {i:<MilestoneIcon size={20} color="#f59e0b" />,t:'Milestone & Phase Tracker',d:'Define project phases with target dates. Move each through Pending, In Progress, and Completed. Anything past its target date is flagged automatically.'},
+          {i:<WarningIcon size={20} color="#f59e0b" />,t:'Budget Overrun Alerts',d:'Set an estimated budget per project. The moment total spend crosses it, ARC PEM raises a desktop notification naming the project and the exact amount you have gone over by.'},
+          {i:<BellIcon size={20} color="#f59e0b" />,t:'Pending & Overdue Reminders',d:'On launch you are told how many payments are outstanding and their total value, plus any milestone past its date. A reminder fires on exit too, so it stays in your notification centre.'},
+          {i:<DashboardIcon size={20} color="#f59e0b" />,t:'Spend Trend & Breakdown',d:'Every project carries a monthly spend trend and a category breakdown chart, so you can see which months and which trades are consuming the budget.'},
+          {i:<ClockIcon size={20} color="#f59e0b" />,t:'Cash / Cheque / Pending Split',d:'Know exactly how much of a project has been settled in cash, how much by cheque, and how much is still outstanding — without opening a single ledger.'},
         ]},
       ].map(m => (
         <div key={m.id} id={m.id} className={`modal-overlay${openModal===m.id?' open':''}`} onClick={e=>{if(e.target===e.currentTarget)hideModal()}}>

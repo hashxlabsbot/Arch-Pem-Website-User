@@ -32,6 +32,7 @@ import {
   ShieldCheck,
   CalendarCheck,
   BadgeCheck,
+  Gauge,
   type LucideIcon,
 } from 'lucide-react'
 import { company } from '@/lib/company'
@@ -68,15 +69,21 @@ const PLAN_CTA: Record<string, string> = {
   Enterprise: 'Get Enterprise',
 }
 
-const COMPARISON_ROWS: { feature: string; icon: LucideIcon; solo: boolean | string; studio: boolean | string; enterprise: boolean | string }[] = [
-  { feature: 'Expense Tracking',           icon: Receipt,         solo: true,   studio: true,   enterprise: true   },
+const COMPARISON_ROWS: { feature: string; note?: string; icon: LucideIcon; solo: boolean | string; studio: boolean | string; enterprise: boolean | string }[] = [
+  { feature: 'Expense Tracking',           icon: Receipt,         solo: true,   studio: true,   enterprise: true,
+    note: 'Labour, vendor, contractor and site ledgers' },
+  { feature: 'Budget vs. Actual & Milestones', icon: Gauge,       solo: true,   studio: true,   enterprise: true,
+    note: 'Overrun alerts and overdue milestone warnings' },
   { feature: 'Tally CSV Export',           icon: FileSpreadsheet, solo: true,   studio: true,   enterprise: true   },
   { feature: 'GST Purchase Register',      icon: FileText,        solo: true,   studio: true,   enterprise: true   },
   { feature: 'Pending Payments Report',    icon: Clock,           solo: true,   studio: true,   enterprise: true   },
   { feature: 'PIN Lock & Security',        icon: Lock,            solo: true,   studio: true,   enterprise: true   },
-  { feature: 'Custom Branding on PDF Reports', icon: Palette,     solo: true,   studio: true,   enterprise: true   },
-  { feature: 'Multi-User Database Sharing',icon: Users,           solo: false,  studio: true,   enterprise: true   },
-  { feature: 'Machine Transfer Support',   icon: Repeat,          solo: false,  studio: true,   enterprise: true   },
+  { feature: 'Custom Branding on PDF Reports', icon: Palette,     solo: true,   studio: true,   enterprise: true,
+    note: 'Your logo and firm name on every exported report' },
+  { feature: 'Multi-User Database Sharing',icon: Users,           solo: false,  studio: true,   enterprise: true,
+    note: 'Share one database over LAN, Google Drive or OneDrive' },
+  { feature: 'Machine Transfer Support',   icon: Repeat,          solo: false,  studio: true,   enterprise: true,
+    note: 'Moving to a new PC? Transfer the license yourself' },
   { feature: 'Machines',                   icon: Monitor,         solo: '1',    studio: '3',    enterprise: '10'   },
   { feature: 'Max Projects',               icon: FolderKanban,    solo: '10',   studio: '30',   enterprise: '50'   },
   { feature: 'Monthly Price',              icon: IndianRupee,     solo: '₹2,499', studio: '₹4,999', enterprise: '₹9,999' },
@@ -417,7 +424,14 @@ export default function PricingClient() {
                             >
                               <Icon size={14} strokeWidth={2.2} />
                             </span>
-                            {row.feature}
+                            <span>
+                              {row.feature}
+                              {row.note && (
+                                <span style={{ display: 'block', fontSize: '.72rem', fontWeight: 500, color: 'var(--gray-500)', marginTop: 2, lineHeight: 1.4 }}>
+                                  {row.note}
+                                </span>
+                              )}
+                            </span>
                           </span>
                         </td>
                         <td style={tdStyle('center')}><CellValue val={row.solo} /></td>

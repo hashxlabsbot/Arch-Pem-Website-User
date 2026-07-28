@@ -9,7 +9,7 @@ import {
   DocumentIcon, UsersIcon, SettingsIcon, BuildingIcon, LockIcon,
   ClipboardIcon, StoreIcon, HardHatIcon, BoltIcon, PhoneIcon,
   FileIcon, TrendingDownIcon, RocketIcon, CompassIcon,
-  PrinterIcon, ExportIcon, WarningIcon,
+  PrinterIcon, ExportIcon, WarningIcon, BellIcon,
 } from '@/components/icons'
 
 export default function HomeClient() {
@@ -487,6 +487,39 @@ export default function HomeClient() {
           </div>
         </div>
       </div>
+
+      {/* ── Desktop Alerts ── */}
+      <section className="section">
+        <div className="container">
+          <div className="sec-hd fade-up">
+            <span className="badge badge-amber">Project Control</span>
+            <h2>Your desktop tells you before your accountant does</h2>
+            <p>ARC PEM watches every project against its budget and its milestone dates. When something slips, it says so — on launch, and again when you close the app, so it stays in your notification centre.</p>
+          </div>
+          <div className="notif-grid">
+            {[
+              { ico: <WarningIcon size={17} color="#ef4444" />, cls: 'red',
+                t: 'Budget Overrun: Skyline Residency',
+                b: 'Exceeded budget by ₹2,40,000.' },
+              { ico: <ClockIcon size={17} color="#f59e0b" />, cls: 'amber',
+                t: '3 Overdue Milestones',
+                b: 'Some project milestones are past their target date. Open ARC PEM to update.' },
+              { ico: <BellIcon size={17} color="#4f46e5" />, cls: 'indigo',
+                t: '12 Pending Payments',
+                b: '₹8,40,000 outstanding. Open ARC PEM to review.' },
+            ].map((n, i) => (
+              <div key={n.t} className={`notif-toast fade-up${i>0?' d'+i:''}`}>
+                <div className={`notif-ico ${n.cls}`}>{n.ico}</div>
+                <div>
+                  <div className="notif-title">{n.t}</div>
+                  <div className="notif-body">{n.b}</div>
+                  <div className="notif-app">ARC PEM</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── Industry Showcase ── */}
       <section className="showcase">

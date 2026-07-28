@@ -502,3 +502,26 @@ export function RulerIcon(p: P) {
     </S>
   )
 }
+
+/** Flag on a milestone path — phase / milestone tracking */
+export function MilestoneIcon(p: P) {
+  return (
+    <S {...p}>
+      <path d="M5 21V4" />
+      <path d="M5 4h10.5l-1.8 3.2a1 1 0 0 0 0 1l1.8 3.3H5" fill="currentColor" stroke="none" opacity=".9" />
+      <path d="M5 4h10.5l-1.8 3.2a1 1 0 0 0 0 1l1.8 3.3H5" />
+      <circle cx="5" cy="21" r="1.4" fill="currentColor" stroke="none" />
+    </S>
+  )
+}
+
+/** Half-dial gauge with needle — budget utilisation / % complete */
+export function GaugeIcon(p: P) {
+  return (
+    <S {...p}>
+      <path d="M3.5 18a9 9 0 1 1 17 0" />
+      <path d="m12 18 4.2-5.4" />
+      <circle cx="12" cy="18" r="1.6" fill="currentColor" stroke="none" />
+    </S>
+  )
+}
