@@ -282,6 +282,29 @@ a.post-card:hover { box-shadow: var(--sh); border-color: var(--indigo-md); trans
 .post-prose ul, .post-prose ol { padding-left: 24px; margin: 12px 0 18px; }
 .post-prose li { color: var(--gray-700); line-height: 1.85; font-size: 1rem; margin-bottom: 8px; }
 .post-prose strong { color: var(--navy); font-weight: 700; }
+
+/* Inline body images — size preset (small/medium/full) set by the editor. */
+.post-fig { margin: 28px auto; text-align: center; }
+.post-fig img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: 14px;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+}
+.post-fig--small img { max-width: 360px; }
+.post-fig--medium img { max-width: 640px; }
+.post-fig--full img { max-width: 100%; }
+.post-fig figcaption {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--gray-400);
+  line-height: 1.5;
+  font-style: italic;
+}
 .post-prose a { color: var(--indigo); font-weight: 600; text-decoration: underline; text-decoration-color: var(--indigo-md); text-underline-offset: 2px; }
 .post-prose a:hover { text-decoration-color: var(--indigo); }
 .post-prose blockquote {

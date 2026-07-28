@@ -9,6 +9,7 @@ import ShareButton from '@/components/tools/ShareButton'
 import BrandedCover from '@/components/blog/BrandedCover'
 import TableOfContents from '@/components/blog/TableOfContents'
 import ReadingProgress from '@/components/blog/ReadingProgress'
+import ViewBeacon from '@/components/blog/ViewBeacon'
 import RelatedToolCta from '@/components/blog/RelatedToolCta'
 import RelatedPosts from '@/components/blog/RelatedPosts'
 import BlogFaq from '@/components/blog/BlogFaq'
@@ -62,6 +63,7 @@ export default async function ArticleView({
   return (
     <>
       <ReadingProgress />
+      {!preview && <ViewBeacon slug={meta.slug} />}
 
       {preview && (
         <div style={{

@@ -25,6 +25,12 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'localhost:3001')
 const config = {
   reactStrictMode: true,
   poweredByHeader: false,
+  images: {
+    // Blog cover images uploaded via the admin editor live on Vercel Blob.
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.public.blob.vercel-storage.com' },
+    ],
+  },
   experimental: {
     serverActions: { allowedOrigins },
   },
