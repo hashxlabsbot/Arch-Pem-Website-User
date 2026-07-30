@@ -22,11 +22,11 @@ export const company = {
 
   /** Verifiable business address (Razorpay requires this publicly). */
   address: {
-    line1: '', // TODO: building / street
-    line2: '', // TODO: area / landmark
-    city: '',  // TODO
-    state: '', // TODO
-    pincode: '', // TODO
+    line1: 'E-1, Third Floor',
+    line2: 'Nehru Ground',
+    city: 'Faridabad',
+    state: 'Haryana',
+    pincode: '121001',
     country: 'India',
 
   },
