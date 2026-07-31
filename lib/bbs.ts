@@ -34,6 +34,18 @@ export function barCount(spanMm: number, spacingMm: number): number {
 
 export type BarShape = 'Straight' | 'Rectangular closed stirrup' | 'Rectangular closed tie' | 'Straight (mesh)'
 
+/**
+ * Shape geometry needed to draw a bar to scale. `aMm`/`bMm` are the same
+ * internal link dimensions fed to stirrupCuttingLengthMm, so a drawing and the
+ * cutting length beside it can never disagree.
+ *
+ * Optional on BarRow by design: results deserialised from localStorage before
+ * this field existed must still typecheck and render.
+ */
+export type BarGeometry =
+  | { kind: 'straight'; lengthMm: number }
+  | { kind: 'rect-link'; aMm: number; bMm: number; diaMm: number }
+
 export type BarRow = {
   mark: string
   desc: string
@@ -44,6 +56,7 @@ export type BarRow = {
   totalLengthM: number
   unitWtKgM: number
   totalWtKg: number
+  geom?: BarGeometry
 }
 
 export type BbsResult = {
@@ -59,13 +72,14 @@ function buildRow(
   shape: BarShape,
   cuttingLengthMm: number,
   nos: number,
+  geom?: BarGeometry,
 ): BarRow {
   const cl = Math.max(0, cuttingLengthMm)
   const n = Math.max(0, nos)
   const unitWtKgM = unitWeightKgPerM(diaMm)
   const totalLengthM = (cl * n) / 1000
   const totalWtKg = totalLengthM * unitWtKgM
-  return { mark, desc, diaMm, shape, cuttingLengthMm: cl, nos: n, totalLengthM, unitWtKgM, totalWtKg }
+  return { mark, desc, diaMm, shape, cuttingLengthMm: cl, nos: n, totalLengthM, unitWtKgM, totalWtKg, ...(geom ? { geom } : {}) }
 }
 
 function summarize(rows: BarRow[]): BbsResult {
@@ -101,9 +115,9 @@ export function computeBeam(i: BeamInputs): BbsResult {
   const stirCount = barCount(i.clearSpanMm, i.stirSpacingMm)
 
   return summarize([
-    buildRow('B1', 'Bottom main bars', i.botDiaMm, 'Straight', botCL, i.botCount * nos),
-    buildRow('B2', 'Top main bars', i.topDiaMm, 'Straight', topCL, i.topCount * nos),
-    buildRow('B3', 'Stirrups', i.stirDiaMm, 'Rectangular closed stirrup', stirCL, stirCount * nos),
+    buildRow('B1', 'Bottom main bars', i.botDiaMm, 'Straight', botCL, i.botCount * nos, { kind: 'straight', lengthMm: botCL }),
+    buildRow('B2', 'Top main bars', i.topDiaMm, 'Straight', topCL, i.topCount * nos, { kind: 'straight', lengthMm: topCL }),
+    buildRow('B3', 'Stirrups', i.stirDiaMm, 'Rectangular closed stirrup', stirCL, stirCount * nos, { kind: 'rect-link', aMm: a, bMm: b, diaMm: i.stirDiaMm }),
   ])
 }
 
@@ -147,8 +161,8 @@ export function computeColumn(i: ColumnInputs): BbsResult {
   const tieCount = barCount(i.clearHeightMm, i.tieSpacingMm)
 
   return summarize([
-    buildRow('C1', 'Main vertical bars', i.mainDiaMm, 'Straight', mainCL, i.mainCount * nos),
-    buildRow('C2', 'Ties', i.tieDiaMm, 'Rectangular closed tie', tieCL, tieCount * nos),
+    buildRow('C1', 'Main vertical bars', i.mainDiaMm, 'Straight', mainCL, i.mainCount * nos, { kind: 'straight', lengthMm: mainCL }),
+    buildRow('C2', 'Ties', i.tieDiaMm, 'Rectangular closed tie', tieCL, tieCount * nos, { kind: 'rect-link', aMm: a, bMm: b, diaMm: i.tieDiaMm }),
   ])
 }
 
@@ -185,8 +199,8 @@ export function computeSlab(i: SlabInputs): BbsResult {
   const distCount = barCount(i.shortSpanMm, i.distSpacingMm)
 
   return summarize([
-    buildRow('S1', 'Main bars', i.mainDiaMm, 'Straight', mainCL, mainCount * nos),
-    buildRow('S2', 'Distribution bars', i.distDiaMm, 'Straight', distCL, distCount * nos),
+    buildRow('S1', 'Main bars', i.mainDiaMm, 'Straight', mainCL, mainCount * nos, { kind: 'straight', lengthMm: mainCL }),
+    buildRow('S2', 'Distribution bars', i.distDiaMm, 'Straight', distCL, distCount * nos, { kind: 'straight', lengthMm: distCL }),
   ])
 }
 
@@ -230,8 +244,8 @@ export function computeFooting(i: FootingInputs): BbsResult {
   const dir2Count = barCount(i.lengthMm, i.dir2SpacingMm)
 
   return summarize([
-    buildRow('F1', 'Bars along length', i.dir1DiaMm, 'Straight (mesh)', dir1CL, dir1Count * nos),
-    buildRow('F2', 'Bars along width', i.dir2DiaMm, 'Straight (mesh)', dir2CL, dir2Count * nos),
+    buildRow('F1', 'Bars along length', i.dir1DiaMm, 'Straight (mesh)', dir1CL, dir1Count * nos, { kind: 'straight', lengthMm: dir1CL }),
+    buildRow('F2', 'Bars along width', i.dir2DiaMm, 'Straight (mesh)', dir2CL, dir2Count * nos, { kind: 'straight', lengthMm: dir2CL }),
   ])
 }
 

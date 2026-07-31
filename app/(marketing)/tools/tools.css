@@ -159,6 +159,74 @@
 .tool-warning ul { margin: 4px 0 0; padding-left: 18px; }
 .tool-warning li { margin-bottom: 2px; line-height: 1.5; }
 
+/* ── BBS bar-shape glyphs & member section drawings ──
+   Meaning is carried by stroke and dash pattern only. Browsers routinely drop
+   backgrounds when printing, so nothing here may be legible-only-if-backgrounds
+   -print; strokes/fills follow `color` so they survive that. Direction is
+   encoded by dash pattern (not colour alone) for the same reason, and for
+   WCAG 1.4.1. */
+.bbs-shape-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  min-width: 108px;
+}
+/* Fixed viewport + preserveAspectRatio="meet" scales each glyph to fit without
+   distorting it, so portrait links and landscape straight bars stay legible at
+   a comparable size. */
+.bbs-glyph {
+  display: block;
+  width: 100px;
+  height: 34px;
+  max-width: 100%;
+  overflow: visible;
+  color: var(--navy);
+  font-family: inherit;
+}
+.bbs-glyph--link { height: 68px; }
+.bbs-glyph.is-indicative { color: var(--gray-400); }
+.bbs-glyph .bbs-bar {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bbs-glyph .bbs-dim { fill: none; stroke: var(--gray-400); stroke-width: 0.7; }
+.bbs-glyph .bbs-dim-t { fill: var(--gray-500); stroke: none; font-size: 8px; font-variant-numeric: tabular-nums; }
+.bbs-shape-label { font-size: 0.72rem; color: var(--gray-500); line-height: 1.35; }
+
+.bbs-figure {
+  margin: 16px 0 0;
+  padding: 14px;
+  border: 1px solid var(--gray-200);
+  border-radius: 14px;
+  background: var(--gray-50);
+}
+.bbs-section {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 260px;
+  margin: 0 auto;
+  color: var(--navy);
+  font-family: inherit;
+}
+.bbs-section .bbs-outline { fill: none; stroke: currentColor; stroke-width: 1.5; }
+.bbs-section .bbs-link { fill: none; stroke: var(--indigo); stroke-width: 1.1; }
+.bbs-section .bbs-barfill { fill: currentColor; stroke: none; }
+.bbs-section .bbs-mesh { fill: none; stroke: var(--indigo); stroke-width: 0.9; }
+.bbs-section .bbs-mesh-2 { stroke: var(--amber); stroke-dasharray: 3 2.2; }
+.bbs-section .bbs-dim { fill: none; stroke: var(--gray-400); stroke-width: 0.7; }
+.bbs-section .bbs-dim-t { fill: var(--gray-500); stroke: none; font-size: 9px; font-variant-numeric: tabular-nums; }
+.bbs-figure-cap { font-size: 0.73rem; color: var(--gray-500); line-height: 1.6; margin-top: 10px; }
+.bbs-figure-cap strong { color: var(--navy); }
+.bbs-figure-cap em { font-style: normal; color: var(--gray-600); font-weight: 700; }
+.bbs-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; font-size: 0.7rem; color: var(--gray-500); }
+.bbs-legend span { display: inline-flex; align-items: center; gap: 6px; }
+
 /* Work-item rows (bill generator) */
 .item-row {
   border: 1px solid var(--gray-200);
@@ -763,6 +831,48 @@ a.tool-card:hover {
   .inv-print-root .inv-totals,
   .inv-print-root .inv-words,
   .inv-print-root .inv-foot { break-inside: avoid; }
+
+  /* ── BBS drawings in print ── */
+  .inv-print-root .bbs-figure {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0 0 8px;
+    break-inside: avoid;
+  }
+  .inv-print-root .bbs-section {
+    max-width: 56mm;
+    max-height: none;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* Capped in both axes: a tall section (e.g. a 230×450 beam) constrained only
+     by width becomes ~78mm tall, which pushes every member onto its own page
+     and wastes most of it. */
+  .inv-print-root .bbs-member-fig .bbs-section { max-width: 32mm; max-height: 28mm; }
+  .inv-print-root .bbs-glyph {
+    width: 24mm;
+    height: 8mm;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .inv-print-root .bbs-glyph--link { height: 15mm; }
+  /* Mono-safe: amber at 0.9px disappears on a B/W printer, the dash pattern
+     doesn't — so force ink-dark strokes and let dashes carry direction. */
+  .inv-print-root .bbs-glyph .bbs-bar,
+  .inv-print-root .bbs-section .bbs-outline,
+  .inv-print-root .bbs-section .bbs-link,
+  .inv-print-root .bbs-section .bbs-mesh { stroke: #0f172a; }
+  .inv-print-root .bbs-section .bbs-barfill { fill: #0f172a; stroke: none; }
+  .inv-print-root .bbs-section .bbs-mesh-2 { stroke: #475569; }
+  .inv-print-root .bbs-glyph .bbs-dim,
+  .inv-print-root .bbs-section .bbs-dim { stroke: #64748b; }
+  .inv-print-root .bbs-glyph .bbs-dim-t,
+  .inv-print-root .bbs-section .bbs-dim-t { fill: #475569; }
+  .inv-print-root .bbs-shape-label { font-size: 0.6rem; color: #475569; }
+  .inv-print-root .inv-table td { vertical-align: middle; }
+  .inv-print-root .bbs-member-block { break-inside: avoid; }
 }
 /* margin: 0 leaves no room for the browser's own print header/footer
    (page title, timestamp, URL) — the invoice's own padding above replaces it. */
@@ -784,4 +894,8 @@ a.tool-card:hover {
   .tool-cta-band { padding: 26px 24px; }
   .inv-cols { flex-direction: column; gap: 14px; }
   .inv-totals { width: 100%; }
+  .bbs-figure { padding: 10px; }
+  .bbs-section { max-height: 220px; }
+  .bbs-shape-cell { min-width: 96px; }
+  .bbs-glyph { width: 88px; }
 }

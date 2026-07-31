@@ -328,7 +328,7 @@ function RegisterForm() {
       {StepIndicator}
 
       <div style={{ marginBottom: '22px' }}>
-        <LogoMark size={46} style={{ marginBottom: '16px' }} />
+        <LogoMark size={21} style={{ marginBottom: '16px' }} />
         <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#0f172a', marginBottom: '4px', letterSpacing: '-0.03em' }}>
           Create your account
         </h2>

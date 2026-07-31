@@ -137,11 +137,11 @@ button { font-family: inherit; cursor: pointer; }
 }
 .navbar.elevated { box-shadow: 0 4px 24px rgba(0,0,0,.07); }
 
-.nav-wrap { display: flex; align-items: center; height: 68px; gap: 8px; }
+.nav-wrap { display: flex; align-items: center; height: 84px; gap: 8px; }
 
 /* Logo */
 .nav-logo {
-  display: flex; align-items: center; gap: 9px; flex-shrink: 0; margin-right: 8px;
+  display: flex; align-items: center; gap: 9px; flex-shrink: 0; margin-right: 36px;
   font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--navy);
 }
 .nav-logo-mark {
@@ -151,13 +151,13 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* Nav links */
-.nav-links { display: flex; align-items: center; gap: 2px; flex: 1; }
+.nav-links { display: flex; align-items: center; gap: 4px; flex: 1; }
 
 .nav-item { position: relative; }
 
 .nav-link {
   display: flex; align-items: center; gap: 4px;
-  padding: 7px 13px; border-radius: 7px;
+  padding: 9px 14px; border-radius: 7px;
   font-size: .875rem; font-weight: 500; color: var(--gray-700);
   background: none; border: none; cursor: pointer; white-space: nowrap;
   transition: all .15s;
@@ -201,7 +201,7 @@ button { font-family: inherit; cursor: pointer; }
 .dropdown-wide { min-width: 380px; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
 
 /* Nav right */
-.nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
 .nav-signin { font-size: .875rem; font-weight: 500; color: var(--indigo); transition: opacity .15s; }
 .nav-signin:hover { opacity: .75; }
 
@@ -2095,6 +2095,8 @@ button { font-family: inherit; cursor: pointer; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .pricing-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
+  .nav-wrap { height: 68px; }
+  .nav-logo img { height: 19px !important; }
   .nav-links { display: none; }
   .nav-signin, .nav-cta { display: none; }
   .hamburger { display: flex; }

@@ -8,8 +8,13 @@ import { ExportIcon, PrinterIcon } from '@/components/icons'
 import {
   computeBeam, computeColumn, computeFooting, computeSlab, summarizeByDiameter,
   validateBeamInputs, validateColumnInputs, validateFootingInputs, validateSlabInputs,
-  type BbsResult,
+  type BbsResult, type BeamInputs, type ColumnInputs, type FootingInputs, type SlabInputs,
 } from '@/lib/bbs'
+import {
+  beamSectionDiagram, columnSectionDiagram, footingPlanDiagram, slabPlanDiagram,
+  type MemberDiagram,
+} from '@/lib/bbs-diagram'
+import { BarShapeCell, MemberFigure } from './BBSDiagrams'
 
 type Member = 'beam' | 'column' | 'slab' | 'footing'
 
@@ -90,6 +95,214 @@ function defaultLabelFor(m: Member, list: ProjectMember[]): string {
   return `${typeLabel} ${list.filter((p) => p.type === m).length + 1}`
 }
 
+/**
+ * One mapping from raw form strings to the typed *Inputs objects, shared by the
+ * result, the warnings, the drawing and the saved-project migration — so those
+ * four can never disagree about what the user entered.
+ */
+type MemberInputs =
+  | { type: 'beam'; v: BeamInputs }
+  | { type: 'column'; v: ColumnInputs }
+  | { type: 'slab'; v: SlabInputs }
+  | { type: 'footing'; v: FootingInputs }
+
+function inputsFromFields(type: Member, f: Record<string, string>): MemberInputs {
+  const n = (v: string | undefined) => parseFloat(v ?? '') || 0
+  const ld = n(f.ldFactor)
+  const lap = n(f.lapFactor)
+  switch (type) {
+    case 'column':
+      return { type, v: {
+        clearHeightMm: n(f.height), widthMm: n(f.width), depthMm: n(f.depth), coverMm: n(f.cover),
+        mainDiaMm: n(f.mainDia), mainCount: n(f.mainCount), tieDiaMm: n(f.tieDia), tieSpacingMm: n(f.tieSpacing),
+        lapToNextLift: f.lap === '1', lapFactor: lap, nos: n(f.nos),
+      } }
+    case 'slab':
+      return { type, v: {
+        slabType: f.type === 'twoway' ? 'twoway' : 'oneway',
+        shortSpanMm: n(f.shortSpan), longSpanMm: n(f.longSpan), coverMm: n(f.cover),
+        mainDiaMm: n(f.mainDia), mainSpacingMm: n(f.mainSpacing), distDiaMm: n(f.distDia), distSpacingMm: n(f.distSpacing),
+        ldFactor: ld, nos: n(f.nos),
+      } }
+    case 'footing':
+      return { type, v: {
+        lengthMm: n(f.length), widthMm: n(f.width), coverMm: n(f.cover),
+        dir1DiaMm: n(f.dir1Dia), dir1SpacingMm: n(f.dir1Spacing),
+        dir2DiaMm: n(f.dir2Dia), dir2SpacingMm: n(f.dir2Spacing), nos: n(f.nos),
+      } }
+    case 'beam':
+    default:
+      return { type: 'beam', v: {
+        clearSpanMm: n(f.span), widthMm: n(f.width), depthMm: n(f.depth), coverMm: n(f.cover),
+        botDiaMm: n(f.botDia), botCount: n(f.botCount), topDiaMm: n(f.topDia), topCount: n(f.topCount),
+        stirDiaMm: n(f.stirDia), stirSpacingMm: n(f.stirSpacing), anchorIntoSupport: f.anchor === '1',
+        ldFactor: ld, nos: n(f.nos),
+      } }
+  }
+}
+
+function computeFor(mi: MemberInputs): BbsResult {
+  switch (mi.type) {
+    case 'column': return computeColumn(mi.v)
+    case 'slab': return computeSlab(mi.v)
+    case 'footing': return computeFooting(mi.v)
+    default: return computeBeam(mi.v)
+  }
+}
+
+function validateFor(mi: MemberInputs): string[] {
+  switch (mi.type) {
+    case 'column': return validateColumnInputs(mi.v)
+    case 'slab': return validateSlabInputs(mi.v)
+    case 'footing': return validateFootingInputs(mi.v)
+    default: return validateBeamInputs(mi.v)
+  }
+}
+
+function diagramFor(mi: MemberInputs): MemberDiagram | null {
+  switch (mi.type) {
+    case 'column': return columnSectionDiagram(mi.v)
+    case 'slab': return slabPlanDiagram(mi.v)
+    case 'footing': return footingPlanDiagram(mi.v)
+    default: return beamSectionDiagram(mi.v)
+  }
+}
+
+const mm = (v: number) => Math.round(v).toLocaleString('en-IN')
+
+function MeshLegend({ solid, dashed }: { solid: string; dashed: string }) {
+  return (
+    <span className="bbs-legend">
+      <span>
+        <svg width="20" height="8" aria-hidden="true"><line x1="0" y1="4" x2="20" y2="4" stroke="currentColor" strokeWidth="1.4" /></svg>
+        {solid}
+      </span>
+      <span>
+        <svg width="20" height="8" aria-hidden="true"><line x1="0" y1="4" x2="20" y2="4" stroke="currentColor" strokeWidth="1.4" strokeDasharray="3 2.2" /></svg>
+        {dashed}
+      </span>
+    </span>
+  )
+}
+
+/**
+ * Beam and column sections get an explicit "indicative" caveat because the tool
+ * never asks how bars are arranged. Slab and footing plans deliberately do NOT
+ * — their bar positions come from the spacings entered and the same barCount()
+ * the schedule uses, so hedging them would be untrue.
+ */
+function diagramCaption(mi: MemberInputs, d: MemberDiagram): React.ReactNode {
+  const notes: string[] = []
+  if (d.variant === 'section') {
+    if (!d.barsToScale) notes.push('Bar circles are enlarged for visibility.')
+    if (d.barsOverlap) notes.push('Bars are shown overlapping — they do not fit side by side in one layer at this section width.')
+    if (d.barCountShown < d.barCountTotal) notes.push(`Showing ${d.barCountShown} of ${d.barCountTotal} bars.`)
+  } else {
+    if (!d.dir1.drawnAll || !d.dir2.drawnAll) notes.push('Representative bars shown — the full count is in the schedule.')
+  }
+  const tail = notes.length > 0 ? ` ${notes.join(' ')}` : ''
+
+  if (mi.type === 'beam' || mi.type === 'column') {
+    const label = mi.type === 'beam' ? 'Beam section' : 'Column section'
+    return (
+      <>
+        <strong>{label}</strong> — {mm(mi.v.widthMm)} × {mm(mi.v.depthMm)} mm, {mm(mi.v.coverMm)} mm clear cover.{' '}
+        <em>Bar arrangement is indicative, not a detailing drawing</em> — the calculator doesn&apos;t ask
+        how bars are arranged, so positions here are assumed. Quantities and lengths in the schedule are
+        unaffected.{tail}
+      </>
+    )
+  }
+  if (mi.type === 'slab' && d.variant === 'plan') {
+    return (
+      <>
+        <strong>Slab plan</strong> — {mm(mi.v.shortSpanMm)} × {mm(mi.v.longSpanMm)} mm. Bar positions are
+        computed from the spacings entered: {d.dir1.count} main bars at {mm(mi.v.mainSpacingMm)} mm centres
+        and {d.dir2.count} distribution bars at {mm(mi.v.distSpacingMm)} mm centres.{tail}
+        <MeshLegend solid="S1 main bars" dashed="S2 distribution bars" />
+      </>
+    )
+  }
+  if (mi.type === 'footing' && d.variant === 'plan') {
+    return (
+      <>
+        <strong>Footing plan</strong> — {mm(mi.v.lengthMm)} × {mm(mi.v.widthMm)} mm mesh. Bar positions are
+        computed from the spacings entered: {d.dir1.count} bars at {mm(mi.v.dir1SpacingMm)} mm centres along
+        the length and {d.dir2.count} at {mm(mi.v.dir2SpacingMm)} mm along the width.{tail}
+        <MeshLegend solid="F1 bars along length" dashed="F2 bars along width" />
+      </>
+    )
+  }
+  return null
+}
+
+/**
+ * The nine schedule columns, defined once — they render into both the
+ * single-member and the whole-project print sheets, which must never drift.
+ * Widths sum to 100; Shape carries a drawing so it takes the largest share.
+ */
+const BBS_COLS = [
+  { label: 'Mark', width: '5%' },
+  { label: 'Description', width: '14%' },
+  { label: 'Dia (mm)', width: '7%', num: true },
+  { label: 'Shape', width: '22%' },
+  { label: 'Cutting Length (mm)', width: '12%', num: true },
+  { label: 'Nos', width: '6%', num: true },
+  { label: 'Total Length (m)', width: '11%', num: true },
+  { label: 'Unit Wt (kg/m)', width: '11%', num: true },
+  { label: 'Total Wt (kg)', width: '12%', num: true },
+] as const
+
+function BbsPrintTable({ rows, fmt }: { rows: BbsResult['rows']; fmt: (v: number, d?: number) => string }) {
+  return (
+    <table className="inv-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+      <thead>
+        <tr>
+          {BBS_COLS.map((c) => (
+            <th key={c.label} className={'num' in c && c.num ? 'num' : undefined} style={{ width: c.width, whiteSpace: 'normal' }}>
+              {c.label}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r.mark}>
+            <td>{r.mark}</td>
+            <td>{r.desc}</td>
+            <td className="num">{r.diaMm}</td>
+            <td><BarShapeCell row={r} /></td>
+            <td className="num">{fmt(r.cuttingLengthMm, 0)}</td>
+            <td className="num">{r.nos}</td>
+            <td className="num">{fmt(r.totalLengthM)}</td>
+            <td className="num">{fmt(r.unitWtKgM, 3)}</td>
+            <td className="num">{fmt(r.totalWtKg)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
+/**
+ * Re-derives a saved member's result from its stored form fields so entries
+ * saved before BarRow carried geometry gain it. Adopts the recomputed rows ONLY
+ * if they reproduce the stored total — a saved schedule is a record someone may
+ * already have exported or ordered against, so this must never silently rewrite
+ * a number. The formulas are unchanged, so this is a tripwire, not a correction.
+ */
+function hydrateProjectMember(pm: ProjectMember): ProjectMember {
+  if (pm.result?.rows?.every((r) => r.geom)) return pm
+  try {
+    const fresh = computeFor(inputsFromFields(pm.type, pm.fields ?? {}))
+    if (fresh.rows.length !== pm.result.rows.length) return pm
+    if (Math.abs(fresh.totalKg - pm.result.totalKg) > 0.005) return pm
+    return { ...pm, result: fresh }
+  } catch {
+    return pm
+  }
+}
+
 export default function BBSCalculator() {
   const params = useSearchParams()
   const router = useRouter()
@@ -118,7 +331,7 @@ export default function BBSCalculator() {
     try {
       const raw = localStorage.getItem(PROJECT_KEY)
       if (raw) {
-        const list: ProjectMember[] = JSON.parse(raw)
+        const list: ProjectMember[] = JSON.parse(raw).map(hydrateProjectMember)
         setProject(list)
         setProjectLabel(defaultLabelFor(member, list))
       }
@@ -201,73 +414,14 @@ export default function BBSCalculator() {
 
   const n = (v: string) => parseFloat(v) || 0
 
-  const result: BbsResult = useMemo(() => {
-    const ld = n(ldFactor)
-    const lap = n(lapFactor)
-    switch (member) {
-      case 'column':
-        return computeColumn({
-          clearHeightMm: n(column.height), widthMm: n(column.width), depthMm: n(column.depth), coverMm: n(column.cover),
-          mainDiaMm: n(column.mainDia), mainCount: n(column.mainCount), tieDiaMm: n(column.tieDia), tieSpacingMm: n(column.tieSpacing),
-          lapToNextLift: column.lap === '1', lapFactor: lap, nos: n(column.nos),
-        })
-      case 'slab':
-        return computeSlab({
-          slabType: slab.type === 'twoway' ? 'twoway' : 'oneway',
-          shortSpanMm: n(slab.shortSpan), longSpanMm: n(slab.longSpan), coverMm: n(slab.cover),
-          mainDiaMm: n(slab.mainDia), mainSpacingMm: n(slab.mainSpacing), distDiaMm: n(slab.distDia), distSpacingMm: n(slab.distSpacing),
-          ldFactor: ld, nos: n(slab.nos),
-        })
-      case 'footing':
-        return computeFooting({
-          lengthMm: n(footing.length), widthMm: n(footing.width), coverMm: n(footing.cover),
-          dir1DiaMm: n(footing.dir1Dia), dir1SpacingMm: n(footing.dir1Spacing),
-          dir2DiaMm: n(footing.dir2Dia), dir2SpacingMm: n(footing.dir2Spacing), nos: n(footing.nos),
-        })
-      case 'beam':
-      default:
-        return computeBeam({
-          clearSpanMm: n(beam.span), widthMm: n(beam.width), depthMm: n(beam.depth), coverMm: n(beam.cover),
-          botDiaMm: n(beam.botDia), botCount: n(beam.botCount), topDiaMm: n(beam.topDia), topCount: n(beam.topCount),
-          stirDiaMm: n(beam.stirDia), stirSpacingMm: n(beam.stirSpacing), anchorIntoSupport: beam.anchor === '1',
-          ldFactor: ld, nos: n(beam.nos),
-        })
-    }
-  }, [member, beam, column, slab, footing, ldFactor, lapFactor])
-
-  const warnings: string[] = useMemo(() => {
-    const ld = n(ldFactor)
-    const lap = n(lapFactor)
-    switch (member) {
-      case 'column':
-        return validateColumnInputs({
-          clearHeightMm: n(column.height), widthMm: n(column.width), depthMm: n(column.depth), coverMm: n(column.cover),
-          mainDiaMm: n(column.mainDia), mainCount: n(column.mainCount), tieDiaMm: n(column.tieDia), tieSpacingMm: n(column.tieSpacing),
-          lapToNextLift: column.lap === '1', lapFactor: lap, nos: n(column.nos),
-        })
-      case 'slab':
-        return validateSlabInputs({
-          slabType: slab.type === 'twoway' ? 'twoway' : 'oneway',
-          shortSpanMm: n(slab.shortSpan), longSpanMm: n(slab.longSpan), coverMm: n(slab.cover),
-          mainDiaMm: n(slab.mainDia), mainSpacingMm: n(slab.mainSpacing), distDiaMm: n(slab.distDia), distSpacingMm: n(slab.distSpacing),
-          ldFactor: ld, nos: n(slab.nos),
-        })
-      case 'footing':
-        return validateFootingInputs({
-          lengthMm: n(footing.length), widthMm: n(footing.width), coverMm: n(footing.cover),
-          dir1DiaMm: n(footing.dir1Dia), dir1SpacingMm: n(footing.dir1Spacing),
-          dir2DiaMm: n(footing.dir2Dia), dir2SpacingMm: n(footing.dir2Spacing), nos: n(footing.nos),
-        })
-      case 'beam':
-      default:
-        return validateBeamInputs({
-          clearSpanMm: n(beam.span), widthMm: n(beam.width), depthMm: n(beam.depth), coverMm: n(beam.cover),
-          botDiaMm: n(beam.botDia), botCount: n(beam.botCount), topDiaMm: n(beam.topDia), topCount: n(beam.topCount),
-          stirDiaMm: n(beam.stirDia), stirSpacingMm: n(beam.stirSpacing), anchorIntoSupport: beam.anchor === '1',
-          ldFactor: ld, nos: n(beam.nos),
-        })
-    }
-  }, [member, beam, column, slab, footing, ldFactor, lapFactor])
+  const memberInputs = useMemo(
+    () => inputsFromFields(member, snapshotFields(member)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [member, beam, column, slab, footing, ldFactor, lapFactor],
+  )
+  const result: BbsResult = useMemo(() => computeFor(memberInputs), [memberInputs])
+  const warnings: string[] = useMemo(() => validateFor(memberInputs), [memberInputs])
+  const diagram = useMemo(() => diagramFor(memberInputs), [memberInputs])
 
   const has = result.totalKg > 0
   const f = (v: number, d = 2) => v.toLocaleString('en-IN', { maximumFractionDigits: d })
@@ -339,36 +493,9 @@ export default function BBSCalculator() {
         </div>
       </div>
 
-      <table className="inv-table" style={{ tableLayout: 'fixed', width: '100%' }}>
-        <thead>
-          <tr>
-            <th style={{ width: '6%', whiteSpace: 'normal' }}>Mark</th>
-            <th style={{ width: '18%', whiteSpace: 'normal' }}>Description</th>
-            <th className="num" style={{ width: '8%', whiteSpace: 'normal' }}>Dia (mm)</th>
-            <th style={{ width: '15%', whiteSpace: 'normal' }}>Shape</th>
-            <th className="num" style={{ width: '13%', whiteSpace: 'normal' }}>Cutting Length (mm)</th>
-            <th className="num" style={{ width: '6%', whiteSpace: 'normal' }}>Nos</th>
-            <th className="num" style={{ width: '11%', whiteSpace: 'normal' }}>Total Length (m)</th>
-            <th className="num" style={{ width: '11%', whiteSpace: 'normal' }}>Unit Wt (kg/m)</th>
-            <th className="num" style={{ width: '12%', whiteSpace: 'normal' }}>Total Wt (kg)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {result.rows.map((r) => (
-            <tr key={r.mark}>
-              <td>{r.mark}</td>
-              <td>{r.desc}</td>
-              <td className="num">{r.diaMm}</td>
-              <td>{r.shape}</td>
-              <td className="num">{f(r.cuttingLengthMm, 0)}</td>
-              <td className="num">{r.nos}</td>
-              <td className="num">{f(r.totalLengthM)}</td>
-              <td className="num">{f(r.unitWtKgM, 3)}</td>
-              <td className="num">{f(r.totalWtKg)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {diagram && <MemberFigure diagram={diagram} caption={diagramCaption(memberInputs, diagram)} />}
+
+      <BbsPrintTable rows={result.rows} fmt={f} />
 
       <div className="inv-totals" style={{ marginLeft: 0, width: '100%' }}>
         <div className="inv-trow inv-grand">
@@ -401,39 +528,24 @@ export default function BBSCalculator() {
 
       {project.map((pm, idx) => {
         const typeLabel = MEMBERS.find((m) => m.key === pm.type)?.label ?? pm.type
+        // Member dimensions live in the stored form fields, not in the stored
+        // result — if they're missing we simply omit the drawing rather than
+        // fabricate one.
+        const pmInputs = pm.fields ? inputsFromFields(pm.type, pm.fields) : null
+        const pmDiagram = pmInputs ? diagramFor(pmInputs) : null
         return (
-          <div key={pm.id} style={{ marginTop: idx === 0 ? 16 : 22 }}>
-            <div className="inv-h">{pm.label} — {typeLabel}</div>
-            <table className="inv-table" style={{ tableLayout: 'fixed', width: '100%' }}>
-              <thead>
-                <tr>
-                  <th style={{ width: '6%', whiteSpace: 'normal' }}>Mark</th>
-                  <th style={{ width: '18%', whiteSpace: 'normal' }}>Description</th>
-                  <th className="num" style={{ width: '8%', whiteSpace: 'normal' }}>Dia (mm)</th>
-                  <th style={{ width: '15%', whiteSpace: 'normal' }}>Shape</th>
-                  <th className="num" style={{ width: '13%', whiteSpace: 'normal' }}>Cutting Length (mm)</th>
-                  <th className="num" style={{ width: '6%', whiteSpace: 'normal' }}>Nos</th>
-                  <th className="num" style={{ width: '11%', whiteSpace: 'normal' }}>Total Length (m)</th>
-                  <th className="num" style={{ width: '11%', whiteSpace: 'normal' }}>Unit Wt (kg/m)</th>
-                  <th className="num" style={{ width: '12%', whiteSpace: 'normal' }}>Total Wt (kg)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pm.result.rows.map((r) => (
-                  <tr key={r.mark}>
-                    <td>{r.mark}</td>
-                    <td>{r.desc}</td>
-                    <td className="num">{r.diaMm}</td>
-                    <td>{r.shape}</td>
-                    <td className="num">{f(r.cuttingLengthMm, 0)}</td>
-                    <td className="num">{r.nos}</td>
-                    <td className="num">{f(r.totalLengthM)}</td>
-                    <td className="num">{f(r.unitWtKgM, 3)}</td>
-                    <td className="num">{f(r.totalWtKg)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div key={pm.id} className="bbs-member-block" style={{ marginTop: idx === 0 ? 16 : 22 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+              <div className="inv-h">{pm.label} — {typeLabel}</div>
+              {pmDiagram && (
+                <MemberFigure
+                  diagram={pmDiagram}
+                  caption={null}
+                  className="bbs-member-fig"
+                />
+              )}
+            </div>
+            <BbsPrintTable rows={pm.result.rows} fmt={f} />
             <div className="inv-totals" style={{ marginLeft: 0, width: '100%', marginTop: 4 }}>
               <div className="inv-trow">
                 <span>Subtotal — {pm.label}</span>
@@ -664,6 +776,8 @@ export default function BBSCalculator() {
             </div>
           </div>
 
+          {diagram && <MemberFigure diagram={diagram} caption={diagramCaption(memberInputs, diagram)} />}
+
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, margin: '16px 0', flexWrap: 'wrap' }}>
             <button type="button" className="share-link-btn" onClick={() => window.print()}>
               <PrinterIcon size={15} color="currentColor" />
@@ -705,7 +819,7 @@ export default function BBSCalculator() {
                     <td>{r.mark}</td>
                     <td>{r.desc}</td>
                     <td className="num">{r.diaMm} mm</td>
-                    <td>{r.shape}</td>
+                    <td><BarShapeCell row={r} /></td>
                     <td className="num">{f(r.cuttingLengthMm, 0)} mm</td>
                     <td className="num">{r.nos}</td>
                     <td className="num">{f(r.totalWtKg)} kg</td>
@@ -812,9 +926,12 @@ export default function BBSCalculator() {
             development or lap length from concrete/steel grade (IS 456 Table 26); confirm the Ld/lap
             factor against your structural drawing. Stirrup and tie lengths use the standard SP-34
             formula (2×(a+b) + 12×dia, i.e. two 135° hooks less three 90° corner bends) and ignore the
-            stirrup bar&apos;s own thickness in the cover offset. Cranked/bent-up bars, multi-span
-            continuous beams, true two-way slab reinforcement and custom bar marks aren&apos;t modelled —
-            for anything beyond a straightforward single member, verify against your engineer&apos;s BBS.
+            stirrup bar&apos;s own thickness in the cover offset. Section and plan drawings are generated
+            from the dimensions and spacings you entered; for beams and columns the arrangement of bars
+            within the section is an assumed depiction, since the tool doesn&apos;t ask for it.
+            Cranked/bent-up bars, multi-span continuous beams, true two-way slab reinforcement and custom
+            bar marks aren&apos;t modelled — for anything beyond a straightforward single member, verify
+            against your engineer&apos;s BBS.
           </p>
         </div>
       </div>

@@ -110,7 +110,7 @@ function LoginForm() {
     <>
       {/* Brand icon + heading */}
       <div style={{ marginBottom: '28px' }}>
-        <LogoMark size={46} style={{ marginBottom: '18px' }} />
+        <LogoMark size={21} style={{ marginBottom: '18px' }} />
         <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', marginBottom: '5px', letterSpacing: '-0.03em' }}>
           Welcome back
         </h2>

@@ -58,7 +58,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
           {/* Logo */}
           <a href="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none', marginBottom: '28px' }}>
-            <LogoMark size={40} onDark />
+            <LogoMark size={18} onDark />
           </a>
 
           {/* Headline */}
@@ -190,7 +190,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           marginBottom: '20px', position: 'relative', zIndex: 1,
         }}>
           <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <LogoMark size={40} />
+            <LogoMark size={18} />
           </a>
         </div>
 

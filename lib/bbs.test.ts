@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   unitWeightKgPerM, stirrupCuttingLengthMm, barCount,
-  computeBeam, computeFooting, summarizeByDiameter,
+  computeBeam, computeColumn, computeSlab, computeFooting, summarizeByDiameter,
   validateBeamInputs, validateColumnInputs, validateSlabInputs, validateFootingInputs,
   type BbsResult, type BarRow,
 } from './bbs'
@@ -48,6 +48,18 @@ describe('computeBeam — worked example from the tool page (4000mm span, 230×4
     expect(result.totalKg).toBeCloseTo(58.04, 2)
   })
 
+  it('carries the geometry each row needs to be drawn', () => {
+    expect(result.rows[0].geom).toEqual({ kind: 'straight', lengthMm: 5600 })
+    expect(result.rows[1].geom).toEqual({ kind: 'straight', lengthMm: 5200 })
+    expect(result.rows[2].geom).toEqual({ kind: 'rect-link', aMm: 180, bMm: 400, diaMm: 8 })
+  })
+
+  it('derives the stirrup drawing and its cutting length from identical inputs', () => {
+    const g = result.rows[2].geom
+    if (g?.kind !== 'rect-link') throw new Error('expected rect-link geometry')
+    expect(stirrupCuttingLengthMm(g.aMm, g.bMm, g.diaMm)).toBe(result.rows[2].cuttingLengthMm)
+  })
+
   it('drops the anchorage development length when bars do not anchor into a support', () => {
     const noAnchor = computeBeam({
       clearSpanMm: 4000, widthMm: 230, depthMm: 450, coverMm: 25,
@@ -59,14 +71,43 @@ describe('computeBeam — worked example from the tool page (4000mm span, 230×4
 })
 
 describe('computeFooting — worked example from the tool page (1500×1500, 12mm@150 both directions)', () => {
+  const result = computeFooting({
+    lengthMm: 1500, widthMm: 1500, coverMm: 50,
+    dir1DiaMm: 12, dir1SpacingMm: 150, dir2DiaMm: 12, dir2SpacingMm: 150, nos: 1,
+  })
+
   it('produces the exact hand-verified grand total (27.38 kg)', () => {
-    const result = computeFooting({
-      lengthMm: 1500, widthMm: 1500, coverMm: 50,
-      dir1DiaMm: 12, dir1SpacingMm: 150, dir2DiaMm: 12, dir2SpacingMm: 150, nos: 1,
-    })
     expect(result.rows[0].totalWtKg).toBeCloseTo(13.69, 2)
     expect(result.rows[1].totalWtKg).toBeCloseTo(13.69, 2)
     expect(result.totalKg).toBeCloseTo(27.38, 2)
+  })
+
+  it('marks every mesh bar as straight geometry matching its cutting length', () => {
+    for (const row of result.rows) {
+      expect(row.geom).toEqual({ kind: 'straight', lengthMm: row.cuttingLengthMm })
+    }
+  })
+})
+
+describe('computeColumn / computeSlab geometry', () => {
+  it('gives the column tie its true internal dimensions', () => {
+    const result = computeColumn({
+      clearHeightMm: 3000, widthMm: 230, depthMm: 230, coverMm: 40,
+      mainDiaMm: 16, mainCount: 6, tieDiaMm: 8, tieSpacingMm: 150,
+      lapToNextLift: true, lapFactor: 50, nos: 1,
+    })
+    expect(result.rows[0].geom).toEqual({ kind: 'straight', lengthMm: 3800 })
+    expect(result.rows[1].geom).toEqual({ kind: 'rect-link', aMm: 150, bMm: 150, diaMm: 8 })
+  })
+
+  it('marks both slab bar groups as straight geometry matching their cutting lengths', () => {
+    const result = computeSlab({
+      slabType: 'oneway', shortSpanMm: 3000, longSpanMm: 4000, coverMm: 20,
+      mainDiaMm: 10, mainSpacingMm: 150, distDiaMm: 8, distSpacingMm: 200, ldFactor: 50, nos: 1,
+    })
+    for (const row of result.rows) {
+      expect(row.geom).toEqual({ kind: 'straight', lengthMm: row.cuttingLengthMm })
+    }
   })
 })
 
