@@ -33,6 +33,13 @@ export const TOOLS: ToolDef[] = [
     live: true,
   },
   {
+    slug: 'bar-bending-schedule-calculator',
+    name: 'Bar Bending Schedule (BBS) Calculator',
+    short:
+      'Cutting lengths, bar counts and steel weight for beams, columns, slabs and footings — a complete bar bending schedule in seconds.',
+    live: true,
+  },
+  {
     slug: 'brick-calculator',
     name: 'Brick Calculator',
     short: 'Bricks, cement and sand required for any wall size and thickness.',

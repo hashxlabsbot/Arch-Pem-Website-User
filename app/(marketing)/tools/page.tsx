@@ -25,6 +25,7 @@ const TOOL_ICONS: Record<string, React.ReactNode> = {
   'contractor-bill-generator': <RupeeIcon size={24} color="#4f46e5" />,
   'construction-cost-calculator': <CalculatorIcon size={24} color="#4f46e5" />,
   'concrete-calculator': <CubeIcon size={24} color="#4f46e5" />,
+  'bar-bending-schedule-calculator': <SteelIcon size={24} color="#4f46e5" />,
   'brick-calculator': <BricksIcon size={24} color="#64748b" />,
   'steel-weight-calculator': <SteelIcon size={24} color="#64748b" />,
   'area-converter': <RulerIcon size={24} color="#64748b" />,
