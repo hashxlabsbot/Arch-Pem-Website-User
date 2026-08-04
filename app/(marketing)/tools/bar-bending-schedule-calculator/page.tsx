@@ -44,6 +44,18 @@ const FAQS = [
     a: 'This calculator covers one-way slab behaviour (main steel one way, distribution/temperature steel the other) in v1. True two-way slabs — with independently designed main steel in both directions — aren’t modelled yet; treat the "two-way" option as a label for now and verify both-direction steel against your structural drawing.',
   },
   {
+    q: 'Can I enter dimensions in feet and inches, the way the drawing states them?',
+    a: 'Yes — switch the unit toggle to feet-inches and type what the drawing says: 15\'-4½" for a span, 9 for a 9" width, 4 for @4" c/c spacing. Half and quarter inches, decimal feet (3.5\'), plain inches (42") and the 9\'\'x15" style all parse. Bar diameters and clear cover stay in millimetres in both modes, exactly as Indian structural drawings state them. Every length field shows the converted value underneath, which is the quickest way to catch a slip like a 9" section typed as 9 mm.',
+  },
+  {
+    q: 'Why does a single stirrup spacing under-count the steel?',
+    a: 'Because real beams are not stirruped at one spacing. A typical drawing calls up @4" c/c over about 3\' at each end (where shear is highest) and @6" c/c through the middle. On a 4,686 mm span that works out to 37 stirrups, against 31 if you assume @6" throughout — roughly 16% of the stirrup steel missing. Enter each tightened run as a zone and the schedule counts every interval, sharing the bar where two zones meet rather than double-counting it.',
+  },
+  {
+    q: 'Can I enter a bar group that mixes diameters, like 2-20Ø + 1-16Ø?',
+    a: 'Yes — add a row per diameter. Each becomes its own line in the schedule, which is how a real bar bending schedule tabulates it, and development length is added per diameter rather than once for the whole group. This matters: forcing that example into a single diameter is out by +15% (all 20Ø) or −31% (all 16Ø).',
+  },
+  {
     q: 'Can I build a schedule for a whole floor or building, not just one member?',
     a: 'Yes — after calculating any beam, column, slab or footing, click "Add to Project" to save it into a running project list, then keep switching tabs and adding more members. The tool shows a grand total, a diameter-wise steel summary (exactly how many kg of 8mm, 10mm, 12mm… to order) and lets you edit or remove any member. Your project is saved in your browser (localStorage) so it survives a reload — export it as CSV or PDF any time as a backup.',
   },
@@ -177,13 +189,36 @@ export default function BBSCalculatorPage() {
               <li><strong>Total ≈ 58.0 kg</strong> of steel for this one beam — enter the same numbers into the calculator above to verify.</li>
             </ul>
 
+            <h2>How stirrup zones are counted</h2>
+            <p>
+              Every beam on a real drawing tightens its stirrups near the supports, where shear is
+              greatest, and opens out through the middle. The schedule has to follow that, and the
+              counting rule is specific:
+            </p>
+            <ul>
+              <li>Each zone contributes its <strong>intervals</strong> — ⌊zone length ÷ spacing⌋ — not its bar count.</li>
+              <li>One closing bar is added for the span as a whole.</li>
+              <li>Two adjacent zones therefore <strong>share</strong> the stirrup that sits on their boundary, because only one bar gets tied there.</li>
+            </ul>
+            <p>
+              Worked through on a 4,686 mm (15&#39;-4½&quot;) span with 8&#8960; stirrups @4&quot; c/c over
+              3&#39; at each end and @6&quot; c/c in the middle: 9 intervals at each end, 18 across the
+              2,857 mm middle, plus one closing bar — <strong>37 stirrups</strong>. Assuming a single
+              @6&quot; spacing gives 31, which is about 16% light. Zones apply symmetrically at both
+              ends; if the lengths you enter don&apos;t fit the span, the tool blocks saving rather than
+              quietly rescaling a dimension you took off a drawing.
+            </p>
+
             <h2>What this tool doesn&apos;t do</h2>
             <p>
               This is a quantity/geometry calculator, not a structural design tool. It won&apos;t derive
               development or lap length from your concrete and steel grade (that&apos;s IS 456 Table 26,
               a structural decision) — instead you enter the multiplier your drawing specifies. It also
-              doesn&apos;t model cranked/bent-up beam bars, multi-span continuous beams, independently
-              designed two-way slab steel, or custom bar marks beyond the standard bar groups per member.
+              does model mixed-diameter bar groups, variable stirrup zones, extra top bars curtailed
+              over supports, side face bars, per-level column lifts, inner/cross ties and slab top
+              steel — but only from the length or size the drawing states, never derived from a moment
+              envelope. It doesn&apos;t model cranked/bent-up beam bars, multi-span continuous beams,
+              or independently designed two-way slab steel.
               For anything beyond a straightforward single member, always verify against your structural
               engineer&apos;s BBS before ordering steel.
             </p>

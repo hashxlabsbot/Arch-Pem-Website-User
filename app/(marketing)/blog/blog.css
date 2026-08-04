@@ -63,7 +63,8 @@
 }
 .featured-post-media {
   position: relative;
-  min-height: 320px;
+  aspect-ratio: 1200 / 630;
+  align-self: center;
 }
 .featured-post-media img { object-fit: cover; }
 .featured-post-body {
@@ -124,7 +125,7 @@
   transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
 }
 a.post-card:hover { box-shadow: var(--sh); border-color: var(--indigo-md); transform: translateY(-3px); }
-.post-card-media { position: relative; height: 168px; background: var(--navy); overflow: hidden; }
+.post-card-media { position: relative; aspect-ratio: 1200 / 630; background: var(--navy); overflow: hidden; }
 .post-card-media img { object-fit: cover; }
 .post-card-cat {
   position: absolute;
@@ -206,7 +207,7 @@ a.post-card:hover { box-shadow: var(--sh); border-color: var(--indigo-md); trans
   border-radius: 20px;
   overflow: hidden;
   position: relative;
-  height: 420px;
+  aspect-ratio: 1200 / 630;
   box-shadow: 0 20px 50px rgba(15, 23, 42, 0.14);
 }
 .post-cover img { object-fit: cover; }
@@ -435,7 +436,6 @@ a.post-card:hover { box-shadow: var(--sh); border-color: var(--indigo-md); trans
 @media (max-width: 1080px) {
   .post-grid, .related-posts-section .post-grid { grid-template-columns: repeat(2, 1fr); }
   .featured-post { grid-template-columns: 1fr; }
-  .featured-post-media { min-height: 220px; }
   .post-layout { grid-template-columns: 1fr; }
   .post-toc { position: static; border-bottom: 1px solid var(--gray-100); padding-bottom: 20px; margin-bottom: 8px; }
   .post-toc ol { display: flex; flex-wrap: wrap; gap: 4px 18px; border-left: none; }
@@ -443,7 +443,7 @@ a.post-card:hover { box-shadow: var(--sh); border-color: var(--indigo-md); trans
 }
 @media (max-width: 640px) {
   .post-grid, .related-posts-section .post-grid { grid-template-columns: 1fr; }
-  .post-cover { height: 220px; border-radius: 14px; }
+  .post-cover { border-radius: 14px; }
   .featured-post-body { padding: 30px 24px; }
   .post-footer-row { flex-direction: column; align-items: flex-start; }
   .related-tool-cta { flex-direction: column; align-items: flex-start; }

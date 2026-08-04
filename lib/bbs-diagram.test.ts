@@ -4,17 +4,18 @@ import {
   fitScale, rectLinkGlyph, indicativeLinkGlyph, rowGlyph, STRAIGHT_GLYPH,
   beamSectionDiagram, columnSectionDiagram, distributeAlongFaces,
   slabPlanDiagram, footingPlanDiagram, meshPlanDiagram,
-  LINK_BOX, MIN_BAR_R, SEC_MAX_W, SEC_MAX_H,
+  layerCircles, distributeAlongFacesR, spreadAcross, beamElevationDiagram,
+  LINK_BOX, MIN_BAR_R, SEC_MAX_W, SEC_MAX_H, MAX_ELEV_TICKS,
 } from './bbs-diagram'
 
 const BEAM: BeamInputs = {
   clearSpanMm: 4000, widthMm: 230, depthMm: 450, coverMm: 25,
-  botDiaMm: 16, botCount: 4, topDiaMm: 12, topCount: 2,
+  botBars: [{ diaMm: 16, count: 4 }], topBars: [{ diaMm: 12, count: 2 }],
   stirDiaMm: 8, stirSpacingMm: 150, anchorIntoSupport: true, ldFactor: 50, nos: 1,
 }
 const COLUMN: ColumnInputs = {
   clearHeightMm: 3000, widthMm: 230, depthMm: 230, coverMm: 40,
-  mainDiaMm: 16, mainCount: 6, tieDiaMm: 8, tieSpacingMm: 150,
+  mainBars: [{ diaMm: 16, count: 6 }], tieDiaMm: 8, tieSpacingMm: 150,
   lapToNextLift: true, lapFactor: 50, nos: 1,
 }
 const SLAB: SlabInputs = {
@@ -137,7 +138,7 @@ describe('beamSectionDiagram', () => {
   })
 
   it('flags overlap instead of inventing a second layer', () => {
-    const crowded = beamSectionDiagram({ ...BEAM, botCount: 8, botDiaMm: 25 })!
+    const crowded = beamSectionDiagram({ ...BEAM, botBars: [{ diaMm: 25, count: 8 }] })!
     expect(crowded.barsOverlap).toBe(true)
     expect(crowded.bars.filter((b) => b.cy > crowded.link.y + crowded.link.h / 2)).toHaveLength(8)
   })
@@ -248,9 +249,9 @@ describe('degenerate input never emits NaN or Infinity', () => {
       const builders = [
         () => beamSectionDiagram({ ...BEAM, widthMm: v }),
         () => beamSectionDiagram({ ...BEAM, coverMm: v }),
-        () => beamSectionDiagram({ ...BEAM, botDiaMm: v, botCount: v }),
+        () => beamSectionDiagram({ ...BEAM, botBars: [{ diaMm: v, count: v }] }),
         () => columnSectionDiagram({ ...COLUMN, depthMm: v }),
-        () => columnSectionDiagram({ ...COLUMN, mainCount: v }),
+        () => columnSectionDiagram({ ...COLUMN, mainBars: [{ diaMm: 16, count: v }] }),
         () => slabPlanDiagram({ ...SLAB, shortSpanMm: v }),
         () => slabPlanDiagram({ ...SLAB, mainSpacingMm: v }),
         () => footingPlanDiagram({ ...FOOTING, coverMm: v }),
@@ -279,8 +280,132 @@ describe('degenerate input never emits NaN or Infinity', () => {
   })
 
   it('clamps a bar radius up so tiny bars stay visible, and says so', () => {
-    const d = beamSectionDiagram({ ...BEAM, botDiaMm: 0.01, topDiaMm: 0.01 })!
+    const d = beamSectionDiagram({ ...BEAM, botBars: [{ diaMm: 0.01, count: 4 }], topBars: [{ diaMm: 0.01, count: 2 }] })!
     expect(d.barsToScale).toBe(false)
     for (const b of d.bars) expect(b.r).toBeGreaterThanOrEqual(MIN_BAR_R)
+  })
+})
+
+/* ── Phase 1: mixed diameters and the stirrup-zone elevation ── */
+
+describe('layerCircles', () => {
+  const link = { x: 10, y: 10, w: 200, h: 120 }
+
+  it('is identical to spreadAcross for a single diameter', () => {
+    for (const n of [1, 2, 3, 4, 6, 9]) {
+      const dia = 16
+      const scale = 0.5
+      const r = (dia / 2) * scale
+      const got = layerCircles(link, [{ diaMm: dia, count: n }], scale, 'bottom')
+      const want = spreadAcross(link, n, r)
+      expect(got.bars).toHaveLength(n)
+      got.bars.forEach((b, idx) => expect(b.cx, `n=${n} i=${idx}`).toBeCloseTo(want[idx], 9))
+    }
+  })
+
+  it('puts the largest bars on the corners and keeps them inside the link', () => {
+    const got = layerCircles(link, [{ diaMm: 20, count: 2 }, { diaMm: 16, count: 1 }], 0.5, 'bottom')
+    expect(got.bars).toHaveLength(3)
+    expect(got.bars[0].r).toBeCloseTo(5, 6)      // 20mm at 0.5 scale
+    expect(got.bars[2].r).toBeCloseTo(5, 6)
+    expect(got.bars[1].r).toBeCloseTo(4, 6)      // the 16mm sits between them
+    expect(got.bars[0].cx - got.bars[0].r).toBeCloseTo(link.x, 6)
+    expect(got.bars[2].cx + got.bars[2].r).toBeCloseTo(link.x + link.w, 6)
+  })
+
+  it('sits bars tangent to the requested face', () => {
+    const bottom = layerCircles(link, [{ diaMm: 16, count: 2 }], 0.5, 'bottom')
+    const top = layerCircles(link, [{ diaMm: 16, count: 2 }], 0.5, 'top')
+    expect(bottom.bars[0].cy + bottom.bars[0].r).toBeCloseTo(link.y + link.h, 6)
+    expect(top.bars[0].cy - top.bars[0].r).toBeCloseTo(link.y, 6)
+  })
+
+  it('reports overlap rather than inventing a second layer', () => {
+    expect(layerCircles(link, [{ diaMm: 40, count: 12 }], 1, 'bottom').overlap).toBe(true)
+    expect(layerCircles(link, [{ diaMm: 16, count: 3 }], 0.5, 'bottom').overlap).toBe(false)
+  })
+
+  it('caps how many it draws while still reporting the true total', () => {
+    const got = layerCircles(link, [{ diaMm: 16, count: 200 }], 0.5, 'bottom')
+    expect(got.total).toBe(200)
+    expect(got.shown).toBeLessThan(200)
+    expect(got.bars).toHaveLength(got.shown)
+  })
+
+  it('handles an empty group', () => {
+    expect(layerCircles(link, [], 0.5, 'bottom')).toEqual({ bars: [], toScale: true, overlap: false, shown: 0, total: 0 })
+  })
+})
+
+describe('distributeAlongFacesR', () => {
+  const link = { x: 0, y: 0, w: 100, h: 100 }
+  it('matches the single-radius form when every radius is equal', () => {
+    for (const n of [1, 3, 4, 8]) {
+      const want = distributeAlongFaces(link, n, 4)
+      const got = distributeAlongFacesR(link, Array(n).fill(4))
+      expect(got).toEqual(want)
+    }
+  })
+  it('gives the corners the largest bars', () => {
+    const got = distributeAlongFacesR(link, [3, 5, 3, 5, 3, 5])
+    expect(got.slice(0, 4).map((b) => b.r)).toEqual([5, 5, 5, 3])
+  })
+})
+
+describe('beamElevationDiagram', () => {
+  const ZONED: BeamInputs = { ...BEAM, clearSpanMm: 4686.3, stirSpacingMm: 152.4, stirEndZones: [{ lengthMm: 914.4, spacingMm: 101.6 }] }
+
+  it('is omitted when the spacing is uniform — it would add nothing', () => {
+    expect(beamElevationDiagram(BEAM)).toBeNull()
+  })
+
+  it('draws exactly as many ticks as the schedule counts stirrups', () => {
+    const d = beamElevationDiagram(ZONED)!
+    expect(d.tickCount).toBe(37)
+    expect(d.stirrups).toHaveLength(37)
+    expect(d.drawnAll).toBe(true)
+  })
+
+  it('spans the full beam, left face to right face, monotonically', () => {
+    const d = beamElevationDiagram(ZONED)!
+    const xs = d.stirrups.map((p) => Number(p.split(' ')[1]))
+    expect(xs[0]).toBeCloseTo(d.beam.x, 6)
+    expect(xs[xs.length - 1]).toBeCloseTo(d.beam.x + d.beam.w, 6)
+    for (let k = 1; k < xs.length; k++) expect(xs[k]).toBeGreaterThanOrEqual(xs[k - 1])
+  })
+
+  it('bands cover the whole span and are labelled per zone', () => {
+    const d = beamElevationDiagram(ZONED)!
+    expect(d.zoneBands.map((b) => b.kind)).toEqual(['end', 'middle', 'end'])
+    expect(d.zoneBands[0].label).toBe('9 @ 102')
+  })
+
+  it('never dimensions the depth, because the vertical scale is exaggerated', () => {
+    const d = beamElevationDiagram(ZONED)!
+    expect(d.yToScale).toBe(false)
+    expect(d.dims).toHaveLength(1)
+    expect(d.dims[0].label).toBe('4686')
+  })
+
+  it('falls back to true first/last positions past the tick cap', () => {
+    const dense = beamElevationDiagram({ ...ZONED, clearSpanMm: 20000, stirSpacingMm: 75, stirEndZones: [{ lengthMm: 3000, spacingMm: 50 }] })!
+    expect(dense.tickCount).toBeGreaterThan(MAX_ELEV_TICKS)
+    expect(dense.drawnAll).toBe(false)
+    expect(dense.stirrups).toHaveLength(6)
+  })
+
+  it('returns null for a degenerate span', () => {
+    for (const v of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(beamElevationDiagram({ ...ZONED, clearSpanMm: v })).toBeNull()
+    }
+  })
+
+  it('emits no NaN in any path', () => {
+    for (const v of [0, -1, Number.NaN, Number.POSITIVE_INFINITY, 1e12]) {
+      const d = beamElevationDiagram({ ...ZONED, stirSpacingMm: v })
+      if (!d) continue
+      const all = [...d.stirrups, ...d.mainLines, ...d.zoneBands.map((b) => b.path), ...d.dims.map((x) => x.path)].join(' ')
+      expect(all, `stirSpacingMm=${v}`).not.toMatch(/NaN|Infinity|undefined/)
+    }
   })
 })

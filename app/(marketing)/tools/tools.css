@@ -4,8 +4,10 @@
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Page hero ── */
+/* The navbar is sticky (in flow), not fixed — the hero needs breathing room
+   above the breadcrumb, not clearance for an overlapping header. */
 .tool-hero {
-  padding: 132px 0 0;
+  padding: 56px 0 0;
   text-align: center;
   max-width: 840px;
   margin: 0 auto;
@@ -158,6 +160,43 @@
 }
 .tool-warning ul { margin: 4px 0 0; padding-left: 18px; }
 .tool-warning li { margin-bottom: 2px; line-height: 1.5; }
+
+/* Advisory checks — worth a look, but never blocking. */
+.tool-warning.is-check {
+  background: rgba(245, 158, 11, 0.07);
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+/* Live conversion echo under every length field. Height is reserved so the
+   layout doesn't jump as the user types. */
+.tf-echo {
+  display: block;
+  min-height: 15px;
+  margin-top: 2px;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  color: var(--gray-500);
+  font-variant-numeric: tabular-nums;
+}
+.tf-echo.is-bad { color: #b45309; }
+
+/* Compact variant of the segmented control, for the unit toggle. */
+.tf-tabs--sm { padding: 3px; }
+.tf-tabs--sm .tf-tab { padding: 6px 10px; font-size: 0.74rem; }
+
+/* Two-value list rows (count + diameter, or zone length + spacing). */
+.item-row-grid.bbs-2 { grid-template-columns: 1fr 1fr 26px; }
+/* Column lift: level name is the wide field, height the narrow one. */
+.item-row-grid.bbs-lift { grid-template-columns: 1.5fr 1fr 26px; }
+.bbs-lift-bars { margin-top: 8px; padding-left: 10px; border-left: 2px solid var(--gray-200); }
+
+/* Cutting-plan patterns: monospaced-ish so the numbers line up when scanned. */
+.bbs-pattern { font-size: 0.78rem; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.bbs-pattern-waste { color: var(--gray-400); }
+
+/* Beam elevation is wider than it is tall — cap the height, not the width. */
+.bbs-elevation { max-height: 150px; }
 
 /* ── BBS bar-shape glyphs & member section drawings ──
    Meaning is carried by stroke and dash pattern only. Browsers routinely drop
@@ -884,10 +923,14 @@ a.tool-card:hover {
   .tools-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px) {
+  .tool-hero { padding-top: 32px; }
   .tools-grid { grid-template-columns: 1fr; }
   .tool-panel { padding: 20px; }
   .inv-sheet { padding: 22px 20px; }
   .tf-2col { grid-template-columns: 1fr; }
+  .item-row-grid.bbs-2 { grid-template-columns: 1fr 1fr 24px; }
+  .item-row-grid.bbs-lift { grid-template-columns: 1.4fr 1fr 24px; }
+  .bbs-elevation { max-height: 116px; }
   .tf-tabs { flex-wrap: wrap; }
   .tf-tab { flex: 1 1 calc(50% - 4px); }
   .item-row-grid { grid-template-columns: 70px 1fr 1fr 1fr 24px; }

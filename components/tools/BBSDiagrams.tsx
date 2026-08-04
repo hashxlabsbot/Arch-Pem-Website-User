@@ -77,12 +77,11 @@ export function MemberFigure({
   className?: string
 }) {
   const titleId = useId()
-  const [widthDim, depthDim] = diagram.dims
 
   return (
     <figure className={`bbs-figure${className ? ` ${className}` : ''}`}>
       <svg
-        className="bbs-section"
+        className={`bbs-section${diagram.variant === 'elevation' ? ' bbs-elevation' : ''}`}
         viewBox={`0 0 ${diagram.viewW} ${diagram.viewH}`}
         width={diagram.viewW}
         height={diagram.viewH}
@@ -91,7 +90,25 @@ export function MemberFigure({
       >
         <title id={titleId}>{diagram.title}</title>
 
-        {diagram.variant === 'section' ? (
+        {diagram.variant === 'elevation' ? (
+          <>
+            <rect
+              x={diagram.beam.x}
+              y={diagram.beam.y}
+              width={diagram.beam.w}
+              height={diagram.beam.h}
+              className="bbs-outline"
+            />
+            {diagram.mainLines.map((d) => <path key={`m${d}`} d={d} className="bbs-link" />)}
+            {diagram.stirrups.map((d) => <path key={`s${d}`} d={d} className="bbs-mesh" />)}
+            {diagram.zoneBands.map((b) => (
+              <g key={b.path}>
+                <path d={b.path} className="bbs-dim" />
+                <text x={b.tx} y={b.ty} className="bbs-dim-t" textAnchor="middle">{b.label}</text>
+              </g>
+            ))}
+          </>
+        ) : diagram.variant === 'section' ? (
           <>
             <rect
               x={diagram.outer.x}
@@ -125,8 +142,7 @@ export function MemberFigure({
           </>
         )}
 
-        <DimText dim={widthDim} className="bbs-dim" />
-        <DimText dim={depthDim} className="bbs-dim" />
+        {diagram.dims.map((d) => <DimText key={d.path} dim={d} className="bbs-dim" />)}
       </svg>
       <figcaption className="bbs-figure-cap">{caption}</figcaption>
     </figure>

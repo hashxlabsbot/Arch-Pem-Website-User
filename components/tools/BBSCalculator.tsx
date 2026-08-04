@@ -6,166 +6,125 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import ShareButton from './ShareButton'
 import { ExportIcon, PrinterIcon } from '@/components/icons'
 import {
-  computeBeam, computeColumn, computeFooting, computeSlab, summarizeByDiameter,
-  validateBeamInputs, validateColumnInputs, validateFootingInputs, validateSlabInputs,
-  type BbsResult, type BeamInputs, type ColumnInputs, type FootingInputs, type SlabInputs,
+  summarizeByDiameter, deriveMarkPrefix,
+  type BarSpec, type BbsResult, type SpacingZone,
 } from '@/lib/bbs'
+import { type MemberDiagram } from '@/lib/bbs-diagram'
 import {
-  beamSectionDiagram, columnSectionDiagram, footingPlanDiagram, slabPlanDiagram,
-  type MemberDiagram,
-} from '@/lib/bbs-diagram'
+  LENGTH_FIELDS, MEMBERS, PROJECT_SCHEMA_VERSION,
+  checksOf, computeFor, diagramsFor, errorsOf, hydrateProjectMember,
+  inputsFromFields, issuesFor,
+  type Member, type MemberInputs, type ProjectMember,
+} from '@/lib/bbs-fields'
+import { decodeBarSpecs, decodeLifts, decodeSpacingZones, encodeBarSpecs, encodeLifts, encodeSpacingZones } from '@/lib/bbs-serialize'
+import { DEFAULT_STOCK_MM, nestSchedule } from '@/lib/bbs-nesting'
+import { formatLength, parseLengthMm, type UnitMode } from '@/lib/units'
 import { BarShapeCell, MemberFigure } from './BBSDiagrams'
-
-type Member = 'beam' | 'column' | 'slab' | 'footing'
-
-const MEMBERS: { key: Member; label: string }[] = [
-  { key: 'beam', label: 'Beam' },
-  { key: 'column', label: 'Column' },
-  { key: 'slab', label: 'Slab' },
-  { key: 'footing', label: 'Footing' },
-]
+import BBSLengthInput from './BBSLengthInput'
+import { BarSpecRows, ColumnLiftRows, SpacingZoneRows } from './BBSListRows'
 
 type BeamForm = {
+  mark: string
   span: string; width: string; depth: string; cover: string
-  botDia: string; botCount: string; topDia: string; topCount: string
-  stirDia: string; stirSpacing: string; anchor: string; nos: string
+  botBars: string; topBars: string
+  xTopBars: string; xTopLen: string; xTopBoth: string
+  faceBars: string; faceBoth: string
+  stirDia: string; stirSpacing: string; stirZones: string; anchor: string; nos: string
 }
+/** Chosen so an untouched beam reproduces the shipped 58.04 kg schedule exactly. */
 const BEAM_DEFAULTS: BeamForm = {
+  mark: '',
   span: '4000', width: '230', depth: '450', cover: '25',
-  botDia: '16', botCount: '4', topDia: '12', topCount: '2',
-  stirDia: '8', stirSpacing: '150', anchor: '1', nos: '1',
+  botBars: '4x16', topBars: '2x12',
+  xTopBars: '', xTopLen: '', xTopBoth: '1',
+  faceBars: '', faceBoth: '1',
+  stirDia: '8', stirSpacing: '150', stirZones: '', anchor: '1', nos: '1',
 }
 
 type ColumnForm = {
+  mark: string
   height: string; width: string; depth: string; cover: string
-  mainDia: string; mainCount: string; tieDia: string; tieSpacing: string
+  mainBars: string; lifts: string
+  tieDia: string; tieSpacing: string; tieZones: string
+  innerDia: string; innerA: string; innerB: string
   lap: string; nos: string
 }
 const COLUMN_DEFAULTS: ColumnForm = {
+  mark: '',
   height: '3000', width: '230', depth: '230', cover: '40',
-  mainDia: '16', mainCount: '6', tieDia: '8', tieSpacing: '150',
+  mainBars: '6x16', lifts: '',
+  tieDia: '8', tieSpacing: '150', tieZones: '',
+  innerDia: '', innerA: '', innerB: '',
   lap: '1', nos: '1',
 }
 
 type SlabForm = {
+  mark: string
   type: string
   shortSpan: string; longSpan: string; cover: string
   mainDia: string; mainSpacing: string; distDia: string; distSpacing: string
+  topDia: string; topSpacing: string; topLen: string; topEdges: string
   nos: string
 }
 const SLAB_DEFAULTS: SlabForm = {
-  type: 'oneway', shortSpan: '3000', longSpan: '4000', cover: '20',
+  mark: '',
+  // 25 mm matches the cover these drawings actually specify for slabs.
+  type: 'oneway', shortSpan: '3000', longSpan: '4000', cover: '25',
   mainDia: '10', mainSpacing: '150', distDia: '8', distSpacing: '200',
+  topDia: '', topSpacing: '', topLen: '', topEdges: '2',
   nos: '1',
 }
 
 type FootingForm = {
+  mark: string
   length: string; width: string; cover: string
   dir1Dia: string; dir1Spacing: string; dir2Dia: string; dir2Spacing: string
   nos: string
 }
 const FOOTING_DEFAULTS: FootingForm = {
+  mark: '',
   length: '1500', width: '1500', cover: '50',
   dir1Dia: '12', dir1Spacing: '150', dir2Dia: '12', dir2Spacing: '150',
   nos: '1',
 }
 
-function seedGroup<T extends Record<string, string>>(params: URLSearchParams, prefix: string, defaults: T): T {
+/**
+ * Seeds a form group from the URL.
+ *
+ * Values present in the URL are taken verbatim — they were written in that
+ * link's own unit mode, so converting them would corrupt them. Defaults are
+ * authored in millimetres, so when the link opens in feet-inches they DO need
+ * converting; otherwise a 3000 mm default height would be read as 3000 feet.
+ */
+function seedGroup<T extends Record<string, string>>(
+  params: URLSearchParams,
+  prefix: string,
+  defaults: T,
+  member: Member,
+  mode: UnitMode,
+): T {
   const out = { ...defaults }
+  const lengths = LENGTH_FIELDS[member]
   for (const k of Object.keys(defaults) as (keyof T)[]) {
-    const v = params.get(`${prefix}_${String(k)}`)
-    if (v !== null) out[k] = v as T[keyof T]
+    const key = String(k)
+    const v = params.get(`${prefix}_${key}`)
+    if (v !== null) {
+      out[k] = v as T[keyof T]
+    } else if (mode !== 'mm' && lengths[key]) {
+      const asMm = parseLengthMm(defaults[k], { mode: 'mm', bareUnit: 'mm' })
+      if (asMm.ok) out[k] = formatLength(asMm.mm, mode) as T[keyof T]
+    }
   }
   return out
 }
 
-type ProjectMember = {
-  id: string
-  type: Member
-  label: string
-  fields: Record<string, string>
-  result: BbsResult
-  addedAt: number
-}
 /** Unlike a capped "recent runs" list, a BBS project must never silently evict entries. */
 const PROJECT_KEY = 'arcpem_bbs_project'
+const UNITS_KEY = 'arcpem_bbs_units'
 
 function defaultLabelFor(m: Member, list: ProjectMember[]): string {
   const typeLabel = MEMBERS.find((x) => x.key === m)?.label ?? ''
   return `${typeLabel} ${list.filter((p) => p.type === m).length + 1}`
-}
-
-/**
- * One mapping from raw form strings to the typed *Inputs objects, shared by the
- * result, the warnings, the drawing and the saved-project migration — so those
- * four can never disagree about what the user entered.
- */
-type MemberInputs =
-  | { type: 'beam'; v: BeamInputs }
-  | { type: 'column'; v: ColumnInputs }
-  | { type: 'slab'; v: SlabInputs }
-  | { type: 'footing'; v: FootingInputs }
-
-function inputsFromFields(type: Member, f: Record<string, string>): MemberInputs {
-  const n = (v: string | undefined) => parseFloat(v ?? '') || 0
-  const ld = n(f.ldFactor)
-  const lap = n(f.lapFactor)
-  switch (type) {
-    case 'column':
-      return { type, v: {
-        clearHeightMm: n(f.height), widthMm: n(f.width), depthMm: n(f.depth), coverMm: n(f.cover),
-        mainDiaMm: n(f.mainDia), mainCount: n(f.mainCount), tieDiaMm: n(f.tieDia), tieSpacingMm: n(f.tieSpacing),
-        lapToNextLift: f.lap === '1', lapFactor: lap, nos: n(f.nos),
-      } }
-    case 'slab':
-      return { type, v: {
-        slabType: f.type === 'twoway' ? 'twoway' : 'oneway',
-        shortSpanMm: n(f.shortSpan), longSpanMm: n(f.longSpan), coverMm: n(f.cover),
-        mainDiaMm: n(f.mainDia), mainSpacingMm: n(f.mainSpacing), distDiaMm: n(f.distDia), distSpacingMm: n(f.distSpacing),
-        ldFactor: ld, nos: n(f.nos),
-      } }
-    case 'footing':
-      return { type, v: {
-        lengthMm: n(f.length), widthMm: n(f.width), coverMm: n(f.cover),
-        dir1DiaMm: n(f.dir1Dia), dir1SpacingMm: n(f.dir1Spacing),
-        dir2DiaMm: n(f.dir2Dia), dir2SpacingMm: n(f.dir2Spacing), nos: n(f.nos),
-      } }
-    case 'beam':
-    default:
-      return { type: 'beam', v: {
-        clearSpanMm: n(f.span), widthMm: n(f.width), depthMm: n(f.depth), coverMm: n(f.cover),
-        botDiaMm: n(f.botDia), botCount: n(f.botCount), topDiaMm: n(f.topDia), topCount: n(f.topCount),
-        stirDiaMm: n(f.stirDia), stirSpacingMm: n(f.stirSpacing), anchorIntoSupport: f.anchor === '1',
-        ldFactor: ld, nos: n(f.nos),
-      } }
-  }
-}
-
-function computeFor(mi: MemberInputs): BbsResult {
-  switch (mi.type) {
-    case 'column': return computeColumn(mi.v)
-    case 'slab': return computeSlab(mi.v)
-    case 'footing': return computeFooting(mi.v)
-    default: return computeBeam(mi.v)
-  }
-}
-
-function validateFor(mi: MemberInputs): string[] {
-  switch (mi.type) {
-    case 'column': return validateColumnInputs(mi.v)
-    case 'slab': return validateSlabInputs(mi.v)
-    case 'footing': return validateFootingInputs(mi.v)
-    default: return validateBeamInputs(mi.v)
-  }
-}
-
-function diagramFor(mi: MemberInputs): MemberDiagram | null {
-  switch (mi.type) {
-    case 'column': return columnSectionDiagram(mi.v)
-    case 'slab': return slabPlanDiagram(mi.v)
-    case 'footing': return footingPlanDiagram(mi.v)
-    default: return beamSectionDiagram(mi.v)
-  }
 }
 
 const mm = (v: number) => Math.round(v).toLocaleString('en-IN')
@@ -197,11 +156,23 @@ function diagramCaption(mi: MemberInputs, d: MemberDiagram): React.ReactNode {
     if (!d.barsToScale) notes.push('Bar circles are enlarged for visibility.')
     if (d.barsOverlap) notes.push('Bars are shown overlapping — they do not fit side by side in one layer at this section width.')
     if (d.barCountShown < d.barCountTotal) notes.push(`Showing ${d.barCountShown} of ${d.barCountTotal} bars.`)
-  } else {
+  } else if (d.variant === 'plan') {
     if (!d.dir1.drawnAll || !d.dir2.drawnAll) notes.push('Representative bars shown — the full count is in the schedule.')
+  } else if (!d.drawnAll) {
+    notes.push('Representative stirrups shown — the full count is in the schedule.')
   }
   const tail = notes.length > 0 ? ` ${notes.join(' ')}` : ''
 
+  if (d.variant === 'elevation' && mi.type === 'beam') {
+    return (
+      <>
+        <strong>Beam elevation</strong> — stirrup spacing by zone along the {mm(mi.v.clearSpanMm)} mm span.
+        Vertical scale is exaggerated, so no depth is dimensioned here.
+        {d.anchored && ' Bars run past each support to show anchorage, which is added to the cutting length rather than drawn to shape.'}
+        {tail}
+      </>
+    )
+  }
   if (mi.type === 'beam' || mi.type === 'column') {
     const label = mi.type === 'beam' ? 'Beam section' : 'Column section'
     return (
@@ -284,25 +255,6 @@ function BbsPrintTable({ rows, fmt }: { rows: BbsResult['rows']; fmt: (v: number
   )
 }
 
-/**
- * Re-derives a saved member's result from its stored form fields so entries
- * saved before BarRow carried geometry gain it. Adopts the recomputed rows ONLY
- * if they reproduce the stored total — a saved schedule is a record someone may
- * already have exported or ordered against, so this must never silently rewrite
- * a number. The formulas are unchanged, so this is a tripwire, not a correction.
- */
-function hydrateProjectMember(pm: ProjectMember): ProjectMember {
-  if (pm.result?.rows?.every((r) => r.geom)) return pm
-  try {
-    const fresh = computeFor(inputsFromFields(pm.type, pm.fields ?? {}))
-    if (fresh.rows.length !== pm.result.rows.length) return pm
-    if (Math.abs(fresh.totalKg - pm.result.totalKg) > 0.005) return pm
-    return { ...pm, result: fresh }
-  } catch {
-    return pm
-  }
-}
-
 export default function BBSCalculator() {
   const params = useSearchParams()
   const router = useRouter()
@@ -312,13 +264,14 @@ export default function BBSCalculator() {
     const m = params.get('member')
     return m === 'column' || m === 'slab' || m === 'footing' ? m : 'beam'
   })
+  const [unitMode, setUnitMode] = useState<UnitMode>(() => (params.get('u') === 'ftin' ? 'ftin' : 'mm'))
   const [ldFactor, setLdFactor] = useState(() => params.get('ld') ?? '50')
   const [lapFactor, setLapFactor] = useState(() => params.get('lapf') ?? '50')
 
-  const [beam, setBeam] = useState<BeamForm>(() => seedGroup(params, 'b', BEAM_DEFAULTS))
-  const [column, setColumn] = useState<ColumnForm>(() => seedGroup(params, 'c', COLUMN_DEFAULTS))
-  const [slab, setSlab] = useState<SlabForm>(() => seedGroup(params, 's', SLAB_DEFAULTS))
-  const [footing, setFooting] = useState<FootingForm>(() => seedGroup(params, 'f', FOOTING_DEFAULTS))
+  const [beam, setBeam] = useState<BeamForm>(() => seedGroup(params, 'b', BEAM_DEFAULTS, 'beam', unitMode))
+  const [column, setColumn] = useState<ColumnForm>(() => seedGroup(params, 'c', COLUMN_DEFAULTS, 'column', unitMode))
+  const [slab, setSlab] = useState<SlabForm>(() => seedGroup(params, 's', SLAB_DEFAULTS, 'slab', unitMode))
+  const [footing, setFooting] = useState<FootingForm>(() => seedGroup(params, 'f', FOOTING_DEFAULTS, 'footing', unitMode))
 
   const [project, setProject] = useState<ProjectMember[]>([])
   const [projectLabel, setProjectLabel] = useState(() => defaultLabelFor(member, []))
@@ -328,6 +281,19 @@ export default function BBSCalculator() {
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
     setMounted(true)
+    try {
+      // URL wins over the personal default so a shared link reproduces what the
+      // sender saw; the stored preference only fills in when the link is silent.
+      if (!params.get('u')) {
+        const savedUnits = localStorage.getItem(UNITS_KEY)
+        if ((savedUnits === 'ftin' || savedUnits === 'mm') && savedUnits !== unitMode) {
+          convertGroups(unitMode, savedUnits)
+          setUnitMode(savedUnits)
+        }
+      }
+    } catch {
+      /* storage blocked — keep the default */
+    }
     try {
       const raw = localStorage.getItem(PROJECT_KEY)
       if (raw) {
@@ -347,14 +313,21 @@ export default function BBSCalculator() {
     if (syncTimer.current) clearTimeout(syncTimer.current)
     syncTimer.current = setTimeout(() => {
       const qs = new URLSearchParams({ member, ld: ldFactor, lapf: lapFactor })
-      for (const [k, v] of Object.entries(beam)) qs.set(`b_${k}`, v)
-      for (const [k, v] of Object.entries(column)) qs.set(`c_${k}`, v)
-      for (const [k, v] of Object.entries(slab)) qs.set(`s_${k}`, v)
-      for (const [k, v] of Object.entries(footing)) qs.set(`f_${k}`, v)
+      if (unitMode !== 'mm') qs.set('u', unitMode)
+      // Only non-default values go in, which keeps a shared link readable.
+      const put = <T extends Record<string, string>>(prefix: string, group: T, defaults: T) => {
+        for (const [k, v] of Object.entries(group)) {
+          if (v !== defaults[k as keyof T]) qs.set(`${prefix}_${k}`, v)
+        }
+      }
+      put('b', beam, BEAM_DEFAULTS)
+      put('c', column, COLUMN_DEFAULTS)
+      put('s', slab, SLAB_DEFAULTS)
+      put('f', footing, FOOTING_DEFAULTS)
       router.replace(`${pathname}?${qs.toString()}`, { scroll: false })
     }, 350)
     return () => { if (syncTimer.current) clearTimeout(syncTimer.current) }
-  }, [member, ldFactor, lapFactor, beam, column, slab, footing, router, pathname])
+  }, [member, unitMode, ldFactor, lapFactor, beam, column, slab, footing, router, pathname])
 
   function persistProject(list: ProjectMember[]) {
     setProject(list)
@@ -367,11 +340,13 @@ export default function BBSCalculator() {
 
   function snapshotFields(m: Member): Record<string, string> {
     const base: Record<string, string> = m === 'beam' ? beam : m === 'column' ? column : m === 'slab' ? slab : footing
-    return { ...base, ldFactor, lapFactor }
+    // The mode travels with the member so re-opening it later can never
+    // reinterpret a millimetre value as feet.
+    return { ...base, ldFactor, lapFactor, u: unitMode }
   }
 
   function addToProject() {
-    if (!has || warnings.length > 0) return
+    if (!has || errors.length > 0) return
     const label = projectLabel.trim() || defaultLabelFor(member, project)
     const entry: ProjectMember = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -393,9 +368,10 @@ export default function BBSCalculator() {
   function editProjectMember(id: string) {
     const pm = project.find((p) => p.id === id)
     if (!pm) return
-    const { ldFactor: fLd, lapFactor: fLap, ...rest } = pm.fields
+    const { ldFactor: fLd, lapFactor: fLap, u: fUnits, ...rest } = pm.fields
     if (fLd !== undefined) setLdFactor(fLd)
     if (fLap !== undefined) setLapFactor(fLap)
+    if (fUnits === 'ftin' || fUnits === 'mm') setUnitMode(fUnits)
     if (pm.type === 'beam') setBeam(rest as unknown as BeamForm)
     else if (pm.type === 'column') setColumn(rest as unknown as ColumnForm)
     else if (pm.type === 'slab') setSlab(rest as unknown as SlabForm)
@@ -414,14 +390,78 @@ export default function BBSCalculator() {
 
   const n = (v: string) => parseFloat(v) || 0
 
+  /**
+   * Switching units CONVERTS the values; it never reinterprets them. Treating a
+   * 230 mm width as 230 feet would silently turn a beam into a 70 m member.
+   *
+   * mm -> ft-in rounds to the nearest 1/8", so a per-mode snapshot restores the
+   * user's exact original text when a field hasn't actually been edited.
+   */
+  const rawSnapshots = useRef<Partial<Record<UnitMode, Record<string, Record<string, string>>>>>({})
+  const [unitNote, setUnitNote] = useState('')
+
+  /** Rewrites every length field from one mode's notation into the other's. */
+  function convertGroups(from: UnitMode, to: UnitMode): number {
+    const groups: Record<string, [Record<string, string>, (v: never) => void]> = {
+      beam: [beam, setBeam as (v: never) => void],
+      column: [column, setColumn as (v: never) => void],
+      slab: [slab, setSlab as (v: never) => void],
+      footing: [footing, setFooting as (v: never) => void],
+    }
+    rawSnapshots.current[from] = Object.fromEntries(
+      Object.entries(groups).map(([k, [g]]) => [k, { ...g }]),
+    )
+    const prior = rawSnapshots.current[to]
+    let converted = 0
+
+    for (const [key, [group, setGroup]] of Object.entries(groups)) {
+      const out: Record<string, string> = { ...group }
+      for (const [field, bareUnit] of Object.entries(LENGTH_FIELDS[key as Member])) {
+        const parsed = parseLengthMm(group[field] ?? '', { mode: from, bareUnit })
+        if (!parsed.ok) continue
+        const saved = prior?.[key]?.[field]
+        if (saved !== undefined) {
+          const savedMm = parseLengthMm(saved, { mode: to, bareUnit })
+          // Unedited since we were last in that mode — restore the exact text
+          // rather than re-rounding it through 1/8".
+          if (savedMm.ok && Math.abs(savedMm.mm - parsed.mm) < 0.05) {
+            out[field] = saved
+            converted++
+            continue
+          }
+        }
+        out[field] = formatLength(parsed.mm, to)
+        converted++
+      }
+      setGroup(out as never)
+    }
+    return converted
+  }
+
+  function switchUnits(next: UnitMode) {
+    if (next === unitMode) return
+    const converted = convertGroups(unitMode, next)
+    setUnitMode(next)
+    try { localStorage.setItem(UNITS_KEY, next) } catch { /* storage blocked */ }
+    setUnitNote(`Converted ${converted} dimension${converted === 1 ? '' : 's'} to ${next === 'ftin' ? 'feet-inches' : 'millimetres'}. Bar diameters and clear cover stay in mm.`)
+    window.setTimeout(() => setUnitNote(''), 6000)
+  }
+
+  /** Reads a list field, edits it, and writes it back encoded. */
+  const barSpecsOf = (v: string) => decodeBarSpecs(v)
+  const zonesOf = (v: string) => decodeSpacingZones(v)
+
   const memberInputs = useMemo(
     () => inputsFromFields(member, snapshotFields(member)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [member, beam, column, slab, footing, ldFactor, lapFactor],
   )
   const result: BbsResult = useMemo(() => computeFor(memberInputs), [memberInputs])
-  const warnings: string[] = useMemo(() => validateFor(memberInputs), [memberInputs])
-  const diagram = useMemo(() => diagramFor(memberInputs), [memberInputs])
+  const issues = useMemo(() => issuesFor(memberInputs), [memberInputs])
+  // Errors block saving into the project; checks only ask the user to look.
+  const errors = useMemo(() => errorsOf(issues), [issues])
+  const checks = useMemo(() => checksOf(issues), [issues])
+  const diagrams = useMemo(() => diagramsFor(memberInputs), [memberInputs])
 
   const has = result.totalKg > 0
   const f = (v: number, d = 2) => v.toLocaleString('en-IN', { maximumFractionDigits: d })
@@ -432,6 +472,23 @@ export default function BBSCalculator() {
   const projectTotalTonnes = projectTotalKg / 1000
   const projectOrderKg = projectTotalKg * wastageMultiplier
   const diaSummary = useMemo(() => summarizeByDiameter(project.map((p) => p.result)), [project])
+
+  // Cutting plan: how the schedule's cut lengths nest into stock bars.
+  const [stockLen, setStockLen] = useState('12000')
+  const cuttingPlan = useMemo(
+    () => nestSchedule(project.flatMap((p) => p.result.rows), n(stockLen) || DEFAULT_STOCK_MM),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [project, stockLen],
+  )
+  const cuttingTotals = useMemo(() => cuttingPlan.reduce(
+    (acc, r) => ({
+      bars: acc.bars + r.barsNeeded,
+      offcutKg: acc.offcutKg + r.offcutKg,
+      lower: acc.lower + r.lowerBound,
+      oversize: acc.oversize + r.oversizeMm.length,
+    }),
+    { bars: 0, offcutKg: 0, lower: 0, oversize: 0 },
+  ), [cuttingPlan])
   const hasRate = n(ratePerKg) > 0
   const estimatedCost = projectOrderKg * n(ratePerKg)
 
@@ -493,7 +550,7 @@ export default function BBSCalculator() {
         </div>
       </div>
 
-      {diagram && <MemberFigure diagram={diagram} caption={diagramCaption(memberInputs, diagram)} />}
+      {diagrams[0] && <MemberFigure diagram={diagrams[0]} caption={diagramCaption(memberInputs, diagrams[0])} />}
 
       <BbsPrintTable rows={result.rows} fmt={f} />
 
@@ -532,7 +589,7 @@ export default function BBSCalculator() {
         // result — if they're missing we simply omit the drawing rather than
         // fabricate one.
         const pmInputs = pm.fields ? inputsFromFields(pm.type, pm.fields) : null
-        const pmDiagram = pmInputs ? diagramFor(pmInputs) : null
+        const pmDiagram = pmInputs ? (diagramsFor(pmInputs)[0] ?? null) : null
         return (
           <div key={pm.id} className="bbs-member-block" style={{ marginTop: idx === 0 ? 16 : 22 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
@@ -604,6 +661,22 @@ export default function BBSCalculator() {
       <div className="tool-grid2">
         {/* ── Inputs ── */}
         <div className="tf">
+          <div className="tf-tabs tf-tabs--sm" role="radiogroup" aria-label="Measurement units">
+            {([['mm', 'Millimetres'], ['ftin', 'Feet-inches']] as const).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                role="radio"
+                aria-checked={unitMode === key}
+                className={`tf-tab${unitMode === key ? ' active' : ''}`}
+                onClick={() => switchUnits(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {unitNote && <p className="tf-note">{unitNote}</p>}
+
           <div className="tf-tabs" role="tablist">
             {MEMBERS.map((m) => (
               <button
@@ -621,12 +694,16 @@ export default function BBSCalculator() {
             ))}
           </div>
 
-          {warnings.length > 0 && (
+          {errors.length > 0 && (
             <div className="tool-warning" role="alert">
-              <strong>Check these inputs</strong>
-              <ul>
-                {warnings.map((w) => <li key={w}>{w}</li>)}
-              </ul>
+              <strong>Fix before saving</strong>
+              <ul>{errors.map((w) => <li key={w}>{w}</li>)}</ul>
+            </div>
+          )}
+          {checks.length > 0 && (
+            <div className="tool-warning is-check">
+              <strong>Worth a look</strong>
+              <ul>{checks.map((w) => <li key={w}>{w}</li>)}</ul>
             </div>
           )}
 
@@ -634,20 +711,50 @@ export default function BBSCalculator() {
           {member === 'beam' && (
             <>
               <div className="tf-sec-title first">Beam size &amp; cover</div>
+              <div className="tf-row">
+                <label>Beam Mark (from the drawing)</label>
+                <input type="text" value={beam.mark} placeholder="e.g. B7" onChange={(e) => setBeam({ ...beam, mark: e.target.value })} />
+                <span className="tf-echo">{beam.mark.trim() ? `Bar marks: ${deriveMarkPrefix(beam.mark, 'B')}-1, ${deriveMarkPrefix(beam.mark, 'B')}-2 …` : 'Optional — used to prefix the bar marks'}</span>
+              </div>
               <div className="tf-2col">
-                <div className="tf-row"><label>Clear Span (mm)</label><input type="number" min="0" value={beam.span} onChange={(e) => setBeam({ ...beam, span: e.target.value })} /></div>
+                <BBSLengthInput label="Clear Span" value={beam.span} mode={unitMode} bareUnit={LENGTH_FIELDS.beam.span} onChange={(v) => setBeam({ ...beam, span: v })} />
                 <div className="tf-row"><label>Clear Cover (mm)</label><input type="number" min="0" value={beam.cover} onChange={(e) => setBeam({ ...beam, cover: e.target.value })} /></div>
-                <div className="tf-row"><label>Width (mm)</label><input type="number" min="0" value={beam.width} onChange={(e) => setBeam({ ...beam, width: e.target.value })} /></div>
-                <div className="tf-row"><label>Overall Depth (mm)</label><input type="number" min="0" value={beam.depth} onChange={(e) => setBeam({ ...beam, depth: e.target.value })} /></div>
+                <BBSLengthInput label="Width" value={beam.width} mode={unitMode} bareUnit={LENGTH_FIELDS.beam.width} onChange={(v) => setBeam({ ...beam, width: v })} />
+                <BBSLengthInput label="Overall Depth" value={beam.depth} mode={unitMode} bareUnit={LENGTH_FIELDS.beam.depth} onChange={(v) => setBeam({ ...beam, depth: v })} />
               </div>
 
-              <div className="tf-sec-title">Main bars</div>
-              <div className="tf-2col">
-                <div className="tf-row"><label>Bottom Dia (mm)</label><input type="number" min="0" value={beam.botDia} onChange={(e) => setBeam({ ...beam, botDia: e.target.value })} /></div>
-                <div className="tf-row"><label>Bottom Count</label><input type="number" min="0" value={beam.botCount} onChange={(e) => setBeam({ ...beam, botCount: e.target.value })} /></div>
-                <div className="tf-row"><label>Top Dia (mm)</label><input type="number" min="0" value={beam.topDia} onChange={(e) => setBeam({ ...beam, topDia: e.target.value })} /></div>
-                <div className="tf-row"><label>Top Count</label><input type="number" min="0" value={beam.topCount} onChange={(e) => setBeam({ ...beam, topCount: e.target.value })} /></div>
-              </div>
+              <div className="tf-sec-title">Bottom bars</div>
+              <BarSpecRows title="Bottom bar" specs={barSpecsOf(beam.botBars)} onChange={(next) => setBeam({ ...beam, botBars: encodeBarSpecs(next) })} />
+
+              <div className="tf-sec-title">Top bars</div>
+              <BarSpecRows title="Top bar" specs={barSpecsOf(beam.topBars)} onChange={(next) => setBeam({ ...beam, topBars: encodeBarSpecs(next) })} />
+
+              <div className="tf-sec-title">Extra top bars over supports</div>
+              <p className="tf-note">
+                Curtailed bars the drawing shows over a support, with the length it states — e.g.
+                2-16&#8960; × 3&#39;-9&quot;. Leave empty if there are none.
+              </p>
+              <BarSpecRows title="Extra top bar" specs={barSpecsOf(beam.xTopBars)} onChange={(next) => setBeam({ ...beam, xTopBars: encodeBarSpecs(next) })} />
+              {barSpecsOf(beam.xTopBars).length > 0 && (
+                <>
+                  <BBSLengthInput label="Length over support" value={beam.xTopLen} mode={unitMode} bareUnit={LENGTH_FIELDS.beam.xTopLen} onChange={(v) => setBeam({ ...beam, xTopLen: v })} />
+                  <label className="tf-check">
+                    <input type="checkbox" checked={beam.xTopBoth !== '0'} onChange={(e) => setBeam({ ...beam, xTopBoth: e.target.checked ? '1' : '0' })} />
+                    At both supports
+                  </label>
+                </>
+              )}
+
+              <div className="tf-sec-title">Side face bars</div>
+              <p className="tf-note">Side reinforcement on a deep beam — e.g. 1-16&#8960; on each face.</p>
+              <BarSpecRows title="Face bar" specs={barSpecsOf(beam.faceBars)} onChange={(next) => setBeam({ ...beam, faceBars: encodeBarSpecs(next) })} />
+              {barSpecsOf(beam.faceBars).length > 0 && (
+                <label className="tf-check">
+                  <input type="checkbox" checked={beam.faceBoth !== '0'} onChange={(e) => setBeam({ ...beam, faceBoth: e.target.checked ? '1' : '0' })} />
+                  On each face
+                </label>
+              )}
+
               <label className="tf-check">
                 <input type="checkbox" checked={beam.anchor === '1'} onChange={(e) => setBeam({ ...beam, anchor: e.target.checked ? '1' : '0' })} />
                 Main bars anchor into support (adds development length each end)
@@ -662,8 +769,14 @@ export default function BBSCalculator() {
               <div className="tf-sec-title">Stirrups</div>
               <div className="tf-2col">
                 <div className="tf-row"><label>Dia (mm)</label><input type="number" min="0" value={beam.stirDia} onChange={(e) => setBeam({ ...beam, stirDia: e.target.value })} /></div>
-                <div className="tf-row"><label>Spacing (mm)</label><input type="number" min="0" value={beam.stirSpacing} onChange={(e) => setBeam({ ...beam, stirSpacing: e.target.value })} /></div>
+                <BBSLengthInput label="Spacing (elsewhere)" value={beam.stirSpacing} mode={unitMode} bareUnit={LENGTH_FIELDS.beam.stirSpacing} onChange={(v) => setBeam({ ...beam, stirSpacing: v })} />
               </div>
+              <p className="tf-note">
+                Add a zone for each tightened run near the supports — e.g. @4&quot; over 3&#39;-6&quot;. Zones apply
+                at both ends; the spacing above fills the middle. Leave empty for uniform spacing.
+              </p>
+              <SpacingZoneRows title="Stirrup" zones={zonesOf(beam.stirZones)} mode={unitMode} onChange={(next) => setBeam({ ...beam, stirZones: encodeSpacingZones(next) })} />
+
               <div className="tf-row"><label>No. of Identical Beams</label><input type="number" min="1" value={beam.nos} onChange={(e) => setBeam({ ...beam, nos: e.target.value })} /></div>
             </>
           )}
@@ -671,18 +784,29 @@ export default function BBSCalculator() {
           {member === 'column' && (
             <>
               <div className="tf-sec-title first">Column size &amp; cover</div>
+              <div className="tf-row">
+                <label>Column Mark (from the drawing)</label>
+                <input type="text" value={column.mark} placeholder="e.g. C2" onChange={(e) => setColumn({ ...column, mark: e.target.value })} />
+                <span className="tf-echo">{column.mark.trim() ? `Bar marks: ${deriveMarkPrefix(column.mark, 'C')}-1, ${deriveMarkPrefix(column.mark, 'C')}-2 …` : 'Optional — used to prefix the bar marks'}</span>
+              </div>
               <div className="tf-2col">
-                <div className="tf-row"><label>Clear Height (mm)</label><input type="number" min="0" value={column.height} onChange={(e) => setColumn({ ...column, height: e.target.value })} /></div>
+                <BBSLengthInput label="Clear Height" value={column.height} mode={unitMode} bareUnit={LENGTH_FIELDS.column.height} onChange={(v) => setColumn({ ...column, height: v })} />
                 <div className="tf-row"><label>Clear Cover (mm)</label><input type="number" min="0" value={column.cover} onChange={(e) => setColumn({ ...column, cover: e.target.value })} /></div>
-                <div className="tf-row"><label>Width (mm)</label><input type="number" min="0" value={column.width} onChange={(e) => setColumn({ ...column, width: e.target.value })} /></div>
-                <div className="tf-row"><label>Depth (mm)</label><input type="number" min="0" value={column.depth} onChange={(e) => setColumn({ ...column, depth: e.target.value })} /></div>
+                <BBSLengthInput label="Width" value={column.width} mode={unitMode} bareUnit={LENGTH_FIELDS.column.width} onChange={(v) => setColumn({ ...column, width: v })} />
+                <BBSLengthInput label="Depth" value={column.depth} mode={unitMode} bareUnit={LENGTH_FIELDS.column.depth} onChange={(v) => setColumn({ ...column, depth: v })} />
               </div>
 
               <div className="tf-sec-title">Main bars</div>
-              <div className="tf-2col">
-                <div className="tf-row"><label>Dia (mm)</label><input type="number" min="0" value={column.mainDia} onChange={(e) => setColumn({ ...column, mainDia: e.target.value })} /></div>
-                <div className="tf-row"><label>Count</label><input type="number" min="0" value={column.mainCount} onChange={(e) => setColumn({ ...column, mainCount: e.target.value })} /></div>
-              </div>
+              {decodeLifts(column.lifts).length === 0 && (
+                <BarSpecRows title="Main bar" specs={barSpecsOf(column.mainBars)} onChange={(next) => setColumn({ ...column, mainBars: encodeBarSpecs(next) })} />
+              )}
+              <p className="tf-note">
+                A column schedule usually changes the main bars per storey while keeping one tie
+                arrangement. Add a lift per level to tabulate them together; leave it empty for a
+                single lift.
+              </p>
+              <ColumnLiftRows lifts={decodeLifts(column.lifts)} mode={unitMode} onChange={(next) => setColumn({ ...column, lifts: encodeLifts(next) })} />
+
               <label className="tf-check">
                 <input type="checkbox" checked={column.lap === '1'} onChange={(e) => setColumn({ ...column, lap: e.target.checked ? '1' : '0' })} />
                 Lap main bars into the next lift
@@ -697,8 +821,27 @@ export default function BBSCalculator() {
               <div className="tf-sec-title">Ties</div>
               <div className="tf-2col">
                 <div className="tf-row"><label>Dia (mm)</label><input type="number" min="0" value={column.tieDia} onChange={(e) => setColumn({ ...column, tieDia: e.target.value })} /></div>
-                <div className="tf-row"><label>Spacing (mm)</label><input type="number" min="0" value={column.tieSpacing} onChange={(e) => setColumn({ ...column, tieSpacing: e.target.value })} /></div>
+                <BBSLengthInput label="Spacing (elsewhere)" value={column.tieSpacing} mode={unitMode} bareUnit={LENGTH_FIELDS.column.tieSpacing} onChange={(v) => setColumn({ ...column, tieSpacing: v })} />
               </div>
+              <p className="tf-note">
+                Add a zone for each tightened run at the ends — e.g. @75 in the ductile zone. Zones apply at
+                both ends; the spacing above fills the middle.
+              </p>
+              <SpacingZoneRows title="Tie" zones={zonesOf(column.tieZones)} mode={unitMode} onChange={(next) => setColumn({ ...column, tieZones: encodeSpacingZones(next) })} />
+
+              <div className="tf-sec-title">Inner / cross ties</div>
+              <p className="tf-note">
+                State the inner tie&#39;s own internal size from the drawing — the tool never infers it
+                from the bar arrangement, which it doesn&#39;t ask for. Counted at the same spacing as
+                the outer tie.
+              </p>
+              <div className="tf-2col">
+                <div className="tf-row"><label>Dia (mm)</label><input type="number" min="0" value={column.innerDia} onChange={(e) => setColumn({ ...column, innerDia: e.target.value })} /></div>
+                <div />
+                <BBSLengthInput label="Internal a" value={column.innerA} mode={unitMode} bareUnit={LENGTH_FIELDS.column.innerA} onChange={(v) => setColumn({ ...column, innerA: v })} />
+                <BBSLengthInput label="Internal b" value={column.innerB} mode={unitMode} bareUnit={LENGTH_FIELDS.column.innerB} onChange={(v) => setColumn({ ...column, innerB: v })} />
+              </div>
+
               <div className="tf-row"><label>No. of Identical Columns</label><input type="number" min="1" value={column.nos} onChange={(e) => setColumn({ ...column, nos: e.target.value })} /></div>
             </>
           )}
@@ -707,6 +850,11 @@ export default function BBSCalculator() {
             <>
               <div className="tf-sec-title first">Slab span &amp; cover</div>
               <div className="tf-row">
+                <label>Slab Mark (from the drawing)</label>
+                <input type="text" value={slab.mark} placeholder="e.g. S3" onChange={(e) => setSlab({ ...slab, mark: e.target.value })} />
+                <span className="tf-echo">{slab.mark.trim() ? `Bar marks: ${deriveMarkPrefix(slab.mark, 'S')}-1, ${deriveMarkPrefix(slab.mark, 'S')}-2 …` : 'Optional — used to prefix the bar marks'}</span>
+              </div>
+              <div className="tf-row">
                 <label>Slab Type</label>
                 <select value={slab.type} onChange={(e) => setSlab({ ...slab, type: e.target.value })}>
                   <option value="oneway">One-way slab</option>
@@ -714,8 +862,8 @@ export default function BBSCalculator() {
                 </select>
               </div>
               <div className="tf-2col">
-                <div className="tf-row"><label>Short Span (mm)</label><input type="number" min="0" value={slab.shortSpan} onChange={(e) => setSlab({ ...slab, shortSpan: e.target.value })} /></div>
-                <div className="tf-row"><label>Long Span (mm)</label><input type="number" min="0" value={slab.longSpan} onChange={(e) => setSlab({ ...slab, longSpan: e.target.value })} /></div>
+                <BBSLengthInput label="Short Span" value={slab.shortSpan} mode={unitMode} bareUnit={LENGTH_FIELDS.slab.shortSpan} onChange={(v) => setSlab({ ...slab, shortSpan: v })} />
+                <BBSLengthInput label="Long Span" value={slab.longSpan} mode={unitMode} bareUnit={LENGTH_FIELDS.slab.longSpan} onChange={(v) => setSlab({ ...slab, longSpan: v })} />
                 <div className="tf-row"><label>Clear Cover (mm)</label><input type="number" min="0" value={slab.cover} onChange={(e) => setSlab({ ...slab, cover: e.target.value })} /></div>
                 <div className="tf-row"><label>No. of Panels</label><input type="number" min="1" value={slab.nos} onChange={(e) => setSlab({ ...slab, nos: e.target.value })} /></div>
               </div>
@@ -723,17 +871,29 @@ export default function BBSCalculator() {
               <div className="tf-sec-title">Main bars (across short span)</div>
               <div className="tf-2col">
                 <div className="tf-row"><label>Dia (mm)</label><input type="number" min="0" value={slab.mainDia} onChange={(e) => setSlab({ ...slab, mainDia: e.target.value })} /></div>
-                <div className="tf-row"><label>Spacing (mm)</label><input type="number" min="0" value={slab.mainSpacing} onChange={(e) => setSlab({ ...slab, mainSpacing: e.target.value })} /></div>
+                <BBSLengthInput label="Spacing" value={slab.mainSpacing} mode={unitMode} bareUnit={LENGTH_FIELDS.slab.mainSpacing} onChange={(v) => setSlab({ ...slab, mainSpacing: v })} />
               </div>
               <div className="tf-row">
                 <label>Development Length Factor (× dia)</label>
                 <input type="number" min="0" value={ldFactor} onChange={(e) => setLdFactor(e.target.value)} />
               </div>
 
+              <div className="tf-sec-title">Top bars over supports</div>
+              <p className="tf-note">
+                Negative-moment steel over the supporting beams, at the length the drawing states —
+                e.g. 10&#8960; @ 150 × 2&#39;-3&quot;. Leave empty if the panel has none.
+              </p>
+              <div className="tf-2col">
+                <div className="tf-row"><label>Dia (mm)</label><input type="number" min="0" value={slab.topDia} onChange={(e) => setSlab({ ...slab, topDia: e.target.value })} /></div>
+                <div className="tf-row"><label>Supported Edges</label><input type="number" min="1" max="4" value={slab.topEdges} onChange={(e) => setSlab({ ...slab, topEdges: e.target.value })} /></div>
+                <BBSLengthInput label="Spacing" value={slab.topSpacing} mode={unitMode} bareUnit={LENGTH_FIELDS.slab.topSpacing} onChange={(v) => setSlab({ ...slab, topSpacing: v })} />
+                <BBSLengthInput label="Length each bar" value={slab.topLen} mode={unitMode} bareUnit={LENGTH_FIELDS.slab.topLen} onChange={(v) => setSlab({ ...slab, topLen: v })} />
+              </div>
+
               <div className="tf-sec-title">Distribution bars</div>
               <div className="tf-2col">
                 <div className="tf-row"><label>Dia (mm)</label><input type="number" min="0" value={slab.distDia} onChange={(e) => setSlab({ ...slab, distDia: e.target.value })} /></div>
-                <div className="tf-row"><label>Spacing (mm)</label><input type="number" min="0" value={slab.distSpacing} onChange={(e) => setSlab({ ...slab, distSpacing: e.target.value })} /></div>
+                <BBSLengthInput label="Spacing" value={slab.distSpacing} mode={unitMode} bareUnit={LENGTH_FIELDS.slab.distSpacing} onChange={(v) => setSlab({ ...slab, distSpacing: v })} />
               </div>
             </>
           )}
@@ -741,9 +901,14 @@ export default function BBSCalculator() {
           {member === 'footing' && (
             <>
               <div className="tf-sec-title first">Footing size &amp; cover</div>
+              <div className="tf-row">
+                <label>Footing Mark (from the drawing)</label>
+                <input type="text" value={footing.mark} placeholder="e.g. F1" onChange={(e) => setFooting({ ...footing, mark: e.target.value })} />
+                <span className="tf-echo">{footing.mark.trim() ? `Bar marks: ${deriveMarkPrefix(footing.mark, 'F')}-1, ${deriveMarkPrefix(footing.mark, 'F')}-2 …` : 'Optional — used to prefix the bar marks'}</span>
+              </div>
               <div className="tf-2col">
-                <div className="tf-row"><label>Length (mm)</label><input type="number" min="0" value={footing.length} onChange={(e) => setFooting({ ...footing, length: e.target.value })} /></div>
-                <div className="tf-row"><label>Width (mm)</label><input type="number" min="0" value={footing.width} onChange={(e) => setFooting({ ...footing, width: e.target.value })} /></div>
+                <BBSLengthInput label="Length" value={footing.length} mode={unitMode} bareUnit={LENGTH_FIELDS.footing.length} onChange={(v) => setFooting({ ...footing, length: v })} />
+                <BBSLengthInput label="Width" value={footing.width} mode={unitMode} bareUnit={LENGTH_FIELDS.footing.width} onChange={(v) => setFooting({ ...footing, width: v })} />
                 <div className="tf-row"><label>Clear Cover (mm)</label><input type="number" min="0" value={footing.cover} onChange={(e) => setFooting({ ...footing, cover: e.target.value })} /></div>
                 <div className="tf-row"><label>No. of Footings</label><input type="number" min="1" value={footing.nos} onChange={(e) => setFooting({ ...footing, nos: e.target.value })} /></div>
               </div>
@@ -751,19 +916,23 @@ export default function BBSCalculator() {
               <div className="tf-sec-title">Bars along length</div>
               <div className="tf-2col">
                 <div className="tf-row"><label>Dia (mm)</label><input type="number" min="0" value={footing.dir1Dia} onChange={(e) => setFooting({ ...footing, dir1Dia: e.target.value })} /></div>
-                <div className="tf-row"><label>Spacing (mm)</label><input type="number" min="0" value={footing.dir1Spacing} onChange={(e) => setFooting({ ...footing, dir1Spacing: e.target.value })} /></div>
+                <BBSLengthInput label="Spacing" value={footing.dir1Spacing} mode={unitMode} bareUnit={LENGTH_FIELDS.footing.dir1Spacing} onChange={(v) => setFooting({ ...footing, dir1Spacing: v })} />
               </div>
 
               <div className="tf-sec-title">Bars along width</div>
               <div className="tf-2col">
                 <div className="tf-row"><label>Dia (mm)</label><input type="number" min="0" value={footing.dir2Dia} onChange={(e) => setFooting({ ...footing, dir2Dia: e.target.value })} /></div>
-                <div className="tf-row"><label>Spacing (mm)</label><input type="number" min="0" value={footing.dir2Spacing} onChange={(e) => setFooting({ ...footing, dir2Spacing: e.target.value })} /></div>
+                <BBSLengthInput label="Spacing" value={footing.dir2Spacing} mode={unitMode} bareUnit={LENGTH_FIELDS.footing.dir2Spacing} onChange={(v) => setFooting({ ...footing, dir2Spacing: v })} />
               </div>
             </>
           )}
           </div>
 
-          <p className="tf-note">All dimensions in millimetres (mm), as per standard structural drawings.</p>
+          <p className="tf-note">
+            {unitMode === 'ftin'
+              ? 'Spans and sections in feet-inches — type them as the drawing writes them (15\'-4½", 9", @4"). Bar diameters and clear cover are always in millimetres.'
+              : 'All dimensions in millimetres. You can still paste feet-inch values like 3\'-6" into any length field.'}
+          </p>
         </div>
 
         {/* ── Results ── */}
@@ -776,7 +945,7 @@ export default function BBSCalculator() {
             </div>
           </div>
 
-          {diagram && <MemberFigure diagram={diagram} caption={diagramCaption(memberInputs, diagram)} />}
+          {diagrams.map((d, k) => <MemberFigure key={`${d.variant}-${k}`} diagram={d} caption={diagramCaption(memberInputs, d)} />)}
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, margin: '16px 0', flexWrap: 'wrap' }}>
             <button type="button" className="share-link-btn" onClick={() => window.print()}>
@@ -792,10 +961,10 @@ export default function BBSCalculator() {
               value={projectLabel}
               onChange={(e) => setProjectLabel(e.target.value)}
               placeholder={defaultLabelFor(member, project)}
-              onKeyDown={(e) => { if (e.key === 'Enter' && has && warnings.length === 0) addToProject() }}
+              onKeyDown={(e) => { if (e.key === 'Enter' && has && errors.length === 0) addToProject() }}
               aria-label="Member label"
             />
-            <button type="button" className="btn btn-primary btn-sm" disabled={!has || warnings.length > 0} onClick={addToProject}>
+            <button type="button" className="btn btn-primary btn-sm" disabled={!has || errors.length > 0} onClick={addToProject}>
               Add to Project
             </button>
           </div>
@@ -894,6 +1063,63 @@ export default function BBSCalculator() {
                 </table>
               </div>
 
+              <div className="tf-sec-title">Cutting plan — nesting into stock bars</div>
+              <p className="tf-note">
+                How the cut lengths above pack into the bar lengths you buy. Offcut is the steel left
+                over after every cut is made — pure arithmetic, so this part is exact.
+              </p>
+              <div className="tf-2col">
+                <div className="tf-row">
+                  <label>Stock Bar Length (mm)</label>
+                  <input type="number" min="1000" step="500" value={stockLen} onChange={(e) => setStockLen(e.target.value)} />
+                  <span className="tf-echo">12 m is standard in India; 9 m and 6 m are also sold.</span>
+                </div>
+                <div className="tf-row">
+                  <label>Stock Bars Needed</label>
+                  <input type="text" readOnly value={`${cuttingTotals.bars} bars · ${f(cuttingTotals.offcutKg)} kg offcut`} />
+                  <span className="tf-echo">
+                    {cuttingTotals.bars === cuttingTotals.lower
+                      ? 'Matches the theoretical floor — no plan can do better.'
+                      : `Theoretical floor is ${cuttingTotals.lower} bars, ignoring how cuts combine; long bars often can't be paired.`}
+                  </span>
+                </div>
+              </div>
+              <div className="tool-table-wrap">
+                <table className="tool-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Dia</th>
+                      <th scope="col" className="num">Stock Bars</th>
+                      <th scope="col">Cutting Patterns (mm per bar)</th>
+                      <th scope="col" className="num">Offcut</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cuttingPlan.map((r) => (
+                      <tr key={r.diaMm}>
+                        <td>{r.diaMm} mm</td>
+                        <td className="num">{r.barsNeeded}</td>
+                        <td>
+                          {r.patterns.slice(0, 3).map((p) => (
+                            <div key={p.cuts.join('+')} className="bbs-pattern">
+                              {p.bars}× &nbsp;{p.cuts.map((c) => f(c, 0)).join(' + ')}
+                              {p.offcutMm > 1 && <span className="bbs-pattern-waste"> (+{f(p.offcutMm, 0)} waste)</span>}
+                            </div>
+                          ))}
+                          {r.patterns.length > 3 && <div className="bbs-pattern">+{r.patterns.length - 3} more pattern{r.patterns.length - 3 > 1 ? 's' : ''}</div>}
+                          {r.oversizeMm.length > 0 && (
+                            <div className="bbs-pattern bbs-pattern-waste">
+                              {r.oversizeMm.length} bar{r.oversizeMm.length > 1 ? 's' : ''} longer than stock — needs a lap splice
+                            </div>
+                          )}
+                        </td>
+                        <td className="num">{f(r.offcutKg)} kg<br /><span className="bbs-pattern-waste">{f(r.offcutPct, 1)}%</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
               <div className="tf-2col">
                 <div className="tf-row">
                   <label>Wastage Allowance (%)</label>
@@ -929,9 +1155,11 @@ export default function BBSCalculator() {
             stirrup bar&apos;s own thickness in the cover offset. Section and plan drawings are generated
             from the dimensions and spacings you entered; for beams and columns the arrangement of bars
             within the section is an assumed depiction, since the tool doesn&apos;t ask for it.
-            Cranked/bent-up bars, multi-span continuous beams, true two-way slab reinforcement and custom
-            bar marks aren&apos;t modelled — for anything beyond a straightforward single member, verify
-            against your engineer&apos;s BBS.
+            Modelled: mixed-diameter bar groups, variable stirrup/tie spacing zones, extra top bars
+            curtailed over supports, side face bars, per-level column lifts, inner/cross ties and slab
+            top steel — each taken from the length or size the drawing states, never derived. Not
+            modelled: cranked/bent-up bars, multi-span continuous beams and independently designed
+            two-way slab steel. Always verify against your engineer&apos;s BBS before ordering.
           </p>
         </div>
       </div>

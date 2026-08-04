@@ -12,7 +12,10 @@
  */
 import {
   barCount,
+  normalizeBarSpecs,
+  planStirrupZones,
   type BarRow,
+  type BarSpec,
   type BeamInputs,
   type ColumnInputs,
   type FootingInputs,
@@ -251,7 +254,7 @@ export type MeshPlanDiagram = {
   title: string
 }
 
-export type MemberDiagram = SectionDiagram | MeshPlanDiagram
+export type MemberDiagram = SectionDiagram | MeshPlanDiagram | ElevationDiagram
 
 function frameDims(box: Rect): [Dim, Dim] {
   const yw = box.y + box.h + 13
@@ -279,6 +282,68 @@ export function spreadAcross(link: Rect, n: number, r: number): number[] {
   if (n === 1) return [link.x + link.w / 2]
   const step = (link.w - 2 * r) / (n - 1)
   return Array.from({ length: n }, (_, i) => link.x + r + i * step)
+}
+
+export type LayerResult = {
+  bars: BarCircle[]
+  toScale: boolean
+  overlap: boolean
+  shown: number
+  total: number
+}
+
+/**
+ * Lays one layer of bars across a link, allowing mixed diameters.
+ *
+ * Largest bars go to the corners (outside-in), which is what "2-20Ø + 1-16Ø"
+ * actually implies. Equal diameters reduce exactly to spreadAcross, so existing
+ * single-diameter geometry is unchanged.
+ */
+export function layerCircles(
+  link: Rect,
+  specs: BarSpec[],
+  scale: number,
+  edge: 'top' | 'bottom',
+): LayerResult {
+  const norm = normalizeBarSpecs(specs)
+  const flat: number[] = []
+  for (const s of norm) for (let k = 0; k < s.count; k++) flat.push(s.diaMm)
+  const total = flat.length
+  if (total === 0) return { bars: [], toScale: true, overlap: false, shown: 0, total: 0 }
+
+  const shownList = flat.slice(0, MAX_LAYER_BARS)
+  const n = shownList.length
+
+  // Alternate outward so the biggest diameters land on the corners.
+  const arranged: number[] = new Array(n)
+  let l = 0
+  let rIdx = n - 1
+  for (let k = 0; k < n; k++) {
+    if (k % 2 === 0) arranged[l++] = shownList[k]
+    else arranged[rIdx--] = shownList[k]
+  }
+
+  const radii = arranged.map((d) => safeRadius(d, scale))
+  const toScale = shownList.every((d) => {
+    const t = (d / 2) * scale
+    return fin(t) && t >= MIN_BAR_R
+  })
+
+  const sumD = radii.reduce((s, r) => s + 2 * r, 0)
+  const gap = n > 1 ? (link.w - sumD) / (n - 1) : 0
+
+  const bars: BarCircle[] = []
+  let x = link.x
+  for (let k = 0; k < n; k++) {
+    const r = radii[k]
+    const cx = n === 1 ? link.x + link.w / 2 : x + r
+    const cy = edge === 'bottom' ? link.y + link.h - r : link.y + r
+    bars.push({ cx: r2(cx), cy: r2(cy), r: r2(r) })
+    x += 2 * r + gap
+  }
+  bars.sort((a, b) => a.cx - b.cx)
+
+  return { bars, toScale, overlap: n > 1 && gap < 0, shown: n, total }
 }
 
 type SectionCore = {
@@ -327,24 +392,10 @@ export function beamSectionDiagram(i: BeamInputs): SectionDiagram | null {
   if (!core) return null
   const { scale, link } = core
 
-  const botTotal = safeInt(i.botCount)
-  const topTotal = safeInt(i.topCount)
-  const botN = Math.min(botTotal, MAX_LAYER_BARS)
-  const topN = Math.min(topTotal, MAX_LAYER_BARS)
-
-  const trueBotR = (i.botDiaMm / 2) * scale
-  const trueTopR = (i.topDiaMm / 2) * scale
-  const botR = safeRadius(i.botDiaMm, scale)
-  const topR = safeRadius(i.topDiaMm, scale)
-
-  const bars: BarCircle[] = [
-    ...spreadAcross(link, botN, botR).map((cx) => ({ cx: r2(cx), cy: r2(link.y + link.h - botR), r: r2(botR) })),
-    ...spreadAcross(link, topN, topR).map((cx) => ({ cx: r2(cx), cy: r2(link.y + topR), r: r2(topR) })),
-  ]
-
   // Don't fabricate a second layer — the tool never computed one. Overlapping
   // circles plus a caption is honest feedback that the section is too narrow.
-  const overlaps = (n: number, r: number) => n > 1 && (link.w - 2 * r) / (n - 1) < 2 * r
+  const bot = layerCircles(link, i.botBars, scale, 'bottom')
+  const top = layerCircles(link, i.topBars, scale, 'top')
 
   return {
     variant: 'section',
@@ -352,14 +403,14 @@ export function beamSectionDiagram(i: BeamInputs): SectionDiagram | null {
     viewH: core.viewH,
     outer: core.outer,
     link,
-    bars,
+    bars: [...bot.bars, ...top.bars],
     dims: core.dims,
     scale,
-    barsToScale: (botN === 0 || (fin(trueBotR) && trueBotR >= MIN_BAR_R)) && (topN === 0 || (fin(trueTopR) && trueTopR >= MIN_BAR_R)),
-    barsOverlap: overlaps(botN, botR) || overlaps(topN, topR),
-    barCountShown: botN + topN,
-    barCountTotal: botTotal + topTotal,
-    title: `Beam section ${Math.round(i.widthMm)} × ${Math.round(i.depthMm)} mm, ${Math.round(i.coverMm)} mm cover, ${botTotal} bottom and ${topTotal} top bars`,
+    barsToScale: bot.toScale && top.toScale,
+    barsOverlap: bot.overlap || top.overlap,
+    barCountShown: bot.shown + top.shown,
+    barCountTotal: bot.total + top.total,
+    title: `Beam section ${Math.round(i.widthMm)} × ${Math.round(i.depthMm)} mm, ${Math.round(i.coverMm)} mm cover, ${bot.total} bottom and ${top.total} top bars`,
   }
 }
 
@@ -421,17 +472,34 @@ export function distributeAlongFaces(link: Rect, n: number, r: number): BarCircl
   return [...corners, ...extras]
 }
 
+/**
+ * Mixed-diameter form: positions come from the largest radius so every bar
+ * stays inside the link, and the biggest bars take the corners. With equal
+ * radii this is identical to distributeAlongFaces.
+ */
+export function distributeAlongFacesR(link: Rect, radii: number[]): BarCircle[] {
+  const n = radii.length
+  if (n === 0) return []
+  const sorted = [...radii].sort((a, b) => b - a)
+  return distributeAlongFaces(link, n, sorted[0]).map((p, k) => ({ ...p, r: sorted[k] ?? p.r }))
+}
+
 export function columnSectionDiagram(i: ColumnInputs): SectionDiagram | null {
   const core = sectionCore(i.widthMm, i.depthMm, i.coverMm)
   if (!core) return null
   const { scale, link } = core
 
-  const total = safeInt(i.mainCount)
-  const shown = Math.min(total, MAX_LAYER_BARS * 2)
-  const trueR = (i.mainDiaMm / 2) * scale
-  const r = safeRadius(i.mainDiaMm, scale)
+  const norm = normalizeBarSpecs(i.mainBars)
+  const flat: number[] = []
+  for (const s of norm) for (let k = 0; k < s.count; k++) flat.push(s.diaMm)
+  const total = flat.length
+  const shownDias = flat.slice(0, MAX_LAYER_BARS * 2)
+  const shown = shownDias.length
+  const trueR = shown > 0 ? Math.min(...shownDias.map((d) => (d / 2) * scale)) : Number.POSITIVE_INFINITY
+  const r = shown > 0 ? Math.max(...shownDias.map((d) => safeRadius(d, scale))) : MIN_BAR_R
 
-  const bars = distributeAlongFaces(link, shown, r).map((b) => ({ cx: r2(b.cx), cy: r2(b.cy), r: r2(b.r) }))
+  const bars = distributeAlongFacesR(link, shownDias.map((d) => safeRadius(d, scale)))
+    .map((b) => ({ cx: r2(b.cx), cy: r2(b.cy), r: r2(b.r) }))
 
   const perFaceMax = Math.max(1, Math.ceil(shown / 4))
   const barsOverlap = shown > 4 && Math.min(link.w, link.h) - 2 * r < 2 * r * perFaceMax
@@ -569,4 +637,125 @@ export function footingPlanDiagram(i: FootingInputs): MeshPlanDiagram | null {
     },
     title: `Footing plan ${Math.round(i.lengthMm)} × ${Math.round(i.widthMm)} mm mesh, bars at ${Math.round(i.dir1SpacingMm)} and ${Math.round(i.dir2SpacingMm)} mm centres`,
   })
+}
+
+/* ════════════════ Beam elevation (stirrup zones) ════════════════ */
+
+export const ELEV_MAX_W = 248
+/** Fixed height — the elevation is NOT to scale vertically. A real beam at
+ *  true aspect would be an unreadable 24px sliver, so no depth is dimensioned. */
+export const ELEV_BEAM_H = 56
+export const MAX_ELEV_TICKS = 80
+
+export type ZoneBand = { path: string; label: string; tx: number; ty: number; kind: 'end' | 'middle' }
+
+export type ElevationDiagram = {
+  variant: 'elevation'
+  viewW: number
+  viewH: number
+  beam: Rect
+  /** Vertical stirrup ticks at their true positions along the span. */
+  stirrups: string[]
+  /** Top and bottom longitudinal bars. */
+  mainLines: [string, string]
+  drawnAll: boolean
+  tickCount: number
+  zoneBands: ZoneBand[]
+  dims: Dim[]
+  scale: number
+  /** Always false — drives the caption noting the vertical scale is exaggerated. */
+  yToScale: false
+  anchored: boolean
+  title: string
+}
+
+/**
+ * Longitudinal view of a beam showing where the stirrup spacing changes.
+ *
+ * A cross-section physically cannot show this, so without the elevation a
+ * mis-typed zone length has no visual tell anywhere in the tool. Ticks come
+ * from the same planStirrupZones() the schedule counts with, so the drawing
+ * and the count can never disagree.
+ *
+ * Returns null when spacing is uniform — it would add nothing over the section.
+ */
+export function beamElevationDiagram(i: BeamInputs): ElevationDiagram | null {
+  const span = i.clearSpanMm
+  if (!fin(span) || span <= 0) return null
+
+  const plan = planStirrupZones(span, i.stirEndZones, i.stirSpacingMm)
+  if (!plan.zones.some((z) => z.kind === 'end')) return null
+
+  const scale = ELEV_MAX_W / span
+  if (!fin(scale) || scale <= 0) return null
+
+  const beam: Rect = { x: SEC_PAD_L, y: SEC_PAD_T, w: span * scale, h: ELEV_BEAM_H }
+
+  // Walk the plan left to right. Adjacent zones share the bar on their
+  // boundary, exactly as the count does.
+  const xsMm: number[] = [0]
+  let pos = 0
+  for (const z of plan.zones) {
+    for (let k = 1; k <= z.count; k++) xsMm.push(pos + k * z.spacingMm)
+    pos += z.lengthMm
+  }
+
+  const drawnAll = xsMm.length <= MAX_ELEV_TICKS
+  // Past the cap, show true first/last positions rather than resampling, which
+  // would misrepresent the spacing.
+  const shownMm = drawnAll ? xsMm : [...xsMm.slice(0, 3), ...xsMm.slice(-3)]
+
+  const stirrups = shownMm.map((mm) => {
+    const x = beam.x + Math.min(Math.max(mm, 0), span) * scale
+    return `M ${num(x)} ${num(beam.y + 3)} L ${num(x)} ${num(beam.y + beam.h - 3)}`
+  })
+
+  // Anchorage is added to the cutting length, not drawn to shape — the stub
+  // only signals that the bar continues past the support.
+  const stub = i.anchorIntoSupport ? 7 : 0
+  const mainLines: [string, string] = [
+    `M ${num(beam.x - stub)} ${num(beam.y + 8)} L ${num(beam.x + beam.w + stub)} ${num(beam.y + 8)}`,
+    `M ${num(beam.x - stub)} ${num(beam.y + beam.h - 8)} L ${num(beam.x + beam.w + stub)} ${num(beam.y + beam.h - 8)}`,
+  ]
+
+  const bandY = beam.y + beam.h + 10
+  let cursor = 0
+  const zoneBands: ZoneBand[] = plan.zones.map((z) => {
+    const x0 = beam.x + cursor * scale
+    const x1 = beam.x + (cursor + z.lengthMm) * scale
+    cursor += z.lengthMm
+    return {
+      path: dimLine({ x: x0, y: bandY }, { x: x1, y: bandY }, SEC_TICK, false),
+      label: `${z.count} @ ${Math.round(z.spacingMm)}`,
+      tx: r2((x0 + x1) / 2),
+      ty: r2(bandY + 9),
+      kind: z.kind,
+    }
+  })
+
+  const spanY = bandY + 22
+  const dims: Dim[] = [{
+    path: dimLine({ x: beam.x, y: spanY }, { x: beam.x + beam.w, y: spanY }, SEC_TICK, false),
+    tx: r2(beam.x + beam.w / 2),
+    ty: r2(spanY + 9),
+    anchor: 'middle',
+    label: String(Math.round(span)),
+  }]
+
+  return {
+    variant: 'elevation',
+    viewW: r2(SEC_PAD_L + beam.w + SEC_PAD_R),
+    viewH: r2(spanY + 16),
+    beam,
+    stirrups,
+    mainLines,
+    drawnAll,
+    tickCount: xsMm.length,
+    zoneBands,
+    dims,
+    scale,
+    yToScale: false,
+    anchored: !!i.anchorIntoSupport,
+    title: `Beam elevation over ${Math.round(span)} mm — ${plan.totalCount} stirrups, spacing shown by zone`,
+  }
 }
