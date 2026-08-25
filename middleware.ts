@@ -34,7 +34,7 @@ function buildDynamicCSP(nonce: string): string {
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
     // https://*.daily.co / wss://*.daily.co — Vapi's voice widget runs its WebRTC call over Daily.co.
-    "connect-src 'self' https://*.razorpay.com https://api.brevo.com https://api.vapi.ai wss://api.vapi.ai https://*.daily.co wss://*.daily.co https://*.google-analytics.com https://*.analytics.google.com https://www.google.com",
+    "connect-src 'self' https://*.razorpay.com https://api.vapi.ai wss://api.vapi.ai https://*.daily.co wss://*.daily.co https://*.google-analytics.com https://*.analytics.google.com https://www.google.com",
     // media-src required for WebRTC audio tracks piped through Daily.co
     "media-src 'self' blob: https://*.daily.co",
     "frame-src https://*.razorpay.com https://api.razorpay.com",
@@ -55,7 +55,7 @@ function buildStaticCSP(): string {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
-    "connect-src 'self' https://*.razorpay.com https://api.brevo.com https://api.vapi.ai wss://api.vapi.ai https://*.daily.co wss://*.daily.co https://*.google-analytics.com https://*.analytics.google.com https://www.google.com",
+    "connect-src 'self' https://*.razorpay.com https://api.vapi.ai wss://api.vapi.ai https://*.daily.co wss://*.daily.co https://*.google-analytics.com https://*.analytics.google.com https://www.google.com",
     "media-src 'self' blob: https://*.daily.co",
     "frame-src https://*.razorpay.com https://api.razorpay.com",
     "form-action 'self' https://accounts.google.com",

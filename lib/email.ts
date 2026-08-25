@@ -1,6 +1,4 @@
-import { env } from '@/lib/env'
-
-const BREVO_API = 'https://api.brevo.com/v3/smtp/email'
+import { sendViaSmtp } from '@/lib/mailer'
 
 export async function sendOtpEmail({ to, name, otp }: { to: string; name: string; otp: string }) {
   await sendMail(to, name || to, 'Your ARC PEM verification code', `
@@ -41,28 +39,8 @@ export async function sendOtpEmail({ to, name, otp }: { to: string; name: string
     </body></html>
   `)
 }
-// Sender falls back to noreply@arcpem.com (via env helper) — never a personal inbox.
-const FROM = { name: 'ARC PEM', email: env.brevoSender() }
-
-async function sendMail(to: string, toName: string, subject: string, html: string) {
-  const res = await fetch(BREVO_API, {
-    method: 'POST',
-    headers: {
-      'api-key':     process.env.BREVO_API_KEY!,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      sender:      FROM,
-      to:          [{ email: to, name: toName }],
-      subject,
-      htmlContent: html,
-    }),
-  })
-
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`Brevo API ${res.status}: ${err}`)
-  }
+async function sendMail(to: string | string[], _toName: string, subject: string, html: string) {
+  await sendViaSmtp({ to, fromName: 'ARC PEM', subject, html })
 }
 
 export async function sendPasswordResetOtpEmail({
@@ -138,7 +116,7 @@ export async function sendPasswordResetEmail({
 
 export async function sendDemoRequestEmail({
   to, name, whatsapp, company, role, teamSize, date, time,
-}: { to: string; name: string; whatsapp: string; company?: string; role?: string; teamSize?: string; date?: string; time?: string }) {
+}: { to: string | string[]; name: string; whatsapp: string; company?: string; role?: string; teamSize?: string; date?: string; time?: string }) {
   const rows = [
     ['Name',           name],
     ['WhatsApp',       whatsapp],
@@ -170,6 +148,52 @@ export async function sendDemoRequestEmail({
       </div>
       <div style="background:#f8fafc;border-top:1px solid #f1f5f9;padding:20px 36px;text-align:center;">
         <p style="font-size:12px;color:#94a3b8;margin:0;">© 2026 ARCPEM · Demo request notification</p>
+      </div>
+    </div>
+    </body></html>
+  `)
+}
+
+export async function sendDemoConfirmationEmail({
+  to, name, date, time, meetLink,
+}: { to: string; name: string; date?: string; time?: string; meetLink?: string }) {
+  await sendMail(to, name, 'Your ARC PEM demo is booked', `
+    <!DOCTYPE html><html>
+    <body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',Arial,sans-serif;">
+    <div style="max-width:520px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);padding:32px 36px;text-align:center;">
+        <span style="font-size:18px;font-weight:900;color:white;">ARC <span style="color:#60a5fa;">PEM</span></span>
+        <h1 style="color:white;font-size:20px;font-weight:700;margin:16px 0 6px;">You're all set, ${name}!</h1>
+        <p style="color:rgba(255,255,255,0.6);font-size:13px;margin:0;">Your free demo request has been received</p>
+      </div>
+      <div style="padding:36px;">
+        ${(date || time) ? `
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
+          <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 14px;">Requested Slot</p>
+          ${date ? `<div style="display:flex;justify-content:space-between;padding:6px 0;"><span style="font-size:13px;color:#64748b;">Date</span><span style="font-size:13px;font-weight:700;color:#0f172a;">${date}</span></div>` : ''}
+          ${time ? `<div style="display:flex;justify-content:space-between;padding:6px 0;"><span style="font-size:13px;color:#64748b;">Time</span><span style="font-size:13px;font-weight:700;color:#0f172a;">${time}</span></div>` : ''}
+        </div>` : ''}
+        ${meetLink ? `
+        <p style="font-size:14px;color:#475569;margin:0 0 20px;line-height:1.6;">
+          We've pencilled in a Google Meet for this slot. If the time doesn't work, just reply to this email or message us on WhatsApp and we'll move it.
+        </p>
+        <div style="text-align:center;margin-bottom:24px;">
+          <a href="${meetLink}" style="display:inline-block;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;">
+            Join on Google Meet →
+          </a>
+        </div>
+        <p style="font-size:12px;color:#94a3b8;margin:0 0 24px;word-break:break-all;">${meetLink}</p>
+        ` : `
+        <p style="font-size:14px;color:#475569;margin:0 0 24px;line-height:1.6;">
+          Our team will confirm your slot and send the Google Meet link on WhatsApp shortly.
+        </p>
+        `}
+        <div style="background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:10px;padding:12px 16px;">
+          <p style="font-size:12px;color:#1e3a5f;margin:0;">We'll also reach out on WhatsApp within 2 hours to confirm everything.</p>
+        </div>
+      </div>
+      <div style="background:#f8fafc;border-top:1px solid #f1f5f9;padding:16px 36px;text-align:center;">
+        <p style="font-size:11px;color:#94a3b8;margin:0;">© 2026 ARCPEM. All rights reserved.<br/>You received this because you booked a demo at arcpem.com.</p>
       </div>
     </div>
     </body></html>

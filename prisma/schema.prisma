@@ -83,6 +83,28 @@ model Plan {
   updatedAt   DateTime @updatedAt
 }
 
+// Demo requests submitted from the "Book a Free Demo" modal — written here,
+// managed in Arc-Pem-Admin → Demo Bookings. Admin owns the migration (see
+// warning above); this is a mirror, run only `prisma generate` in this project.
+model DemoBooking {
+  id              String   @id @default(cuid())
+  name            String
+  email           String
+  whatsapp        String
+  company         String?
+  role            String?
+  teamSize        String?
+  preferredDate   String?
+  preferredTime   String?
+  meetLink        String?
+  calendarEventId String?
+  status          String   @default("PENDING")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
 // Blog / CMS — authored in Arc-Pem-Admin (which owns the migration), read here.
 // This is a mirror; run only `prisma generate` in this project (see warning above).
 model BlogPost {

@@ -32,7 +32,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
   const [demoSubmitting, setDemoSubmitting] = useState(false)
   const [demoError, setDemoError]       = useState<string | null>(null)
   const [demoForm, setDemoForm]         = useState({
-    name: '', whatsapp: '', company: '',
+    name: '', email: '', whatsapp: '', company: '',
     role: 'Principal Architect', teamSize: 'Just me',
     date: '', time: '',
   })
@@ -46,7 +46,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
 
   function openDemo() {
     setDemoSuccess(false); setDemoError(null)
-    setDemoForm({ name: '', whatsapp: '', company: '', role: 'Principal Architect', teamSize: 'Just me', date: '', time: '' })
+    setDemoForm({ name: '', email: '', whatsapp: '', company: '', role: 'Principal Architect', teamSize: 'Just me', date: '', time: '' })
     setDemoOpen(true); document.body.style.overflow = 'hidden'
   }
   function hideDemo() { setDemoOpen(false); document.body.style.overflow = '' }
@@ -513,6 +513,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                   <div className="mf-row"><label>Full Name *</label><input type="text" placeholder=" John Doe" required value={demoForm.name} onChange={e => setDemoForm(f => ({ ...f, name: e.target.value }))} /></div>
                   <div className="mf-row"><label>WhatsApp Number *</label><input type="tel" placeholder="+91 98765 43210" required value={demoForm.whatsapp} onChange={e => setDemoForm(f => ({ ...f, whatsapp: e.target.value }))} /></div>
                 </div>
+                <div className="mf-row"><label>Email *</label><input type="email" placeholder="you@company.com" required value={demoForm.email} onChange={e => setDemoForm(f => ({ ...f, email: e.target.value }))} /></div>
                 <div className="mf-row"><label>Firm / Company Name</label><input type="text" placeholder="Skyline Constructions pvt ltd" value={demoForm.company} onChange={e => setDemoForm(f => ({ ...f, company: e.target.value }))} /></div>
                 <div className="mf-2col">
                   <div className="mf-row"><label>Your Role</label><select value={demoForm.role} onChange={e => setDemoForm(f => ({ ...f, role: e.target.value }))}><option>Principal Architect</option><option>Project Manager</option><option>Accountant / Admin</option><option>Site Engineer</option><option>Owner / Director</option></select></div>
@@ -532,7 +533,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                 <svg width="56" height="56" fill="none" viewBox="0 0 24 24" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 12l3 3 5-6" /></svg>
               </div>
               <h3>You&apos;re all set!</h3>
-              <p>We&apos;ll reach you on WhatsApp within 2 hours to schedule your demo. No spam — ever.</p>
+              <p>Check your email for your demo confirmation — we&apos;ll also reach you on WhatsApp within 2 hours. No spam — ever.</p>
               <div style={{ marginTop: '16px', fontSize: '.8rem', color: 'var(--gray-400)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                 <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                 Or call us directly: <strong style={{ color: 'var(--navy)' }}>{company.phone}</strong>

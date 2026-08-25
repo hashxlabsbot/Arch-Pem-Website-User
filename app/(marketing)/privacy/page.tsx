@@ -41,7 +41,8 @@ export default function PrivacyPage() {
       <p>We share the minimum data required with trusted processors:</p>
       <ul>
         <li><strong>Razorpay</strong> — payment processing.</li>
-        <li><strong>Brevo</strong> — transactional email delivery.</li>
+        <li><strong>Hostinger</strong> — transactional email delivery from our official mailbox (info@arcpem.com).</li>
+        <li><strong>Google Calendar</strong> — used to generate a Google Meet link when you book a demo.</li>
         <li><strong>Cloud database hosting</strong> — to store account and subscription records.</li>
         <li><strong>Google Analytics</strong> — aggregated, anonymised website usage statistics (pages visited, general location, device type) to help us understand how visitors use our site. This does not include payment or account data.</li>
       </ul>

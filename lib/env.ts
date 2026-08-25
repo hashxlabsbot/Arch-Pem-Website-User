@@ -13,8 +13,13 @@ type EnvKey =
   | 'RAZORPAY_KEY_ID'
   | 'RAZORPAY_KEY_SECRET'
   | 'RAZORPAY_WEBHOOK_SECRET'
-  | 'BREVO_API_KEY'
-  | 'BREVO_SENDER_EMAIL'
+  | 'SMTP_HOST'
+  | 'SMTP_PORT'
+  | 'SMTP_SECURE'
+  | 'SMTP_USER'
+  | 'SMTP_PASS'
+  | 'MAIL_FROM'
+  | 'MAIL_FROM_NAME'
   | 'UPSTASH_REDIS_REST_URL'
   | 'UPSTASH_REDIS_REST_TOKEN'
   | 'NEXT_PUBLIC_GA_MEASUREMENT_ID'
@@ -22,6 +27,9 @@ type EnvKey =
   | 'NEXT_PUBLIC_VAPI_PUBLIC_KEY'
   | 'GOOGLE_CLIENT_ID'
   | 'GOOGLE_CLIENT_SECRET'
+  | 'GOOGLE_CALENDAR_REFRESH_TOKEN'
+  | 'GOOGLE_CALENDAR_ID'
+  | 'DEMO_LEADS_EMAILS'
 
 const REQUIRED: EnvKey[] = ['DATABASE_URL', 'NEXTAUTH_SECRET', 'NEXTAUTH_URL']
 
@@ -57,8 +65,12 @@ export const env = {
   razorpayKeyId: () => get('RAZORPAY_KEY_ID'),
   razorpayKeySecret: () => get('RAZORPAY_KEY_SECRET'),
   razorpayWebhookSecret: () => get('RAZORPAY_WEBHOOK_SECRET'),
-  brevoApiKey: () => get('BREVO_API_KEY'),
-  brevoSender: () => get('BREVO_SENDER_EMAIL') ?? 'noreply@arcpem.com',
+  smtpHost: () => get('SMTP_HOST'),
+  smtpPort: () => get('SMTP_PORT'),
+  smtpSecure: () => get('SMTP_SECURE'),
+  smtpUser: () => get('SMTP_USER') ?? 'info@arcpem.com',
+  mailFrom: () => get('MAIL_FROM') ?? get('SMTP_USER') ?? 'info@arcpem.com',
+  mailFromName: () => get('MAIL_FROM_NAME') ?? 'ARC PEM',
   upstashUrl: () => get('UPSTASH_REDIS_REST_URL'),
   upstashToken: () => get('UPSTASH_REDIS_REST_TOKEN'),
   gaMeasurementId: () => get('NEXT_PUBLIC_GA_MEASUREMENT_ID'),
@@ -67,4 +79,9 @@ export const env = {
   // Both unset => Google button hidden and provider omitted (see lib/auth.ts).
   googleClientId: () => get('GOOGLE_CLIENT_ID'),
   googleClientSecret: () => get('GOOGLE_CLIENT_SECRET'),
+  // Unset => Meet-link generation is skipped; booking still succeeds (see lib/google-calendar.ts).
+  googleCalendarRefreshToken: () => get('GOOGLE_CALENDAR_REFRESH_TOKEN'),
+  googleCalendarId: () => get('GOOGLE_CALENDAR_ID') ?? 'primary',
+  // Comma-separated internal recipients for demo-lead notifications.
+  demoLeadsEmails: () => (get('DEMO_LEADS_EMAILS') ?? 'info@arcpem.com').split(',').map((e) => e.trim()).filter(Boolean),
 }
