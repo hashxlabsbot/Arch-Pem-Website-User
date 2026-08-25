@@ -4,6 +4,7 @@ import { compileMDX } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import JsonLd from '@/components/seo/JsonLd'
 import ShareButton from '@/components/tools/ShareButton'
 import BrandedCover from '@/components/blog/BrandedCover'
@@ -22,6 +23,29 @@ function formatDate(iso: string): string {
 }
 function initials(name: string): string {
   return name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase()
+}
+
+// Blog content is authored by ADMIN/BLOG_EDITOR accounts in a separate app and
+// rendered here as MDX, which (unlike plain markdown) compiles HTML-looking
+// syntax straight into live elements — so `<img onerror=...>` in a post body
+// would otherwise execute. Sanitize the compiled tree as the final rehype
+// step. `id`/`tabIndex` are already in the default allowlist (heading ids from
+// rehype-slug need no change); `className` on `<a>` is value-restricted by
+// default to `data-footnote-backref` only, and `ariaHidden` isn't listed at
+// all, so both need extending or rehype-autolink-headings' anchor link above
+// would silently lose its styling/accessibility attributes.
+const blogSanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    a: [
+      ...(defaultSchema.attributes?.a ?? []).filter(
+        (attr) => !(Array.isArray(attr) && attr[0] === 'className')
+      ),
+      ['className', 'data-footnote-backref', 'heading-anchor'],
+      'ariaHidden',
+    ],
+  },
 }
 
 /** Shared, single source of truth for the article page — used by both the live
@@ -55,6 +79,9 @@ export default async function ArticleView({
             properties: { className: ['heading-anchor'], ariaHidden: true, tabIndex: -1 },
             content: { type: 'text', value: ' #' },
           }],
+          // Must run last — sanitizes the fully-built tree, including any raw
+          // HTML the author's markdown contained (see blogSanitizeSchema above).
+          [rehypeSanitize, blogSanitizeSchema],
         ],
       },
     },
