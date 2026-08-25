@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { getActiveSession } from '@/lib/auth'
 import { rateLimit } from '@/lib/rate-limit'
 import { env } from '@/lib/env'
 import { logger } from '@/lib/logger'
@@ -10,7 +9,7 @@ import crypto from 'crypto'
 export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions)
+  const session = await getActiveSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { allowed } = await rateLimit(`pay-verify:${session.user.id}`, 20, 60 * 60 * 1000)

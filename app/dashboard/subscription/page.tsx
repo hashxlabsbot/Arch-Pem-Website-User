@@ -1,5 +1,4 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { getActiveSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { CheckCircle2, ArrowRight, Zap, Star } from 'lucide-react'
 import UpgradeButton from '@/components/dashboard/UpgradeButton'
@@ -9,7 +8,7 @@ import { annualPrice } from '@/lib/pricing'
 const POPULAR_PLAN = 'Studio'
 
 export default async function SubscriptionPage() {
-  const session = await getServerSession(authOptions)
+  const session = await getActiveSession()
   if (!session) return null
 
   const [user, plans] = await Promise.all([

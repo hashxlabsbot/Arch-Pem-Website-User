@@ -1,5 +1,4 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { getActiveSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { Download, CreditCard, HelpCircle, ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Calendar } from 'lucide-react'
 import OnboardingChecklist from '@/components/dashboard/OnboardingChecklist'
@@ -8,7 +7,7 @@ import { annualPrice } from '@/lib/pricing'
 import { RocketIcon, ClipboardIcon, DashboardIcon } from '@/components/icons'
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions)
+  const session = await getActiveSession()
   if (!session) return null
 
   const user = await db.user.findUnique({

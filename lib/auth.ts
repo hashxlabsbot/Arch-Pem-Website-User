@@ -1,4 +1,4 @@
-import { NextAuthOptions } from 'next-auth'
+import { NextAuthOptions, getServerSession } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import bcrypt from 'bcryptjs'
@@ -164,4 +164,18 @@ export const authOptions: NextAuthOptions = {
       options: { httpOnly: true, sameSite: 'lax' as const, path: '/', secure: isProd },
     },
   },
+}
+
+/**
+ * Use this instead of `getServerSession(authOptions)` everywhere a route or
+ * page gates on "is this user actually logged in" — it's the only place that
+ * checks for the `REVOKED` role the jwt callback above computes on suspend /
+ * password-reset / account deletion. Plain `getServerSession` still returns a
+ * truthy session object in that case (only `role` changes), so callers that
+ * merely check `if (!session)` were letting revoked sessions through.
+ */
+export async function getActiveSession() {
+  const session = await getServerSession(authOptions)
+  if (!session || session.user.role === 'REVOKED') return null
+  return session
 }

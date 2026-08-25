@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { getActiveSession } from '@/lib/auth'
 import fs from 'fs'
 import path from 'path'
 import { Readable } from 'stream'
@@ -23,7 +22,7 @@ const FILE_NAMES: Record<string, string> = {
 }
 
 export async function GET(req: NextRequest) {
-  const session = await getServerSession(authOptions)
+  const session = await getActiveSession()
   if (!session) {
     return NextResponse.redirect(new URL('/login?callbackUrl=/dashboard/downloads', req.url))
   }
