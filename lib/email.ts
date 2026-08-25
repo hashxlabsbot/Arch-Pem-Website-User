@@ -1,6 +1,21 @@
 import { sendViaSmtp } from '@/lib/mailer'
 
+// Every value interpolated into an HTML email body must go through this —
+// these templates carry user-submitted fields (demo form, signup name, etc.)
+// and are sent from the company's authenticated mailbox, so unescaped
+// interpolation would let a submitter inject markup/links into mail that
+// looks legitimate to the recipient.
+function esc(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 export async function sendOtpEmail({ to, name, otp }: { to: string; name: string; otp: string }) {
+  const safeName = esc(name || to)
   await sendMail(to, name || to, 'Your ARC PEM verification code', `
     <!DOCTYPE html><html>
     <body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',Arial,sans-serif;">
@@ -16,7 +31,7 @@ export async function sendOtpEmail({ to, name, otp }: { to: string; name: string
         <p style="color:rgba(255,255,255,0.6);font-size:13px;margin:0;">Use the code below to verify your email address</p>
       </div>
       <div style="padding:36px;text-align:center;">
-        <p style="font-size:15px;color:#1e293b;margin:0 0 8px;">Hi <strong>${name}</strong>,</p>
+        <p style="font-size:15px;color:#1e293b;margin:0 0 8px;">Hi <strong>${safeName}</strong>,</p>
         <p style="font-size:14px;color:#64748b;margin:0 0 28px;line-height:1.6;">
           Enter this 6-digit code to complete your ARC PEM registration.
         </p>
@@ -46,6 +61,7 @@ async function sendMail(to: string | string[], _toName: string, subject: string,
 export async function sendPasswordResetOtpEmail({
   to, name, otp,
 }: { to: string; name: string; otp: string }) {
+  const safeName = esc(name)
   await sendMail(to, name, 'Your ARCPEM password reset code', `
     <!DOCTYPE html><html>
     <body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',Arial,sans-serif;">
@@ -56,7 +72,7 @@ export async function sendPasswordResetOtpEmail({
         <p style="color:rgba(255,255,255,0.6);font-size:13px;margin:0;">Use the code below to reset your password</p>
       </div>
       <div style="padding:36px;text-align:center;">
-        <p style="font-size:15px;color:#1e293b;margin:0 0 8px;">Hi <strong>${name}</strong>,</p>
+        <p style="font-size:15px;color:#1e293b;margin:0 0 8px;">Hi <strong>${safeName}</strong>,</p>
         <p style="font-size:14px;color:#64748b;margin:0 0 28px;line-height:1.6;">
           Enter this 6-digit code to reset your ARCPEM password.
         </p>
@@ -79,6 +95,7 @@ export async function sendPasswordResetOtpEmail({
 export async function sendPasswordResetEmail({
   to, name, resetUrl,
 }: { to: string; name: string; resetUrl: string }) {
+  const safeName = esc(name)
   await sendMail(to, name, 'Reset your ARCPEM password', `
     <!DOCTYPE html><html>
     <body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',Arial,sans-serif;">
@@ -89,7 +106,7 @@ export async function sendPasswordResetEmail({
         <p style="color:rgba(255,255,255,0.6);font-size:13px;margin:0;">We received a request to reset your password</p>
       </div>
       <div style="padding:36px;">
-        <p style="font-size:15px;color:#1e293b;margin:0 0 10px;">Hi <strong>${name}</strong>,</p>
+        <p style="font-size:15px;color:#1e293b;margin:0 0 10px;">Hi <strong>${safeName}</strong>,</p>
         <p style="font-size:14px;color:#64748b;margin:0 0 28px;line-height:1.6;">
           Click the button below to set a new password. This link expires in <strong>15 minutes</strong>.
         </p>
@@ -118,13 +135,13 @@ export async function sendDemoRequestEmail({
   to, name, whatsapp, company, role, teamSize, date, time,
 }: { to: string | string[]; name: string; whatsapp: string; company?: string; role?: string; teamSize?: string; date?: string; time?: string }) {
   const rows = [
-    ['Name',           name],
-    ['WhatsApp',       whatsapp],
-    ['Preferred date', date || '—'],
-    ['Preferred time', time || '—'],
-    ['Company',        company || '—'],
-    ['Role',           role || '—'],
-    ['Team Size',      teamSize || '—'],
+    ['Name',           esc(name)],
+    ['WhatsApp',       esc(whatsapp)],
+    ['Preferred date', esc(date || '—')],
+    ['Preferred time', esc(time || '—')],
+    ['Company',        esc(company || '—')],
+    ['Role',           esc(role || '—')],
+    ['Team Size',      esc(teamSize || '—')],
   ]
 
   await sendMail(to, 'ARC PEM Team', `New demo request — ${name}`, `
@@ -157,32 +174,38 @@ export async function sendDemoRequestEmail({
 export async function sendDemoConfirmationEmail({
   to, name, date, time, meetLink,
 }: { to: string; name: string; date?: string; time?: string; meetLink?: string }) {
+  const safeName = esc(name)
+  const safeDate = date ? esc(date) : undefined
+  const safeTime = time ? esc(time) : undefined
+  // meetLink comes from the Google Calendar API response, not user input, but
+  // it's still escaped for the href/display text as standard practice.
+  const safeMeetLink = meetLink ? esc(meetLink) : undefined
   await sendMail(to, name, 'Your ARC PEM demo is booked', `
     <!DOCTYPE html><html>
     <body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',Arial,sans-serif;">
     <div style="max-width:520px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
       <div style="background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);padding:32px 36px;text-align:center;">
         <span style="font-size:18px;font-weight:900;color:white;">ARC <span style="color:#60a5fa;">PEM</span></span>
-        <h1 style="color:white;font-size:20px;font-weight:700;margin:16px 0 6px;">You're all set, ${name}!</h1>
+        <h1 style="color:white;font-size:20px;font-weight:700;margin:16px 0 6px;">You're all set, ${safeName}!</h1>
         <p style="color:rgba(255,255,255,0.6);font-size:13px;margin:0;">Your free demo request has been received</p>
       </div>
       <div style="padding:36px;">
-        ${(date || time) ? `
+        ${(safeDate || safeTime) ? `
         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
           <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 14px;">Requested Slot</p>
-          ${date ? `<div style="display:flex;justify-content:space-between;padding:6px 0;"><span style="font-size:13px;color:#64748b;">Date</span><span style="font-size:13px;font-weight:700;color:#0f172a;">${date}</span></div>` : ''}
-          ${time ? `<div style="display:flex;justify-content:space-between;padding:6px 0;"><span style="font-size:13px;color:#64748b;">Time</span><span style="font-size:13px;font-weight:700;color:#0f172a;">${time}</span></div>` : ''}
+          ${safeDate ? `<div style="display:flex;justify-content:space-between;padding:6px 0;"><span style="font-size:13px;color:#64748b;">Date</span><span style="font-size:13px;font-weight:700;color:#0f172a;">${safeDate}</span></div>` : ''}
+          ${safeTime ? `<div style="display:flex;justify-content:space-between;padding:6px 0;"><span style="font-size:13px;color:#64748b;">Time</span><span style="font-size:13px;font-weight:700;color:#0f172a;">${safeTime}</span></div>` : ''}
         </div>` : ''}
-        ${meetLink ? `
+        ${safeMeetLink ? `
         <p style="font-size:14px;color:#475569;margin:0 0 20px;line-height:1.6;">
           We've pencilled in a Google Meet for this slot. If the time doesn't work, just reply to this email or message us on WhatsApp and we'll move it.
         </p>
         <div style="text-align:center;margin-bottom:24px;">
-          <a href="${meetLink}" style="display:inline-block;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;">
+          <a href="${safeMeetLink}" style="display:inline-block;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;">
             Join on Google Meet →
           </a>
         </div>
-        <p style="font-size:12px;color:#94a3b8;margin:0 0 24px;word-break:break-all;">${meetLink}</p>
+        <p style="font-size:12px;color:#94a3b8;margin:0 0 24px;word-break:break-all;">${safeMeetLink}</p>
         ` : `
         <p style="font-size:14px;color:#475569;margin:0 0 24px;line-height:1.6;">
           Our team will confirm your slot and send the Google Meet link on WhatsApp shortly.
@@ -203,10 +226,11 @@ export async function sendDemoConfirmationEmail({
 export async function sendPaymentSuccessEmail({
   to, name, planName, amount, paymentId,
 }: { to: string; name: string; planName: string; amount: number; paymentId: string }) {
+  const safeName = esc(name)
   const rows = [
-    ['Plan',        planName],
+    ['Plan',        esc(planName)],
     ['Amount paid', `₹${amount.toLocaleString('en-IN')}`],
-    ['Payment ID',  paymentId],
+    ['Payment ID',  esc(paymentId)],
     ['Status',      'Active'],
   ]
 
@@ -219,9 +243,9 @@ export async function sendPaymentSuccessEmail({
         <p style="color:rgba(255,255,255,0.85);font-size:14px;margin:0;">Your subscription has been activated.</p>
       </div>
       <div style="padding:32px 36px;">
-        <p style="font-size:15px;color:#1e293b;margin:0 0 20px;">Hi <strong>${name}</strong>,</p>
+        <p style="font-size:15px;color:#1e293b;margin:0 0 20px;">Hi <strong>${safeName}</strong>,</p>
         <p style="font-size:14px;color:#475569;margin:0 0 24px;line-height:1.6;">
-          Thank you for your payment. Your <strong>${planName}</strong> plan is now active and all its features are unlocked in your dashboard.
+          Thank you for your payment. Your <strong>${esc(planName)}</strong> plan is now active and all its features are unlocked in your dashboard.
         </p>
         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
           <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 14px;">Receipt</p>
