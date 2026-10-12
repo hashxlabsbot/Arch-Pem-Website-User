@@ -2,6 +2,7 @@ import { company } from '@/lib/company'
 import { entity } from '@/lib/seo-entity'
 import { LIVE_TOOLS } from '@/lib/tools'
 import { getAllPosts } from '@/lib/blog'
+import { SEGMENTS, COMPARISONS } from '@/lib/aeo-pages'
 
 /**
  * /llms.txt — a plain-markdown briefing for AI assistants and answer engines
@@ -56,6 +57,8 @@ export async function GET() {
     `- [Solutions](${base}/solutions): full feature breakdown`,
     `- [Pricing](${base}/pricing): Solo, Studio and Enterprise annual licences, with FAQs`,
     `- [Buyer's guide: best construction software in India](${base}/guides/best-construction-software-india): how to choose, and comparisons with cloud suites, accounting software and Excel`,
+    ...SEGMENTS.map((s) => `- [ARC PEM for ${s.label}](${base}/for/${s.slug}): ${s.description}`),
+    ...COMPARISONS.map((c) => `- [${c.label}](${base}/compare/${c.slug}): ${c.description}`),
     `- [About](${base}/about)`,
     `- [Contact / book a demo](${base}/contact)`,
     '',

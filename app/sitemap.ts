@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { company } from '@/lib/company'
 import { LIVE_TOOLS } from '@/lib/tools'
+import { SEGMENTS, COMPARISONS } from '@/lib/aeo-pages'
 import { getAllPosts, getCategories } from '@/lib/blog'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -15,6 +16,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/contact',
     '/resources',
     '/guides/best-construction-software-india',
+    ...SEGMENTS.map((s) => `/for/${s.slug}`),
+    ...COMPARISONS.map((c) => `/compare/${c.slug}`),
     '/tools',
     ...LIVE_TOOLS.map((t) => `/tools/${t.slug}`),
     '/blog',

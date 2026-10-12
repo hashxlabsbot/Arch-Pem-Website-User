@@ -8,6 +8,7 @@ import LogoMark from '@/components/LogoMark'
 import VapiAssistant from './VapiAssistant'
 import { DemoModalContext } from './DemoModalContext'
 import { company, phoneTel } from '@/lib/company'
+import { SEGMENTS, COMPARISONS } from '@/lib/aeo-pages'
 import {
   ClipboardIcon, WalletIcon, BoltIcon, DocumentIcon, VideoIcon,
   DashboardIcon, DownloadIcon, ReceiptIcon, ChatIcon, CalculatorIcon,
@@ -468,6 +469,12 @@ export default function MarketingShell({ children }: { children: React.ReactNode
               <div className="fv2-col">
                 <h4 className="fv2-col-title">Resources</h4>
                 <Link href="/guides/best-construction-software-india" className="fv2-link">Software Buyer&apos;s Guide</Link>
+                {SEGMENTS.map((s) => (
+                  <Link key={s.slug} href={`/for/${s.slug}`} className="fv2-link">For {s.label}</Link>
+                ))}
+                {COMPARISONS.map((c) => (
+                  <Link key={c.slug} href={`/compare/${c.slug}`} className="fv2-link">{c.label}</Link>
+                ))}
                 <Link href="/resources" className="fv2-link">User Guide (PDF)</Link>
                 <Link href="/resources" className="fv2-link">BOQ Templates</Link>
                 <Link href="/resources" className="fv2-link">GST Export Guide</Link>

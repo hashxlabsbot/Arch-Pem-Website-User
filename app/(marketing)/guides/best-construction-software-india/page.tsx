@@ -5,6 +5,7 @@ import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
 import { entity, ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
 import { LIVE_TOOLS } from '@/lib/tools'
+import { SEGMENTS, COMPARISONS } from '@/lib/aeo-pages'
 import '../../tools/tools.css'
 
 const PATH = '/guides/best-construction-software-india'
@@ -255,6 +256,16 @@ export default function BestConstructionSoftwareGuide() {
               ))}
             </ul>
             <p>Read the full stories on the <Link href="/about">customer stories page</Link>.</p>
+
+            <h2>Guides by role and comparisons</h2>
+            <ul>
+              {SEGMENTS.map((s) => (
+                <li key={s.slug}><Link href={`/for/${s.slug}`}>ARC PEM for {s.label.toLowerCase()}</Link></li>
+              ))}
+              {COMPARISONS.map((c) => (
+                <li key={c.slug}><Link href={`/compare/${c.slug}`}>{c.title}</Link></li>
+              ))}
+            </ul>
 
             <h2>ARC PEM features at a glance</h2>
             {entity.featureGroups.map((g) => (
