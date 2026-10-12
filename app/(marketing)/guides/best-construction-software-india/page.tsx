@@ -35,7 +35,7 @@ const COMPARE: { row: string; arc: string; cloud: string; acct: string; excel: s
   },
   {
     row: 'Where it runs',
-    arc: 'Windows desktop, fully offline; optional sharing on your office network',
+    arc: 'Windows desktop (Mac coming soon), fully offline; optional sharing on your office network',
     cloud: 'Cloud — needs a reliable internet connection',
     acct: 'Installed or hosted, depending on the product',
     excel: 'Desktop or cloud',
@@ -243,8 +243,19 @@ export default function BestConstructionSoftwareGuide() {
             <ul>
               <li>Your main need is drawing management, RFIs or submittals for large site teams in the cloud</li>
               <li>You run critical-path scheduling for large infrastructure programmes</li>
-              <li>Your team works only on Mac — ARC PEM runs on Windows</li>
+              <li>Your team works only on Mac and can&apos;t wait — ARC PEM runs on Windows today, with a Mac version coming soon</li>
             </ul>
+
+            <h2>Who uses ARC PEM</h2>
+            <p>
+              {entity.proof.stats.join(' · ')}. A few results customers have reported:
+            </p>
+            <ul>
+              {entity.proof.stories.map((s) => (
+                <li key={s.company}><strong>{s.company}</strong> ({s.segment}, {s.city}) — {s.result}.</li>
+              ))}
+            </ul>
+            <p>Read the full stories on the <Link href="/about">customer stories page</Link>.</p>
 
             <h2>ARC PEM features at a glance</h2>
             {entity.featureGroups.map((g) => (

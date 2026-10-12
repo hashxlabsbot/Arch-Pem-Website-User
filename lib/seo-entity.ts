@@ -12,9 +12,18 @@ export const entity = {
   definition:
     'ARC PEM is construction expense and project-cost management software for architects, contractors and builders in India. It is a Windows desktop application that works fully offline and combines BOQ & budgets, vendor bills, labour wages, contractor bills, site expenses, GST purchase registers, pending payments and Tally ERP / TallyPrime export in one place.',
   audience: ['Architecture firms', 'Interior & fit-out firms', 'Building contractors', 'Construction companies', 'Real-estate builders'],
-  platform: 'Windows desktop (works fully offline)',
+  platform: 'Windows desktop, works fully offline (Mac version coming soon)',
   pricingModel:
     'Annual one-year licence, locked per machine: Solo (1 computer), Studio (up to 3) and Enterprise (up to 10). Current prices are on the pricing page.',
+  // Owner-confirmed customer proof (same figures and stories as the About page).
+  proof: {
+    stats: ['30+ architecture and construction firms onboard', '₹120 Cr+ of project value tracked'],
+    stories: [
+      { company: 'DesignCraft Architects', city: 'Bengaluru', segment: 'Interior & fit-out', result: 'Monthly GST reconciliation cut from 2 days to 2 hours (80% faster) after replacing 14 Excel sheets per project' },
+      { company: 'Vertex Constructions', city: 'Pune', segment: 'Residential', result: '₹35 lakh of pending dues recovered — a 35% drop in outstanding payments within 3 months across 12 active projects' },
+      { company: 'BuildRight Infra', city: 'Hyderabad', segment: 'MEP & civil', result: 'Zero labour wage disputes after daily muster PDFs were imported and wages auto-calculated' },
+    ],
+  },
   featureGroups: [
     {
       name: 'Project & budget',
