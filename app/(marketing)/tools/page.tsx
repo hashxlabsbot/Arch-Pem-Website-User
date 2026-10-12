@@ -34,7 +34,7 @@ const TOOL_ICONS: Record<string, React.ReactNode> = {
 const FAQS = [
   {
     q: 'Are these construction tools really free?',
-    a: 'Yes — every tool on this page is free with no sign-up, no usage limits and no watermarks. They are built and maintained by HashX Labs, the team behind ARC PEM project expense management software.',
+    a: 'Yes — every tool on this page is free with no sign-up, no usage limits and no watermarks. They are built and maintained by Hash X Labs, the team behind ARC PEM project expense management software.',
   },
   {
     q: 'Do the tools upload my data anywhere?',

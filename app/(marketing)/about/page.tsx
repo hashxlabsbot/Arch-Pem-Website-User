@@ -45,9 +45,7 @@ export default function AboutPage() {
                 <div className="cc-quote"><div className="cc-quote-inner">{c.quote}</div></div>
               </div>
               <div className="cc-foot">
-                <div className="cc-person"><div className="cc-avatar" style={{ background: c.grad }}>{c.avInitials}</div><div><div className="cc-name">{c.name}</div><div className="cc-role">{c.role}</div></div></div>
-                <a href="#" className="cc-read">Read more →</a>
-              </div>
+                <div className="cc-person"><div className="cc-avatar" style={{ background: c.grad }}>{c.avInitials}</div><div><div className="cc-name">{c.name}</div><div className="cc-role">{c.role}</div></div></div>              </div>
             </div>
           ))}
         </div>

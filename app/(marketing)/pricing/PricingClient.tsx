@@ -692,7 +692,7 @@ export default function PricingClient() {
             >
               <Mail size={17} strokeWidth={2.3} />
             </motion.span>
-            Contact HashX Labs
+            Contact Hash X Labs
             <motion.span
               variants={{ rest: { x: 0 }, hover: { x: 5 } }}
               transition={{ type: 'spring', stiffness: 300, damping: 18 }}

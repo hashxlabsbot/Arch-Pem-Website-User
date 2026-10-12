@@ -29,7 +29,7 @@ export type PostMeta = {
   wordCount: number
 }
 
-export const DEFAULT_AUTHOR: Author = { name: 'ARC PEM Team', role: 'HashX Labs' }
+export const DEFAULT_AUTHOR: Author = { name: 'ARC PEM Team', role: 'Hash X Labs' }
 
 /** "GST & Compliance" -> "gst-and-compliance" — used for /blog/category/[category] URLs. */
 export function slugifyCategory(category: string): string {

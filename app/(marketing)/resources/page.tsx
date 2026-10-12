@@ -39,7 +39,7 @@ export default function ResourcesPage() {
             {i:<ReceiptIcon {...ICON} />,  t:'GST Guide',d:'How to set up GST categories, generate the Purchase Register, and export to Tally.',delay:''},
             {i:<CompareIcon {...ICON} />,  t:'ARC PEM vs. Others',d:'Side-by-side comparison with Excel, Tally, and other construction management tools.',delay:' d1'},
             {i:<BellIcon {...ICON} />,     t:'Product Updates',d:'Changelog, new features, and release notes for every ARC PEM version.',delay:' d2'},
-            {i:<ChatIcon {...ICON} />,     t:'Help Centre',d:'FAQs, troubleshooting guides, and live support from the HashX Labs team.',delay:' d3'},
+            {i:<ChatIcon {...ICON} />,     t:'Help Centre',d:'FAQs, troubleshooting guides, and live support from the Hash X Labs team.',delay:' d3'},
           ].map(r=>(
             <div key={r.t} className={`res-tile fade-up${r.delay}`}>
               <div className="res-tile-icon">{r.i}</div>

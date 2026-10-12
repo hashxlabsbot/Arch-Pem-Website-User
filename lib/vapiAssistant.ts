@@ -89,14 +89,15 @@ mention "plus GST" if they want an exact number.
   integration, SLA support, and self-serve machine transfer.
 
 Licensing details if asked:
-- There's a free trial, no credit card required, so people can try it before buying.
+- There is no self-serve free trial. To try it before buying, people book a free live demo
+  with the team — offer to help them book one.
 - After purchase, the license is emailed as a .lic file; activate it in the app under
   Settings → License.
 - Licenses run for one year. A renewal reminder banner appears 30 days before expiry, and
   there's a 7-day grace period after expiry before the app locks.
 - "Machine" means one Windows installation. Studio/Enterprise customers can transfer their
   license to a new machine themselves from inside the app; Solo customers should contact
-  HashX Labs support for an assisted transfer.
+  Hash X Labs support for an assisted transfer.
 - To upgrade plans, contact the team — they issue a new license file and all existing project
   data is fully preserved.
 - Refunds: there is a short refund window — point callers to the Refund & Cancellation Policy

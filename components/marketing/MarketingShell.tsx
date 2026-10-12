@@ -467,6 +467,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
               </div>
               <div className="fv2-col">
                 <h4 className="fv2-col-title">Resources</h4>
+                <Link href="/guides/best-construction-software-india" className="fv2-link">Software Buyer&apos;s Guide</Link>
                 <Link href="/resources" className="fv2-link">User Guide (PDF)</Link>
                 <Link href="/resources" className="fv2-link">BOQ Templates</Link>
                 <Link href="/resources" className="fv2-link">GST Export Guide</Link>
