@@ -30,7 +30,7 @@ export default async function DashboardPage() {
     {
       icon: Download,
       label: 'Downloads',
-      desc: 'Get the latest ARC PEM installer for Windows',
+      desc: 'Get the latest ARC PEM installer for Windows or Mac',
       href: '/dashboard/downloads',
       gradient: 'linear-gradient(135deg, #3b82f6, #2563eb)',
       colorKey: 'blue',
@@ -246,7 +246,7 @@ export default async function DashboardPage() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
           {[
-            { icon: <RocketIcon size={22} color="#6366f1" />,    title: 'Latest Release', desc: 'ARC PEM is now live for Windows.' },
+            { icon: <RocketIcon size={22} color="#6366f1" />,    title: 'Latest Release', desc: 'ARC PEM is now live for Windows and Mac.' },
             { icon: <ClipboardIcon size={22} color="#6366f1" />, title: 'BOQ Builder',    desc: 'Full bill of quantities with line items.' },
             { icon: <DashboardIcon size={22} color="#6366f1" />, title: 'Reports',        desc: 'Export estimates as PDF & Excel.' },
           ].map(({ icon, title, desc }, i) => (

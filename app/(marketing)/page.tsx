@@ -37,7 +37,7 @@ export default function HomePage() {
           name: company.brand,
           applicationCategory: 'BusinessApplication',
           applicationSubCategory: entity.category,
-          operatingSystem: 'Windows',
+          operatingSystem: 'Windows, macOS',
           softwareVersion: company.product.version,
           description: entity.definition,
           url: company.siteUrl,

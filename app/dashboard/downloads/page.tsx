@@ -3,19 +3,19 @@ import { db } from '@/lib/db'
 import {
   Download, Shield, Cpu, Monitor, HardDrive,
   CheckCircle2, Lock, Package, Zap, Apple,
-  AlertTriangle, Mail, Clock
+  AlertTriangle, Mail
 } from 'lucide-react'
 import { company } from '@/lib/company'
 
 const STEPS = [
   { icon: Lock,        label: 'Verified',    desc: 'Login checked before download starts'   },
   { icon: Download,    label: 'Download',    desc: 'Installer streamed securely to you'      },
-  { icon: Package,     label: 'Install',     desc: 'Run the .exe and follow the wizard'      },
+  { icon: Package,     label: 'Install',     desc: 'Run the installer and follow the steps'      },
   { icon: Zap,         label: 'Activate',    desc: 'Enter your license key to unlock'        },
 ]
 
 const REQUIREMENTS = [
-  { label: 'OS',        value: 'Windows 10 / 11 (64-bit)',    icon: Monitor   },
+  { label: 'OS',        value: 'Windows 10 / 11 (64-bit) or macOS',    icon: Monitor   },
   { label: 'CPU',       value: 'Intel i3+ or AMD Ryzen 3+',   icon: Cpu       },
   { label: 'RAM',       value: '4 GB minimum (8 GB ideal)',    icon: HardDrive },
   { label: 'Storage',   value: '500 MB free space',            icon: HardDrive },
@@ -76,7 +76,7 @@ export default async function DownloadsPage() {
             </div>
 
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '6px' }}>
-              {['Windows 10 / 11', '64-bit', company.product.releaseLabel].map(tag => (
+              {['Windows 10 / 11', 'macOS', company.product.releaseLabel].map(tag => (
                 <span key={tag} style={{
                   fontSize: '0.7rem', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
                   background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)',
@@ -116,22 +116,23 @@ export default async function DownloadsPage() {
               <Download size={15} style={{ marginLeft: 'auto', opacity: 0.8 }} />
             </a>
 
-            {/* Mac — coming soon */}
-            <div style={{
+            {/* Mac */}
+            <a href="/api/download?platform=mac" style={{
               display: 'flex', alignItems: 'center', gap: '12px',
-              background: 'rgba(255,255,255,0.06)', border: '1px dashed rgba(255,255,255,0.18)',
-              color: 'rgba(255,255,255,0.45)', borderRadius: '14px', padding: '13px 18px',
-              fontSize: '0.88rem', fontWeight: 600, cursor: 'not-allowed',
+              background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.22)',
+              color: 'white', borderRadius: '14px', padding: '13px 18px',
+              textDecoration: 'none', fontWeight: 700, fontSize: '0.88rem',
+              transition: 'opacity 0.15s',
             }}>
               <Apple size={20} style={{ flexShrink: 0 }} />
               <div>
                 <div>Download for Mac</div>
-                <div style={{ fontSize: '0.68rem', fontWeight: 500, opacity: 0.7, marginTop: '1px' }}>
-                  Coming soon
+                <div style={{ fontSize: '0.68rem', fontWeight: 500, opacity: 0.8, marginTop: '1px' }}>
+                  .dmg installer
                 </div>
               </div>
-              <Clock size={14} style={{ marginLeft: 'auto' }} />
-            </div>
+              <Download size={15} style={{ marginLeft: 'auto', opacity: 0.8 }} />
+            </a>
 
           </div>
         </div>

@@ -29,7 +29,7 @@ VOICE STYLE
 
 WHAT IS ARC PEM
 ARC PEM ("India's Complete Construction Finance Platform") is offline desktop software (for
-Windows) built for Indian architecture consultancies and construction/contracting firms. It
+Windows and Mac) built for Indian architecture consultancies and construction/contracting firms. It
 unifies Bill of Quantities (BOQ) budgeting, vendor bills, labour tracking, contractor
 ledgers, GST, and professional reports — replacing scattered Excel sheets. It works fully
 offline: no cloud server, no internet required after activation, data stays on the firm's own
@@ -95,7 +95,7 @@ Licensing details if asked:
   Settings → License.
 - Licenses run for one year. A renewal reminder banner appears 30 days before expiry, and
   there's a 7-day grace period after expiry before the app locks.
-- "Machine" means one Windows installation. Studio/Enterprise customers can transfer their
+- "Machine" means one installation on a Windows or Mac computer. Studio/Enterprise customers can transfer their
   license to a new machine themselves from inside the app; Solo customers should contact
   Hash X Labs support for an assisted transfer.
 - To upgrade plans, contact the team — they issue a new license file and all existing project

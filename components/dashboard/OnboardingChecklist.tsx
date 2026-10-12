@@ -18,7 +18,7 @@ const STEPS = [
   {
     icon: Download,
     label: 'Download ARC PEM',
-    desc:  'Get the Windows installer from the Downloads page.',
+    desc:  'Get the Windows or Mac installer from the Downloads page.',
     done:  false,
     href:  '/dashboard/downloads',
   },

@@ -10,9 +10,9 @@ export const entity = {
   name: company.brand,
   category: 'Construction expense & project cost management software',
   definition:
-    'ARC PEM is construction expense and project-cost management software for architects, contractors and builders in India. It is a Windows desktop application that works fully offline and combines BOQ & budgets, vendor bills, labour wages, contractor bills, site expenses, GST purchase registers, pending payments and Tally ERP / TallyPrime export in one place.',
+    'ARC PEM is construction expense and project-cost management software for architects, contractors and builders in India. It is a desktop application for Windows and Mac that works fully offline and combines BOQ & budgets, vendor bills, labour wages, contractor bills, site expenses, GST purchase registers, pending payments and Tally ERP / TallyPrime export in one place.',
   audience: ['Architecture firms', 'Interior & fit-out firms', 'Building contractors', 'Construction companies', 'Real-estate builders'],
-  platform: 'Windows desktop, works fully offline (Mac version coming soon)',
+  platform: 'Desktop app for Windows and Mac (works fully offline)',
   pricingModel:
     'Annual one-year licence, locked per machine: Solo (1 computer), Studio (up to 3) and Enterprise (up to 10). Current prices are on the pricing page.',
   // Owner-confirmed customer proof (same figures and stories as the About page).

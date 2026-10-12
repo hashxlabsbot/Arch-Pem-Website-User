@@ -5,7 +5,7 @@
 export const PRICING_FAQS = [
   {
     q: 'What is a "machine"?',
-    a: 'Each installation of ARC PEM on a Windows computer counts as one machine. A Solo license works on 1 computer, Studio on up to 3, and Enterprise on up to 10.',
+    a: 'Each installation of ARC PEM on a Windows or Mac computer counts as one machine. A Solo license works on 1 computer, Studio on up to 3, and Enterprise on up to 10.',
   },
   {
     q: 'What is Multi-User Database Sharing?',

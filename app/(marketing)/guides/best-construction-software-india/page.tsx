@@ -35,7 +35,7 @@ const COMPARE: { row: string; arc: string; cloud: string; acct: string; excel: s
   },
   {
     row: 'Where it runs',
-    arc: 'Windows desktop (Mac coming soon), fully offline; optional sharing on your office network',
+    arc: 'Windows and Mac desktop, fully offline; optional sharing on your office network',
     cloud: 'Cloud — needs a reliable internet connection',
     acct: 'Installed or hosted, depending on the product',
     excel: 'Desktop or cloud',
@@ -88,7 +88,7 @@ const FAQS = [
   },
   {
     q: 'Does ARC PEM work without internet?',
-    a: 'Yes. ARC PEM is a Windows desktop application that runs fully offline — there is no server, and project data stays on your own computers. Studio and Enterprise licences can share one database across computers on the same office network.',
+    a: 'Yes. ARC PEM is a desktop application for Windows and Mac that runs fully offline — there is no server, and project data stays on your own computers. Studio and Enterprise licences can share one database across computers on the same office network.',
   },
   {
     q: 'Does ARC PEM integrate with Tally?',
@@ -178,7 +178,7 @@ export default function BestConstructionSoftwareGuide() {
             <p>
               <strong>ARC PEM</strong> is the best fit for Indian architecture firms, contractors and
               builders who want BOQ &amp; budgets, vendor bills, labour wages, contractor bills, site
-              expenses and the GST purchase register in one Windows desktop app that works fully
+              expenses and the GST purchase register in one desktop app for Windows and Mac that works fully
               offline and exports to Tally. Large EPC contractors with hundreds of site users
               typically choose cloud suites such as Procore.
             </p>
@@ -243,7 +243,6 @@ export default function BestConstructionSoftwareGuide() {
             <ul>
               <li>Your main need is drawing management, RFIs or submittals for large site teams in the cloud</li>
               <li>You run critical-path scheduling for large infrastructure programmes</li>
-              <li>Your team works only on Mac and can&apos;t wait — ARC PEM runs on Windows today, with a Mac version coming soon</li>
             </ul>
 
             <h2>Who uses ARC PEM</h2>
