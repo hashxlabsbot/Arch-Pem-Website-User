@@ -4,6 +4,7 @@ import SessionProvider from '@/components/SessionProvider'
 import CookieBanner from '@/components/CookieBanner'
 import JsonLd from '@/components/seo/JsonLd'
 import { company } from '@/lib/company'
+import { ORG_ID } from '@/lib/seo-entity'
 import { env } from '@/lib/env'
 import './landing.css'
 import './globals.css'
@@ -61,13 +62,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd
           data={{
             '@context': 'https://schema.org',
-            '@type': 'Organization',
-            name: company.legalName,
-            alternateName: company.brand,
-            url: company.siteUrl,
-            logo: `${company.siteUrl}/arc-icon.png`,
-            email: company.supportEmail,
-            ...(sameAs.length ? { sameAs } : {}),
+            '@graph': [
+              {
+                '@type': 'Organization',
+                '@id': ORG_ID,
+                name: company.legalName,
+                alternateName: company.brand,
+                url: company.siteUrl,
+                logo: `${company.siteUrl}/arc-icon.png`,
+                email: company.supportEmail,
+                telephone: company.phone,
+                address: {
+                  '@type': 'PostalAddress',
+                  streetAddress: [company.address.line1, company.address.line2].filter(Boolean).join(', '),
+                  addressLocality: company.address.city,
+                  addressRegion: company.address.state,
+                  postalCode: company.address.pincode,
+                  addressCountry: 'IN',
+                },
+                ...(sameAs.length ? { sameAs } : {}),
+              },
+              {
+                '@type': 'WebSite',
+                '@id': `${company.siteUrl}/#website`,
+                name: company.brand,
+                url: company.siteUrl,
+                publisher: { '@id': ORG_ID },
+              },
+            ],
           }}
         />
       </head>

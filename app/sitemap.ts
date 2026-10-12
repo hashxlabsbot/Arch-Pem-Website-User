@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/about',
     '/contact',
     '/resources',
+    '/guides/best-construction-software-india',
     '/tools',
     ...LIVE_TOOLS.map((t) => `/tools/${t.slug}`),
     '/blog',

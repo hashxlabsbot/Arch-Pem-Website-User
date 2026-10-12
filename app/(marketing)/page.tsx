@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import JsonLd from '@/components/seo/JsonLd'
 import { company } from '@/lib/company'
+import { entity, featureList, ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
 import HomeClient from './HomeClient'
 
 const TITLE = 'ARC PEM — Construction Expense Management Software · India'
@@ -32,15 +33,19 @@ export default function HomePage() {
         data={{
           '@context': 'https://schema.org',
           '@type': 'SoftwareApplication',
+          '@id': SOFTWARE_ID,
           name: company.brand,
           applicationCategory: 'BusinessApplication',
+          applicationSubCategory: entity.category,
           operatingSystem: 'Windows',
-          description: DESCRIPTION,
+          softwareVersion: company.product.version,
+          description: entity.definition,
           url: company.siteUrl,
-          publisher: {
-            '@type': 'Organization',
-            name: company.legalName,
-          },
+          image: `${company.siteUrl}/og-image.jpg`,
+          featureList,
+          audience: { '@type': 'BusinessAudience', audienceType: entity.audience.join(', ') },
+          areaServed: { '@type': 'Country', name: 'India' },
+          publisher: { '@id': ORG_ID },
         }}
       />
       <HomeClient />
