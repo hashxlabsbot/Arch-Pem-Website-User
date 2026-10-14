@@ -5,18 +5,17 @@ import JsonLd from '@/components/seo/JsonLd'
 import ConcreteCalculator from '@/components/tools/ConcreteCalculator'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 
 const TITLE = 'Concrete Calculator — Cement, Sand & Aggregate'
 const DESCRIPTION =
   'Calculate cement bags, sand, aggregate and water for slabs, beams, columns and footings. M10–M25 mixes, instant results. Free, no sign-up.'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: '/tools/concrete-calculator' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/concrete-calculator', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
-}
+  path: '/tools/concrete-calculator',
+})
 
 const FAQS = [
   {

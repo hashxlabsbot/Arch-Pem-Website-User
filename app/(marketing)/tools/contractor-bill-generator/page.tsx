@@ -4,18 +4,17 @@ import JsonLd from '@/components/seo/JsonLd'
 import BillGenerator from '@/components/tools/BillGenerator'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 
 const TITLE = 'Free GST Contractor Bill Generator'
 const DESCRIPTION =
   'Create a GST-compliant contractor bill online: work items, SAC codes, CGST/SGST or IGST, amount in words — print or save as PDF. Free, no sign-up.'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: '/tools/contractor-bill-generator' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/contractor-bill-generator', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
-}
+  path: '/tools/contractor-bill-generator',
+})
 
 const FAQS = [
   {

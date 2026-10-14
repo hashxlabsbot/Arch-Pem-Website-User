@@ -1,0 +1,173 @@
+/* ═══════════════════════════════════════════════════════════════
+   SITE LEDGER — ARC PEM's site-wide marketing identity (Oct 2026)
+   Concrete paper · ink · terracotta brick · safety yellow · ledger rules.
+   Scoped with :has(#navbar) so the logged-in dashboard is untouched.
+   Re-points landing.css design tokens, then restyles shared components.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root:has(#navbar) {
+  --sl-paper: #efebe3;
+  --sl-paper-2: #e7e1d5;
+  --sl-card: #fbf9f4;
+  --sl-ink: #1c1a17;
+  --sl-ink-2: #4a463f;
+  --sl-ink-3: #7a7266;
+  --sl-line: #cfc7b8;
+  --sl-brick: #b9502c;
+  --sl-brick-d: #8f3a1e;
+  --sl-yellow: #f5b400;
+  --sl-display: 'Big Shoulders Display', 'Bricolage Grotesque', Impact, sans-serif;
+  --sl-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+
+  /* landing.css tokens → Site Ledger */
+  --indigo: #b9502c;
+  --indigo-d: #8f3a1e;
+  --indigo-lt: #f6e6dc;
+  --indigo-md: #e3b49f;
+  --navy: #1c1a17;
+  --gray-900: #2a2723;
+  --gray-700: #3d3934;
+  --gray-600: #4a463f;
+  --gray-500: #6b6457;
+  --gray-400: #8f8778;
+  --gray-300: #c9c0b0;
+  --gray-200: #ddd5c7;
+  --gray-100: #ebe5da;
+  --gray-50: #f3efe7;
+  --sky: #b9502c;
+  --sky-lt: #f6e6dc;
+  --teal: #8f3a1e;
+  --teal-lt: #f6e6dc;
+  --soft-bg: #efebe3;
+  --orb-indigo: transparent;
+  --orb-sky: transparent;
+  --r: 4px;
+  --r-lg: 6px;
+  --r-xl: 8px;
+  --sh: 0 1px 0 #ddd6c7;
+  --sh-md: 0 2px 0 #ddd6c7, 0 10px 24px -14px rgba(60, 45, 25, 0.35);
+  --sh-lg: 0 3px 0 #d4ccbc, 0 20px 40px -20px rgba(60, 45, 25, 0.4);
+  --sh-xl: 0 4px 0 #d4ccbc, 0 30px 60px -24px rgba(60, 45, 25, 0.45);
+}
+
+/* ── Canvas: concrete paper + grain ── */
+:root:has(#navbar) body { background: var(--sl-paper); color: var(--sl-ink); }
+:root:has(#navbar) body::after { display: none; }
+:root:has(#navbar) body::before {
+  width: auto; height: auto; inset: 0; top: 0; left: 0; border-radius: 0; filter: none; animation: none; opacity: 0.5; mix-blend-mode: multiply;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.38 0 0 0 0.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+:where(:root:has(#navbar)) .cursor-glow, :where(:root:has(#navbar)) .noise-overlay { display: none; }
+:where(:root:has(#navbar)) ::selection { background: var(--sl-yellow); color: var(--sl-ink); }
+
+/* ── Type: condensed site-signage display for headings ── */
+:where(:root:has(#navbar)) h1, :where(:root:has(#navbar)) h2 {
+  font-family: var(--sl-display); font-weight: 900; text-transform: uppercase; letter-spacing: 0.005em; line-height: 0.95; color: var(--sl-ink);
+}
+:where(:root:has(#navbar)) h3, :where(:root:has(#navbar)) h4 { font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.01em; color: var(--sl-ink); }
+:where(:root:has(#navbar)) .sec-hd h1, :where(:root:has(#navbar)) .sec-hd h2 { font-size: clamp(2.4rem, 5vw, 4rem); }
+:where(:root:has(#navbar)) .sec-hd p { color: var(--sl-ink-2); }
+:where(:root:has(#navbar)) .hi, :where(:root:has(#navbar)) .gradient-text, :where(:root:has(#navbar)) .cta-gradient-text { background: none; -webkit-text-fill-color: currentColor; color: var(--sl-brick); }
+
+/* ── Buttons: site signage ── */
+:where(:root:has(#navbar)) .btn { border-radius: 0; font-family: var(--sl-display); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; font-size: 1.02rem; transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease; }
+:where(:root:has(#navbar)) .btn-primary { background: var(--sl-yellow); color: var(--sl-ink); border: 2px solid var(--sl-ink); box-shadow: 4px 4px 0 var(--sl-ink); }
+:where(:root:has(#navbar)) .btn-primary:hover { background: #ffc21f; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--sl-ink); }
+:where(:root:has(#navbar)) .btn-primary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--sl-ink); }
+:where(:root:has(#navbar)) .btn-outline { background: transparent; color: var(--sl-ink); border: 2px solid var(--sl-ink); }
+:where(:root:has(#navbar)) .btn-outline:hover { background: var(--sl-ink); color: var(--sl-yellow); }
+:where(:root:has(#navbar)) .btn-white { background: var(--sl-card); color: var(--sl-ink); border: 2px solid var(--sl-ink); box-shadow: 4px 4px 0 var(--sl-ink); }
+:where(:root:has(#navbar)) .btn-dark { background: var(--sl-ink); color: var(--sl-yellow); border: 2px solid var(--sl-ink); }
+:where(:root:has(#navbar)) .btn-sm { font-size: 0.9rem; }
+
+/* ── Badges: stencil tags ── */
+:where(:root:has(#navbar)) .badge { border-radius: 0; font-family: var(--sl-mono); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.68rem; background: rgba(255, 255, 255, 0.5); color: var(--sl-ink); border: 1.5px solid var(--sl-ink); }
+:where(:root:has(#navbar)) .badge-indigo, :where(:root:has(#navbar)) .badge-teal { background: var(--sl-ink); color: var(--sl-yellow); border-color: var(--sl-ink); }
+:where(:root:has(#navbar)) .badge-amber { background: var(--sl-yellow); color: var(--sl-ink); border-color: var(--sl-ink); }
+:where(:root:has(#navbar)) .badge-green { background: #dfe9d8; color: #2f5d2a; border-color: #2f5d2a; }
+
+/* ── Navbar ── */
+:where(:root:has(#navbar)) .navbar { background: rgba(239, 235, 227, 0.92); border-bottom: 2px solid var(--sl-ink); box-shadow: none; backdrop-filter: blur(10px); }
+:where(:root:has(#navbar)) .navbar.elevated { box-shadow: 0 6px 0 -4px rgba(28, 26, 23, 0.08); }
+:where(:root:has(#navbar)) .nav-link { color: var(--sl-ink-2); font-weight: 600; border-radius: 0; }
+:where(:root:has(#navbar)) .nav-link:hover { color: var(--sl-ink); background: rgba(245, 180, 0, 0.22); }
+:where(:root:has(#navbar)) .nav-signin { color: var(--sl-ink); font-weight: 700; border-bottom: 2px solid var(--sl-brick); }
+:where(:root:has(#navbar)) .nav-cta { box-shadow: 3px 3px 0 var(--sl-ink); }
+:where(:root:has(#navbar)) .dropdown { background: var(--sl-card); border: 2px solid var(--sl-ink); border-radius: 0; box-shadow: 6px 6px 0 rgba(28, 26, 23, 0.9); backdrop-filter: none; }
+:where(:root:has(#navbar)) .dd-item { border-radius: 0; }
+:where(:root:has(#navbar)) .dd-item:hover { background: rgba(245, 180, 0, 0.2); }
+:where(:root:has(#navbar)) .dd-icon { border-radius: 0 !important; background: var(--sl-paper-2) !important; }
+:where(:root:has(#navbar)) .dd-icon svg { color: var(--sl-brick); stroke: var(--sl-brick); }
+:where(:root:has(#navbar)) .mob-drawer { background: var(--sl-paper); border-left: 2px solid var(--sl-ink); }
+:where(:root:has(#navbar)) .hamburger span { background: var(--sl-ink); }
+
+/* ── Sections, cards & surfaces ── */
+:where(:root:has(#navbar)) .bg-gray { background: var(--sl-paper-2); }
+:where(:root:has(#navbar)) .trusted { background: var(--sl-paper-2); border-top: 1.5px solid var(--sl-line); border-bottom: 1.5px solid var(--sl-line); }
+:where(:root:has(#navbar)) .trusted-label { font-family: var(--sl-mono); color: var(--sl-ink-2); }
+:where(:root:has(#navbar)) .t-firm { font-family: var(--sl-display); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 1.3rem; color: #6b6457; }
+:where(:root:has(#navbar)) .t-firm:hover { color: var(--sl-ink); }
+:where(:root:has(#navbar)) [class*="card"]:not([class*="lc-"]):not([class*="wx-"]):not([class*="px-"]):not([class*="pc-"]):not([class*="fc-"]):not([class*="sf-"]):not([class*="tool-cta"]) { border-radius: 4px; }
+:where(:root:has(#navbar)) input, :where(:root:has(#navbar)) select, :where(:root:has(#navbar)) textarea { border-radius: 2px; }
+:where(:root:has(#navbar)) .tool-cta-band { background: var(--sl-ink); border-radius: 4px; border-top: 6px solid var(--sl-yellow); }
+:where(:root:has(#navbar)) .tool-cta-band h3 { color: #fff; }
+:where(:root:has(#navbar)) .tool-hero h1 { font-size: clamp(2.6rem, 6vw, 4.6rem); }
+:where(:root:has(#navbar)) .tool-prose h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
+:where(:root:has(#navbar)) .tool-table-wrap, :where(:root:has(#navbar)) .tool-faq details { border-radius: 4px; border-color: var(--sl-line); background: var(--sl-card); }
+:where(:root:has(#navbar)) .tool-table th { background: var(--sl-paper-2); color: var(--sl-ink-2); font-family: var(--sl-mono); }
+
+/* Hazard divider helper */
+:where(:root:has(#navbar)) .sl-hazard { height: 12px; background: repeating-linear-gradient(-45deg, var(--sl-ink) 0 12px, var(--sl-yellow) 12px 24px); }
+
+/* ── Redesigned home sections: condensed uppercase display headings ── */
+.wx-h2, .wx-big, .wx-h3, .wx-ghostnum, .px-h2, .px-num, .pc-h2, .pc-steps strong, .lc-h2, .lc-body h3, .lc-num, .lc-end strong,
+.fc-h2, .fc-steps strong, .fc-btn, .sf-statement, .sf-btn, .sf-ticker span, .wx-terminal {
+  text-transform: uppercase; letter-spacing: 0.01em !important; font-weight: 900;
+}
+.wx-h2 { font-size: clamp(2.8rem, 4.8vw, 4.6rem); line-height: 0.92; }
+.wx-h3 { font-size: clamp(1.8rem, 2.6vw, 2.4rem); line-height: 0.95; }
+.px-h2 { font-size: clamp(2.6rem, 4.8vw, 4.4rem); line-height: 0.92; }
+.px-num { font-size: clamp(4rem, 7vw, 6.6rem); }
+.pc-h2 { font-size: clamp(2.5rem, 4vw, 3.9rem); line-height: 0.92; }
+.pc-steps strong { font-size: 1.35rem; }
+.lc-h2 { font-size: clamp(2.6rem, 4.2vw, 4.2rem); line-height: 0.92; }
+.lc-body h3 { font-size: clamp(1.9rem, 2.8vw, 2.7rem); line-height: 0.95; }
+.fc-h2 { font-size: clamp(3rem, 6.4vw, 6rem); line-height: 0.9; }
+.fc-steps strong { font-size: 1.25rem; }
+.sf-statement { font-size: clamp(2.8rem, 5.6vw, 5.2rem); line-height: 0.9; }
+.fc-btn, .sf-btn { letter-spacing: 0.05em !important; border-radius: 0 !important; color: #1c1a17 !important; background: #f5b400 !important; border: 2px solid #1c1a17 !important; box-shadow: 4px 4px 0 #000 !important; }
+.fc-btn-sheen { display: none; }
+.wx-panel, .pc-panel, .fc-panel, .lc-card { border-top: 6px solid #f5b400; }
+.wx-eyebrow, .px-eyebrow, .pc-eyebrow, .lc-eyebrow, .fc-eyebrow, .wx-block, .wx-count { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; }
+.px-eyebrow, .lc-eyebrow { color: #b9502c; }
+/* paper (not white) around the ink panels; secondary signage buttons */
+.wx, .px, .pc, .lc:not(.is-dark), .fc, .hx { background: #efebe3 !important; }
+.px-grid { background: rgba(251, 249, 244, 0.8); border-color: #cfc7b8; }
+.px-tile { border-color: #cfc7b8; }
+.sf-btn.sf-btn-ghost { background: transparent !important; color: #f3efe7 !important; border-color: rgba(243, 239, 231, 0.5) !important; box-shadow: none !important; }
+.fc-ghost { border-radius: 0; }
+/* Photo banners (solutions / about / tools / resources): warm ink tint, signage tag, yellow top */
+:where(:root:has(#navbar)) .img-hero { border-radius: 4px; border-top: 6px solid #f5b400; box-shadow: 0 30px 60px -30px rgba(28, 26, 23, 0.6); }
+:where(:root:has(#navbar)) .img-hero::after { background: linear-gradient(100deg, rgba(20, 18, 15, 0.94) 0%, rgba(28, 26, 23, 0.8) 42%, rgba(28, 26, 23, 0.28) 100%); }
+:where(:root:has(#navbar)) .img-hero-inner h1, :where(:root:has(#navbar)) .img-hero-inner h2 { color: #fff; }
+:where(:root:has(#navbar)) .img-hero .badge, :where(:root:has(#navbar)) .img-hero .badge-indigo { background: #f5b400; color: #1c1a17; border-color: #1c1a17; }
+:where(:root:has(#navbar)) .img-hero-stat .ihs-num { font-family: 'Big Shoulders Display', Impact, sans-serif; font-weight: 900; font-size: 2.2rem; color: #f5b400; }
+:where(:root:has(#navbar)) .img-hero-stat .ihs-lbl { font-family: 'IBM Plex Mono', ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.66rem; }
+
+/* Free tools: result card as an ink site board */
+:root:has(#navbar) .tr-big { background: #1c1a17; border-radius: 4px; border-top: 6px solid #f5b400; }
+:root:has(#navbar) .tr-big-num { font-family: 'Big Shoulders Display', Impact, sans-serif; font-weight: 900; color: #f5b400; letter-spacing: 0.01em; }
+:root:has(#navbar) .tool-panel { border-radius: 4px; border-color: #cfc7b8; background: #fbf9f4; }
+:root:has(#navbar) .tr-tile { border-radius: 4px; }
+
+/* Blog: stencil pills, ink featured card, warm accents */
+:root:has(#navbar) .cat-pill { border-radius: 0; background: #fbf9f4; border-color: #1c1a17; font-family: 'IBM Plex Mono', ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.72rem; }
+:root:has(#navbar) .cat-pill.active { background: #1c1a17; color: #f5b400; border-color: #1c1a17; }
+:root:has(#navbar) .cat-pill:hover { background: rgba(245, 180, 0, 0.25); color: #1c1a17; border-color: #1c1a17; }
+:root:has(#navbar) .featured-post { border-radius: 4px; border-top: 6px solid #f5b400; background: #1c1a17; }
+:root:has(#navbar) .featured-post-body h2, :root:has(#navbar) .post-card h2, :root:has(#navbar) .post-card h3 { font-family: 'Big Shoulders Display', Impact, sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.01em; line-height: 0.98; }
+:root:has(#navbar) .featured-post-body h2 { font-size: clamp(1.9rem, 3vw, 2.6rem); }
+:root:has(#navbar) .post-card { border-radius: 4px; background: #fbf9f4; border-color: #cfc7b8; }
+:root:has(#navbar) .post-author-avatar { background: #b9502c; }
+:root:has(#navbar) .post-prose blockquote, :root:has(#navbar) .post-prose .callout { background: #f6e6dc; }
+:root:has(#navbar) .featured-tag { background: #f5b400; border-color: #1c1a17; color: #1c1a17; border-radius: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; }

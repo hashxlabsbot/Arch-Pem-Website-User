@@ -59,7 +59,7 @@ export const SEGMENTS: Segment[] = [
   {
     slug: 'interior-designers',
     label: 'Interior & Fit-out Firms',
-    title: 'Expense Management Software for Interior Designers & Fit-out Firms',
+    title: 'Expense Software for Interior Designers & Fit-out Firms',
     description:
       'Track every vendor bill, carpenter and contractor payment, and GST across interior and fit-out projects with ARC PEM — offline desktop software for Indian firms.',
     h1: 'Expense management software for interior & fit-out firms',
@@ -116,7 +116,7 @@ export const SEGMENTS: Segment[] = [
   {
     slug: 'builders',
     label: 'Builders & Developers',
-    title: 'Construction Expense Management Software for Builders & Developers',
+    title: 'Expense Management Software for Builders & Developers',
     description:
       'Run budgets, vendor bills, labour, contractor bills and pending payments for every project in one place. ARC PEM is offline construction expense software for Indian builders.',
     h1: 'Construction expense management for builders & developers',

@@ -22,11 +22,11 @@ const LOCATION = {
 
 /** Typical share of total cost for an Indian residential build, paired with a chart colour. */
 const BREAKDOWN: Array<[string, number, string]> = [
-  ['Structure & masonry (RCC, walls, plaster)', 0.42, '#4f46e5'],
-  ['Finishing (flooring, tiles, paint, kitchen)', 0.28, '#0ea5e9'],
-  ['Electrical & plumbing', 0.14, '#10b981'],
-  ['Doors & windows', 0.09, '#f59e0b'],
-  ['Site work & miscellaneous', 0.07, '#8b5cf6'],
+  ['Structure & masonry (RCC, walls, plaster)', 0.42, '#b9502c'],
+  ['Finishing (flooring, tiles, paint, kitchen)', 0.28, '#f5b400'],
+  ['Electrical & plumbing', 0.14, '#3d6b4f'],
+  ['Doors & windows', 0.09, '#1c1a17'],
+  ['Site work & miscellaneous', 0.07, '#a69d8e'],
 ]
 
 /** Widely used thumb rules — quantity per sq ft of built-up area (RCC framed). */

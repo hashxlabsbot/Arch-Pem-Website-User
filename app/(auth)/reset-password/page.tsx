@@ -12,7 +12,7 @@ function PasswordStrengthBar({ password }: { password: string }) {
     /[^A-Za-z0-9]/.test(password),
   ]
   const strength = checks.filter(Boolean).length
-  const colors   = ['#ef4444', '#f59e0b', '#3b82f6', '#10b981']
+  const colors   = ['#ef4444', '#f59e0b', '#c9603a', '#10b981']
   const labels   = ['Weak', 'Fair', 'Good', 'Strong']
 
   if (!password) return null
@@ -22,7 +22,7 @@ function PasswordStrengthBar({ password }: { password: string }) {
         {[0,1,2,3].map(i => (
           <div key={i} style={{
             flex: 1, height: '3px', borderRadius: '2px',
-            background: i < strength ? colors[strength - 1] : '#e2e8f0',
+            background: i < strength ? colors[strength - 1] : '#ddd5c7',
             transition: 'background 0.2s',
           }} />
         ))}
@@ -52,11 +52,11 @@ function ResetForm() {
     return (
       <div style={{ textAlign: 'center' }}>
         <AlertCircle size={40} style={{ color: '#ef4444', marginBottom: '16px' }} />
-        <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>Invalid Link</h2>
-        <p style={{ fontSize: '0.84rem', color: '#64748b', marginBottom: '24px' }}>This reset link is missing or invalid.</p>
+        <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#1c1a17', marginBottom: '8px' }}>Invalid Link</h2>
+        <p style={{ fontSize: '0.84rem', color: '#6b6457', marginBottom: '24px' }}>This reset link is missing or invalid.</p>
         <a href="/forgot-password" style={{
-          display: 'inline-block', padding: '12px 24px', borderRadius: '12px',
-          background: 'linear-gradient(135deg,#6366f1,#3b82f6)', color: 'white',
+          display: 'inline-block', padding: '12px 24px', borderRadius: '3px',
+          background: 'linear-gradient(135deg,#b9502c,#c9603a)', color: 'white',
           textDecoration: 'none', fontWeight: 700, fontSize: '0.88rem',
         }}>
           Request a new link
@@ -75,15 +75,15 @@ function ResetForm() {
         }}>
           <CheckCircle size={28} style={{ color: '#10b981' }} />
         </div>
-        <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#0f172a', marginBottom: '8px' }}>Password updated!</h2>
-        <p style={{ fontSize: '0.84rem', color: '#64748b', marginBottom: '28px', lineHeight: 1.6 }}>
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#1c1a17', marginBottom: '8px' }}>Password updated!</h2>
+        <p style={{ fontSize: '0.84rem', color: '#6b6457', marginBottom: '28px', lineHeight: 1.6 }}>
           Your password has been changed successfully. You can now sign in with your new password.
         </p>
         <a href="/login" style={{
-          display: 'block', padding: '13px', borderRadius: '12px', textAlign: 'center',
-          background: 'linear-gradient(135deg,#6366f1,#3b82f6)', color: 'white',
+          display: 'block', padding: '13px', borderRadius: '3px', textAlign: 'center',
+          background: 'linear-gradient(135deg,#b9502c,#c9603a)', color: 'white',
           textDecoration: 'none', fontWeight: 800, fontSize: '0.9rem',
-          boxShadow: '0 4px 16px rgba(99,102,241,0.35)',
+          boxShadow: '0 4px 16px rgba(185,80,44,0.35)',
         }}>
           Sign In →
         </a>
@@ -115,7 +115,7 @@ function ResetForm() {
   }
 
   const inputBase: React.CSSProperties = {
-    width: '100%', padding: '11px 44px 11px 40px', borderRadius: '12px',
+    width: '100%', padding: '11px 44px 11px 40px', borderRadius: '3px',
     fontSize: '0.88rem', outline: 'none', fontFamily: 'inherit',
     background: 'white', transition: 'all 0.15s', boxSizing: 'border-box',
   }
@@ -123,10 +123,10 @@ function ResetForm() {
   return (
     <>
       <div style={{ marginBottom: '28px' }}>
-        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', marginBottom: '6px', letterSpacing: '-0.03em' }}>
+        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#1c1a17', marginBottom: '6px', letterSpacing: '-0.03em' }}>
           Set new password
         </h2>
-        <p style={{ fontSize: '0.84rem', color: '#94a3b8', fontWeight: 500 }}>
+        <p style={{ fontSize: '0.84rem', color: '#8f8778', fontWeight: 500 }}>
           Choose a strong password for your account
         </p>
       </div>
@@ -135,7 +135,7 @@ function ResetForm() {
         <div style={{
           display: 'flex', alignItems: 'center', gap: '10px',
           background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)',
-          borderRadius: '12px', padding: '12px 14px', marginBottom: '20px',
+          borderRadius: '3px', padding: '12px 14px', marginBottom: '20px',
         }}>
           <AlertCircle size={15} style={{ color: '#ef4444', flexShrink: 0 }} />
           <span style={{ fontSize: '0.82rem', color: '#dc2626' }}>{error}</span>
@@ -151,7 +151,7 @@ function ResetForm() {
           <div style={{ position: 'relative' }}>
             <Lock size={15} style={{
               position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)',
-              color: focused === 'pw' ? '#6366f1' : '#94a3b8', pointerEvents: 'none',
+              color: focused === 'pw' ? '#b9502c' : '#8f8778', pointerEvents: 'none',
             }} />
             <input
               type={showPw ? 'text' : 'password'} value={password}
@@ -161,13 +161,13 @@ function ResetForm() {
               onBlur={() => setFocused(null)}
               style={{
                 ...inputBase,
-                border: `${focused === 'pw' ? '2px' : '1.5px'} solid ${focused === 'pw' ? '#6366f1' : '#e2e8f0'}`,
-                boxShadow: focused === 'pw' ? '0 0 0 4px rgba(99,102,241,0.1)' : 'none',
+                border: `${focused === 'pw' ? '2px' : '1.5px'} solid ${focused === 'pw' ? '#b9502c' : '#ddd5c7'}`,
+                boxShadow: focused === 'pw' ? '0 0 0 4px rgba(185,80,44,0.1)' : 'none',
               }}
             />
             <button type="button" onClick={() => setShowPw(!showPw)} style={{
               position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
-              background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0,
+              background: 'none', border: 'none', cursor: 'pointer', color: '#8f8778', padding: 0,
             }}>
               {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -183,7 +183,7 @@ function ResetForm() {
           <div style={{ position: 'relative' }}>
             <Lock size={15} style={{
               position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)',
-              color: focused === 'cf' ? '#6366f1' : '#94a3b8', pointerEvents: 'none',
+              color: focused === 'cf' ? '#b9502c' : '#8f8778', pointerEvents: 'none',
             }} />
             <input
               type={showCf ? 'text' : 'password'} value={confirm}
@@ -194,14 +194,14 @@ function ResetForm() {
               style={{
                 ...inputBase,
                 border: `${focused === 'cf' ? '2px' : '1.5px'} solid ${
-                  confirm && confirm !== password ? '#ef4444' : focused === 'cf' ? '#6366f1' : '#e2e8f0'
+                  confirm && confirm !== password ? '#ef4444' : focused === 'cf' ? '#b9502c' : '#ddd5c7'
                 }`,
-                boxShadow: focused === 'cf' ? '0 0 0 4px rgba(99,102,241,0.1)' : 'none',
+                boxShadow: focused === 'cf' ? '0 0 0 4px rgba(185,80,44,0.1)' : 'none',
               }}
             />
             <button type="button" onClick={() => setShowCf(!showCf)} style={{
               position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
-              background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0,
+              background: 'none', border: 'none', cursor: 'pointer', color: '#8f8778', padding: 0,
             }}>
               {showCf ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -224,11 +224,11 @@ function ResetForm() {
           type="submit" disabled={loading}
           style={{
             width: '100%', padding: '13px',
-            background: loading ? '#a5b4fc' : 'linear-gradient(135deg, #6366f1, #3b82f6)',
-            color: 'white', border: 'none', borderRadius: '12px',
+            background: loading ? '#e3b49f' : 'linear-gradient(135deg, #b9502c, #c9603a)',
+            color: 'white', border: 'none', borderRadius: '3px',
             fontSize: '0.9rem', fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-            fontFamily: 'inherit', boxShadow: loading ? 'none' : '0 4px 16px rgba(99,102,241,0.35)',
+            fontFamily: 'inherit', boxShadow: loading ? 'none' : '0 4px 16px rgba(185,80,44,0.35)',
           }}
         >
           {loading && <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />}

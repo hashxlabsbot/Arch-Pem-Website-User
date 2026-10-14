@@ -1,0 +1,71 @@
+/* ── Site Ledger intro (components/marketing/SitePreloader.tsx) ── */
+html.pl-lock, html.pl-lock body { overflow: hidden !important; }
+
+.pl {
+  --pl-ink: #12100d; --pl-paper: #efe9df; --pl-brick: #b9502c; --pl-yellow: #f5b400;
+  --pl-dim: rgba(239, 233, 223, 0.5);
+  --pl-display: 'Big Shoulders Display', 'Bricolage Grotesque', Impact, sans-serif;
+  --pl-mono: 'IBM Plex Mono', 'Martian Mono', ui-monospace, monospace;
+  position: fixed; inset: 0; z-index: 10000; overflow: hidden; color: var(--pl-paper);
+  background: var(--pl-ink);
+  /* failsafe: never trap the page if JS stalls */
+  animation: pl-failsafe 0.4s ease 11s forwards;
+}
+@keyframes pl-failsafe { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+.pl.is-fade { opacity: 0; transition: opacity 0.3s ease; }
+
+.pl-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* once the word lands, the page shows through the letters */
+.pl.is-word { background: transparent; }
+.pl.is-word .pl-canvas, .pl.is-word .pl-hud { display: none; }
+.pl.is-zoom { pointer-events: none; }
+.pl-word { position: absolute; inset: 0; display: none; will-change: opacity; }
+.pl.is-word .pl-word { display: block; }
+.pl-word-t { font-family: var(--pl-display); font-weight: 900; text-transform: uppercase; }
+
+/* HUD */
+.pl-hud { position: absolute; inset: 0; pointer-events: none; }
+.pl-tape {
+  position: absolute; top: 0; left: 0; right: 0; height: 14px; transform-origin: left; transform: scaleX(0); display: block;
+  background:
+    repeating-linear-gradient(90deg, rgba(18,16,13,0.6) 0 1px, transparent 1px 10px),
+    repeating-linear-gradient(90deg, rgba(18,16,13,0.9) 0 2px, transparent 2px 50px),
+    var(--pl-yellow);
+}
+.pl-top {
+  position: absolute; top: 34px; left: clamp(16px, 5vw, 72px); right: clamp(16px, 5vw, 72px);
+  display: flex; justify-content: space-between; gap: 16px;
+  font: 500 12px/1.4 var(--pl-mono); letter-spacing: 0.16em; text-transform: uppercase;
+}
+.pl-kick { color: var(--pl-yellow); }
+.pl-stage { color: var(--pl-dim); text-align: right; }
+
+.pl-count { position: absolute; left: clamp(16px, 5vw, 72px); top: 50%; transform: translateY(-50%); }
+.pl-num {
+  display: flex; align-items: baseline; font-family: var(--pl-display); font-weight: 900; line-height: 0.85;
+  font-size: clamp(96px, 15vw, 230px); letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
+}
+.pl-num em { font-style: normal; color: var(--pl-brick); font-size: 0.62em; margin-right: 0.06em; }
+.pl-num span { min-width: 1.6ch; }
+.pl-num small { font-size: 0.42em; margin-left: 0.08em; color: var(--pl-paper); text-transform: uppercase; }
+.pl-num b { font-size: 0.5em; color: var(--pl-yellow); opacity: 0; transform: scale(2.4); transition: opacity 0.2s, transform 0.35s cubic-bezier(0.2, 1.6, 0.4, 1); }
+.pl.is-total .pl-num b { opacity: 1; transform: none; }
+.pl-lbl { margin-top: 18px; font: 600 13px var(--pl-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--pl-paper); }
+.pl-sub { margin-top: 6px; font: 500 12px var(--pl-mono); letter-spacing: 0.1em; color: var(--pl-dim); }
+
+.pl-foot {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 12px clamp(16px, 5vw, 72px);
+  display: flex; justify-content: space-between;
+  font: 500 11px var(--pl-mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--pl-dim);
+}
+.pl-foot span:last-child { color: var(--pl-yellow); font-variant-numeric: tabular-nums; }
+
+@media (max-width: 760px) {
+  .pl-top { top: 28px; flex-direction: column; gap: 4px; font-size: 10px; }
+  .pl-stage { text-align: left; }
+  .pl-count { top: 96px; transform: none; }
+  .pl-num { font-size: clamp(72px, 24vw, 120px); }
+  .pl-lbl { font-size: 11px; margin-top: 12px; }
+  .pl-sub { font-size: 10.5px; }
+}

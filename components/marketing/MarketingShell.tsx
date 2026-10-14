@@ -4,8 +4,11 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
-import LogoMark from '@/components/LogoMark'
+import LedgerLogo from '@/components/LedgerLogo'
 import VapiAssistant from './VapiAssistant'
+import FinalCta from './FinalCta'
+import SiteFooter from './SiteFooter'
+import SitePreloader from './SitePreloader'
 import { DemoModalContext } from './DemoModalContext'
 import { company, phoneTel } from '@/lib/company'
 import { SEGMENTS, COMPARISONS } from '@/lib/aeo-pages'
@@ -196,6 +199,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
 
   return (
     <DemoModalContext.Provider value={openDemo}>
+      <SitePreloader />
       <div className="noise-overlay" />
       <div className="cursor-glow" />
 
@@ -203,7 +207,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
       <header className="navbar" id="navbar">
         <div className="container nav-wrap">
           <Link href="/" className="nav-logo">
-            <LogoMark size={26} />
+            <LedgerLogo height={40} />
           </Link>
 
           <nav className="nav-links">
@@ -273,7 +277,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
       <div className={`mob-drawer${drawerOpen ? ' open' : ''}`} id="mobDrawer">
         <div className="mob-head">
           <Link href="/" className="nav-logo" style={{ fontSize: '1.1rem' }}>
-            <LogoMark size={21} />
+            <LedgerLogo height={34} />
           </Link>
           <button className="mob-close" onClick={() => setDrawerOpen(false)}>✕</button>
         </div>
@@ -298,214 +302,11 @@ export default function MarketingShell({ children }: { children: React.ReactNode
 
       {children}
 
-      {/* ── CTA Section — Premium Gradient Mesh ── */}
-      {!hideGlobalCta && (
-      <div className="cta-premium">
-        {/* Animated background orbs */}
-        <div className="cta-orb cta-orb-1" />
-        <div className="cta-orb cta-orb-2" />
-        <div className="cta-orb cta-orb-3" />
-        <div className="cta-aurora" />
-
-        <div className="container cta-inner">
-          <div className="cta-card">
-            <div className="cta-card-sheen" />
-
-            <span className="cta-badge">
-              <span className="cta-badge-dot" />
-              Free Demo · No Credit Card Required
-            </span>
-
-            <h2 className="cta-headline">
-              Ready to take control of<br />
-              <span className="cta-gradient-text">your project finances?</span>
-            </h2>
-            <p className="cta-sub">
-              Join 30+ architecture and construction firms already using ARC PEM to track budgets,
-              manage vendors, and generate professional reports — without a single spreadsheet.
-            </p>
-
-            {/* Actions + social proof on one row */}
-            <div className="cta-action-row">
-              <div className="cta-actions">
-                <button className="cta-btn-primary" onClick={openDemo}>
-                  <span>Book a Free Demo</span>
-                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </button>
-              </div>
-              <div className="cta-social">
-                <div className="cta-avatars">
-                  {[
-                    { l: 'R', c: 'linear-gradient(135deg,#3b82f6,#1d4ed8)' },
-                    { l: 'K', c: 'linear-gradient(135deg,#6366f1,#4338ca)' },
-                    { l: 'A', c: 'linear-gradient(135deg,#8b5cf6,#6d28d9)' },
-                    { l: 'S', c: 'linear-gradient(135deg,#0ea5e9,#0369a1)' },
-                  ].map(({ l, c }) => (
-                    <span key={l} className="cta-avatar" style={{ background: c }}>{l}</span>
-                  ))}
-                  <span className="cta-avatar cta-avatar-more">+30</span>
-                </div>
-                <div className="cta-social-meta">
-                  <div className="cta-stars">★★★★★</div>
-                  <span className="cta-social-label">Rated 4.9 / 5 · 30+ teams</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="cta-divider" />
-
-            {/* Feature + contact tiles */}
-            <div className="cta-meta">
-              <div className="cta-meta-tile">
-                <span className="cta-meta-ico ico-indigo">
-                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                </span>
-                <div className="cta-meta-text">
-                  <strong>Bank-grade Security</strong>
-                  <small>256-bit encrypted &amp; local</small>
-                </div>
-              </div>
-
-              <div className="cta-meta-tile">
-                <span className="cta-meta-ico ico-amber">
-                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                </span>
-                <div className="cta-meta-text">
-                  <strong>Works 100% Offline</strong>
-                  <small>No internet required</small>
-                </div>
-              </div>
-
-              <a href={phoneTel} className="cta-meta-tile cta-meta-link">
-                <span className="cta-meta-ico ico-blue">
-                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                </span>
-                <div className="cta-meta-text">
-                  <strong>{company.phone}</strong>
-                  <small>Talk to sales · Mon–Sat</small>
-                </div>
-                <svg className="cta-meta-arrow" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-
-              <a href="mailto:info@arcpem.com" className="cta-meta-tile cta-meta-link">
-                <span className="cta-meta-ico ico-violet">
-                  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                </span>
-                <div className="cta-meta-text">
-                  <strong>info@arcpem.com</strong>
-                  <small>We reply within 24 hours</small>
-                </div>
-                <svg className="cta-meta-arrow" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-      )}
+      {/* ── Closing CTA (site-wide) ── */}
+      {!hideGlobalCta && <FinalCta />}
 
       {/* ── Footer ── */}
-      <footer className="footer-v2">
-        <div className="container">
-          {/* Top: brand + columns */}
-          <div className="fv2-top">
-            <div className="fv2-brand">
-              <div className="fv2-logo">
-                <LogoMark size={22} onDark />
-              </div>
-              <p className="fv2-tagline">Project expense management software built for Indian architecture consultancies and construction firms.</p>
-              <div className="fv2-newsletter">
-                <div className="fv2-nl-label">Stay in the loop</div>
-                <form className="fv2-nl-form" onSubmit={e => e.preventDefault()}>
-                  <input type="email" placeholder="your@email.com" className="fv2-nl-input" />
-                  <button type="submit" className="fv2-nl-btn">→</button>
-                </form>
-              </div>
-              <div className="fv2-socials">
-                {company.socials.linkedin && (
-                  <a href={company.socials.linkedin} target="_blank" rel="noopener noreferrer" className="fv2-soc" title="LinkedIn" aria-label="LinkedIn">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                  </a>
-                )}
-                {company.socials.twitter && (
-                  <a href={company.socials.twitter} target="_blank" rel="noopener noreferrer" className="fv2-soc" title="Twitter / X" aria-label="Twitter">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                  </a>
-                )}
-                {company.socials.youtube && (
-                  <a href={company.socials.youtube} target="_blank" rel="noopener noreferrer" className="fv2-soc" title="YouTube" aria-label="YouTube">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                  </a>
-                )}
-                <a href={`mailto:${company.supportEmail}`} className="fv2-soc" title="Email" aria-label="Email">
-                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                </a>
-              </div>
-            </div>
-
-            <div className="fv2-cols">
-              <div className="fv2-col">
-                <h4 className="fv2-col-title">Solutions</h4>
-                <Link href="/solutions#project-mgmt" className="fv2-link">Project &amp; Budget Management</Link>
-                <Link href="/solutions#expense-mgmt" className="fv2-link">Expense &amp; Finance Tracking</Link>
-                <Link href="/solutions#power-feat" className="fv2-link">Power Features</Link>
-                <Link href="/pricing" className="fv2-link">Pricing</Link>
-              </div>
-              <div className="fv2-col">
-                <h4 className="fv2-col-title">Company</h4>
-                <Link href="/about" className="fv2-link">About Us</Link>
-                <Link href="/blog" className="fv2-link">Blog</Link>
-                <Link href="/contact" className="fv2-link">Contact Us</Link>
-                <Link href="/pricing" className="fv2-link">Pricing</Link>
-                <Link href="/resources" className="fv2-link">Help Centre</Link>
-                <Link href="/dashboard/downloads" className="fv2-link">Download App</Link>
-              </div>
-              <div className="fv2-col">
-                <h4 className="fv2-col-title">Free Tools</h4>
-                <Link href="/tools/contractor-bill-generator" className="fv2-link">GST Bill Generator</Link>
-                <Link href="/tools/construction-cost-calculator" className="fv2-link">Construction Cost Calculator</Link>
-                <Link href="/tools/concrete-calculator" className="fv2-link">Concrete Calculator</Link>
-                <Link href="/tools" className="fv2-link">All Free Tools</Link>
-              </div>
-              <div className="fv2-col">
-                <h4 className="fv2-col-title">Resources</h4>
-                <Link href="/guides/best-construction-software-india" className="fv2-link">Software Buyer&apos;s Guide</Link>
-                {SEGMENTS.map((s) => (
-                  <Link key={s.slug} href={`/for/${s.slug}`} className="fv2-link">For {s.label}</Link>
-                ))}
-                {COMPARISONS.map((c) => (
-                  <Link key={c.slug} href={`/compare/${c.slug}`} className="fv2-link">{c.label}</Link>
-                ))}
-                <Link href="/resources" className="fv2-link">User Guide (PDF)</Link>
-                <Link href="/resources" className="fv2-link">BOQ Templates</Link>
-                <Link href="/resources" className="fv2-link">GST Export Guide</Link>
-                <Link href="/resources" className="fv2-link">Tally Integration</Link>
-                <a href={`mailto:${company.salesEmail}`} className="fv2-link">Contact Sales</a>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom bar */}
-          <div className="fv2-bottom">
-            <div className="fv2-copy">
-              <span>© 2026 {company.legalName}. All rights reserved.</span>
-              <span className="fv2-india-badge">🇮🇳 Made with ♥ in India</span>
-              {company.gstin ? <span style={{ opacity: 0.7 }}>GSTIN: {company.gstin}</span> : null}
-              <a href={`tel:${company.phone.replace(/[^+\d]/g, '')}`}>{company.phone}</a>
-            </div>
-            <div className="fv2-legal">
-              <Link href="/privacy">Privacy Policy</Link>
-              <span className="fv2-dot">·</span>
-              <Link href="/terms">Terms</Link>
-              <span className="fv2-dot">·</span>
-              <Link href="/refund">Refunds</Link>
-              <span className="fv2-dot">·</span>
-              <Link href="/shipping">Delivery</Link>
-              <span className="fv2-dot">·</span>
-              <Link href="/contact">Contact</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
 
       {/* ── Shared Demo Modal ── */}
       <div className={`modal-overlay${demoOpen ? ' open' : ''}`} onClick={e => { if (e.target === e.currentTarget) hideDemo() }}>

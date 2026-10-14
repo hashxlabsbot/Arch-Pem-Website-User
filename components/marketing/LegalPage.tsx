@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import BreadcrumbsLd from '@/components/seo/Breadcrumbs'
 
 /**
  * Shared wrapper for policy/legal pages so Terms, Privacy, Refund and Shipping
@@ -7,14 +8,19 @@ import Link from 'next/link'
  */
 export default function LegalPage({
   title,
+  path,
   updated,
   children,
 }: {
   title: string
+  /** Site-relative path, used for the breadcrumb structured data. */
+  path: string
   updated: string
   children: React.ReactNode
 }) {
   return (
+    <>
+    <BreadcrumbsLd trail={[{ name: title, path }]} />
     <section className="section" style={{ paddingTop: '120px', paddingBottom: '80px' }}>
       <div className="container" style={{ maxWidth: '820px' }}>
         <span className="badge badge-indigo">Legal</span>
@@ -44,5 +50,6 @@ export default function LegalPage({
         .legal-prose strong { color: #0f172a; }
       `}</style>
     </section>
+    </>
   )
 }

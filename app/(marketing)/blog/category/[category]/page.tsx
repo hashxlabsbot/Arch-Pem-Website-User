@@ -6,6 +6,7 @@ import PostCard from '@/components/blog/PostCard'
 import CategoryNav from '@/components/blog/CategoryNav'
 import { getCategories, getPostsByCategory } from '@/lib/blog'
 import { company } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 
 export const revalidate = 3600
 
@@ -17,14 +18,8 @@ export async function generateMetadata({ params }: { params: { category: string 
   const cat = (await getCategories()).find((c) => c.slug === params.category)
   const name = cat?.name ?? params.category
   const title = `${name} — ARC PEM Blog`
-  const description = `Guides and worked examples in ${name} for Indian architects, builders and construction firms.`
-  return {
-    title,
-    description,
-    alternates: { canonical: `/blog/category/${params.category}` },
-    openGraph: { title, description, url: `/blog/category/${params.category}` },
-    twitter: { title, description },
-  }
+  const description = `Guides and worked examples in ${name} for Indian architects, builders and construction firms — ${cat?.count ?? 'several'} in-depth articles from the ARC PEM team.`
+  return pageMetadata({ title, description, path: `/blog/category/${params.category}` })
 }
 
 export default async function BlogCategoryPage({ params }: { params: { category: string } }) {
@@ -42,8 +37,9 @@ export default async function BlogCategoryPage({ params }: { params: { category:
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Blog', item: `${base}/blog` },
-            { '@type': 'ListItem', position: 2, name: cat.name, item: `${base}/blog/category/${cat.slug}` },
+            { '@type': 'ListItem', position: 1, name: 'Home', item: base },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: `${base}/blog` },
+            { '@type': 'ListItem', position: 3, name: cat.name, item: `${base}/blog/category/${cat.slug}` },
           ],
         }}
       />

@@ -34,6 +34,15 @@ const config = {
   experimental: {
     serverActions: { allowedOrigins },
   },
+  // Internal links inside published blog posts that point at slugs which
+  // never existed. Posts live in the CMS database, so redirect rather than
+  // edit; the authors can fix the source text whenever convenient.
+  async redirects() {
+    return [
+      { source: '/tools/gst-contractor-bill-generator', destination: '/tools/contractor-bill-generator', permanent: true },
+      { source: '/blog/bar-bending-schedule-bbs-explained', destination: '/blog/bar-bending-schedule-mechanism-explained', permanent: true },
+    ]
+  },
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }]
   },

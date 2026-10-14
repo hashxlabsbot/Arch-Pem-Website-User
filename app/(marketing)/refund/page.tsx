@@ -1,19 +1,20 @@
 import type { Metadata } from 'next'
 import LegalPage from '@/components/marketing/LegalPage'
 import { company } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Refund & Cancellation Policy',
-  description: 'Our policy on refunds and cancellations for ARC PEM subscriptions.',
-  alternates: { canonical: '/refund' },
-}
+  description: "ARC PEM’s refund and cancellation policy for annual software licences — the refund window, how to request one and how long it takes.",
+  path: '/refund',
+})
 
 const UPDATED = '18 June 2026'
 const days = company.refund.windowDays
 
 export default function RefundPage() {
   return (
-    <LegalPage title="Refund & Cancellation Policy" updated={UPDATED}>
+    <LegalPage title="Refund & Cancellation Policy" path="/refund" updated={UPDATED}>
       <p>
         This policy explains how refunds and cancellations work for {company.brand} licenses, provided by{' '}
         {company.legalName}. We want you to be confident in your purchase, so please read this carefully. We recommend

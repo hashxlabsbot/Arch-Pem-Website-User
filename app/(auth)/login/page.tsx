@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { signIn, getProviders } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle, Mail, Lock, ShieldCheck } from 'lucide-react'
-import LogoMark from '@/components/LogoMark'
+import LedgerLogo from '@/components/LedgerLogo'
 import { GoogleIcon } from '@/components/icons'
 
 function validateEmail(v: string) {
@@ -56,19 +56,19 @@ function LoginForm() {
   }
 
   function borderColor(field: string, err: string) {
-    if (focused === field) return err ? '#ef4444' : '#6366f1'
-    return err ? '#fca5a5' : '#e2e8f0'
+    if (focused === field) return err ? '#ef4444' : '#b9502c'
+    return err ? '#fca5a5' : '#ddd5c7'
   }
   function shadowStyle(field: string, err: string): React.CSSProperties {
     if (focused !== field) return {}
-    return { boxShadow: err ? '0 0 0 4px rgba(239,68,68,0.1)' : '0 0 0 4px rgba(99,102,241,0.1)' }
+    return { boxShadow: err ? '0 0 0 4px rgba(239,68,68,0.1)' : '0 0 0 4px rgba(185,80,44,0.1)' }
   }
 
   const inputBase: React.CSSProperties = {
-    width: '100%', padding: '11px 14px 11px 40px', borderRadius: '12px',
+    width: '100%', padding: '11px 14px 11px 40px', borderRadius: '3px',
     fontSize: '0.88rem', outline: 'none', fontFamily: 'inherit',
     background: '#fafafa', transition: 'all 0.15s', boxSizing: 'border-box',
-    color: '#0f172a',
+    color: '#1c1a17',
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -110,11 +110,11 @@ function LoginForm() {
     <>
       {/* Brand icon + heading */}
       <div style={{ marginBottom: '28px' }}>
-        <LogoMark size={21} style={{ marginBottom: '18px' }} />
-        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', marginBottom: '5px', letterSpacing: '-0.03em' }}>
+        <div style={{ marginBottom: '18px' }}><LedgerLogo height={40} /></div>
+        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#1c1a17', marginBottom: '5px', letterSpacing: '-0.03em' }}>
           Welcome back
         </h2>
-        <p style={{ fontSize: '0.84rem', color: '#94a3b8', fontWeight: 500 }}>
+        <p style={{ fontSize: '0.84rem', color: '#8f8778', fontWeight: 500 }}>
           Sign in to your ARC PEM account
         </p>
       </div>
@@ -124,7 +124,7 @@ function LoginForm() {
         <div style={{
           display: 'flex', alignItems: 'center', gap: '10px',
           background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)',
-          borderRadius: '12px', padding: '12px 14px', marginBottom: '20px',
+          borderRadius: '3px', padding: '12px 14px', marginBottom: '20px',
         }}>
           <CheckCircle size={15} style={{ color: '#10b981', flexShrink: 0 }} />
           <span style={{ fontSize: '0.82rem', color: '#059669', fontWeight: 600 }}>
@@ -138,7 +138,7 @@ function LoginForm() {
         <div style={{
           display: 'flex', alignItems: 'flex-start', gap: '10px',
           background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)',
-          borderRadius: '12px', padding: '12px 14px', marginBottom: '20px',
+          borderRadius: '3px', padding: '12px 14px', marginBottom: '20px',
         }}>
           <AlertCircle size={15} style={{ color: '#ef4444', flexShrink: 0, marginTop: '1px' }} />
           <span style={{ fontSize: '0.82rem', color: '#dc2626' }}>
@@ -154,22 +154,22 @@ function LoginForm() {
             type="button" onClick={handleGoogleSignIn} disabled={googleLoading}
             style={{
               width: '100%', padding: '12px', marginBottom: '20px',
-              background: 'white', color: '#0f172a',
-              border: '1.5px solid #e2e8f0', borderRadius: '12px',
+              background: 'white', color: '#1c1a17',
+              border: '1.5px solid #ddd5c7', borderRadius: '3px',
               fontSize: '0.87rem', fontWeight: 700, cursor: googleLoading ? 'not-allowed' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
               fontFamily: 'inherit', transition: 'all 0.15s',
               opacity: googleLoading ? 0.7 : 1,
             }}
           >
-            {googleLoading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite', color: '#94a3b8' }} /> : <GoogleIcon size={17} />}
+            {googleLoading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite', color: '#8f8778' }} /> : <GoogleIcon size={17} />}
             {googleLoading ? 'Redirecting…' : 'Continue with Google'}
           </button>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
-            <span style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 600 }}>OR SIGN IN WITH EMAIL</span>
-            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
+            <div style={{ flex: 1, height: '1px', background: '#ddd5c7' }} />
+            <span style={{ fontSize: '0.72rem', color: '#c9c0b0', fontWeight: 600 }}>OR SIGN IN WITH EMAIL</span>
+            <div style={{ flex: 1, height: '1px', background: '#ddd5c7' }} />
           </div>
         </>
       )}
@@ -184,7 +184,7 @@ function LoginForm() {
           <div style={{ position: 'relative' }}>
             <Mail size={15} style={{
               position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)',
-              color: emailErr && touched.email ? '#ef4444' : focused === 'email' ? '#6366f1' : '#94a3b8',
+              color: emailErr && touched.email ? '#ef4444' : focused === 'email' ? '#b9502c' : '#8f8778',
               pointerEvents: 'none', transition: 'color 0.15s',
             }} />
             <input
@@ -214,14 +214,14 @@ function LoginForm() {
             <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#374151', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
               Password
             </label>
-            <a href="/forgot-password" style={{ fontSize: '0.75rem', color: '#6366f1', fontWeight: 600, textDecoration: 'none' }}>
+            <a href="/forgot-password" style={{ fontSize: '0.75rem', color: '#b9502c', fontWeight: 600, textDecoration: 'none' }}>
               Forgot password?
             </a>
           </div>
           <div style={{ position: 'relative' }}>
             <Lock size={15} style={{
               position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)',
-              color: pwErr && touched.password ? '#ef4444' : focused === 'password' ? '#6366f1' : '#94a3b8',
+              color: pwErr && touched.password ? '#ef4444' : focused === 'password' ? '#b9502c' : '#8f8778',
               pointerEvents: 'none', transition: 'color 0.15s',
             }} />
             <input
@@ -240,7 +240,7 @@ function LoginForm() {
             />
             <button type="button" onClick={() => setShowPw(!showPw)} style={{
               position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
-              background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8',
+              background: 'none', border: 'none', cursor: 'pointer', color: '#8f8778',
               display: 'flex', alignItems: 'center', padding: 0,
             }}>
               {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -259,12 +259,12 @@ function LoginForm() {
           type="submit" disabled={loading}
           style={{
             width: '100%', padding: '13px',
-            background: loading ? '#a5b4fc' : 'linear-gradient(135deg, #6366f1, #3b82f6)',
-            color: 'white', border: 'none', borderRadius: '12px',
+            background: loading ? '#e3b49f' : 'linear-gradient(135deg, #b9502c, #c9603a)',
+            color: 'white', border: 'none', borderRadius: '3px',
             fontSize: '0.9rem', fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
             fontFamily: 'inherit', marginTop: '4px',
-            boxShadow: loading ? 'none' : '0 4px 16px rgba(99,102,241,0.35)',
+            boxShadow: loading ? 'none' : '0 4px 16px rgba(185,80,44,0.35)',
             transition: 'all 0.15s',
           }}
         >
@@ -283,29 +283,29 @@ function LoginForm() {
       <div style={{ marginTop: '16px' }}>
         <a href="/register" style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '14px 16px', borderRadius: '14px',
-          border: '1.5px solid #e2e8f0', background: '#f8fafc',
+          padding: '14px 16px', borderRadius: '3px',
+          border: '1.5px solid #ddd5c7', background: '#f3efe7',
           textDecoration: 'none',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
               width: '32px', height: '32px', borderRadius: '9px',
-              background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(59,130,246,0.08))',
+              background: 'linear-gradient(135deg, rgba(185,80,44,0.12), rgba(201,96,58,0.08))',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <ShieldCheck size={15} color="#6366f1" />
+              <ShieldCheck size={15} color="#b9502c" />
             </div>
             <div>
-              <div style={{ fontSize: '0.83rem', fontWeight: 700, color: '#0f172a' }}>New to ARC PEM?</div>
-              <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>One-year license · Secure checkout</div>
+              <div style={{ fontSize: '0.83rem', fontWeight: 700, color: '#1c1a17' }}>New to ARC PEM?</div>
+              <div style={{ fontSize: '0.72rem', color: '#8f8778' }}>One-year license · Secure checkout</div>
             </div>
           </div>
-          <span style={{ fontSize: '0.82rem', color: '#6366f1', fontWeight: 800 }}>Create Account →</span>
+          <span style={{ fontSize: '0.82rem', color: '#b9502c', fontWeight: 800 }}>Create Account →</span>
         </a>
       </div>
 
       <p style={{ textAlign: 'center', marginTop: '14px' }}>
-        <a href="/" style={{ fontSize: '0.75rem', color: '#cbd5e1', textDecoration: 'none', fontWeight: 500 }}>
+        <a href="/" style={{ fontSize: '0.75rem', color: '#c9c0b0', textDecoration: 'none', fontWeight: 500 }}>
           ← Back to website
         </a>
       </p>

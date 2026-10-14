@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import SessionProvider from '@/components/SessionProvider'
 import CookieBanner from '@/components/CookieBanner'
@@ -10,8 +10,15 @@ import './landing.css'
 import './globals.css'
 
 const TITLE = 'ARC PEM — Construction Expense Management Software'
+const OG_ALT = 'ARC PEM — construction expense management software for Indian architects and builders'
 const DESCRIPTION =
   'ARC PEM unifies BOQ, vendor bills, labour, GST and Tally exports into one offline platform built for Indian architects and construction firms.'
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#1a1a18',
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(company.siteUrl),
@@ -21,19 +28,35 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   applicationName: 'ARC PEM',
+  authors: [{ name: company.legalName, url: company.siteUrl }],
+  creator: company.legalName,
+  publisher: company.legalName,
+  category: 'Construction software',
+  formatDetection: { telephone: false, email: false, address: false },
+  // Allow full-size image previews and unrestricted snippets — what Google
+  // Discover and AI answer engines need to quote and show the page properly.
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
+  },
+  alternates: {
+    types: { 'application/rss+xml': [{ url: '/blog/rss.xml', title: 'ARC PEM Blog' }] },
+  },
   openGraph: {
     type: 'website',
     siteName: 'ARC PEM',
+    locale: 'en_IN',
     title: TITLE,
     description: DESCRIPTION,
     url: company.siteUrl,
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: OG_ALT }],
   },
   twitter: {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
-    images: ['/og-image.jpg'],
+    images: [{ url: '/og-image.jpg', alt: OG_ALT }],
   },
   icons: {
     icon: [
@@ -51,12 +74,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const sameAs = Object.values(company.socials).filter(Boolean)
   return (
-    <html lang="en">
+    <html lang="en-IN">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Martian+Mono:wght@400;500&family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
         <JsonLd

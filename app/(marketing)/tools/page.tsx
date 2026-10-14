@@ -8,18 +8,18 @@ import { company } from '@/lib/company'
 import {
   RupeeIcon, CalculatorIcon, CubeIcon, BricksIcon, SteelIcon, RulerIcon,
 } from '@/components/icons'
+import { pageMetadata } from '@/lib/seo'
+import BreadcrumbsLd from '@/components/seo/Breadcrumbs'
 
 const TITLE = 'Free Construction Tools & Calculators'
 const DESCRIPTION =
   'Free tools for Indian builders, contractors and architects — GST bill generator, cost calculator, concrete calculator. No sign-up, no limits.'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: '/tools' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
-}
+  path: '/tools',
+})
 
 const TOOL_ICONS: Record<string, React.ReactNode> = {
   'contractor-bill-generator': <RupeeIcon size={24} color="#4f46e5" />,
@@ -50,6 +50,7 @@ export default function ToolsIndexPage() {
   const base = company.siteUrl.replace(/\/$/, '')
   return (
     <>
+      <BreadcrumbsLd trail={[{ name: 'Free tools', path: '/tools' }]} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',

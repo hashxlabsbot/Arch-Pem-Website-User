@@ -17,6 +17,7 @@ import BlogFaq from '@/components/blog/BlogFaq'
 import { mdxComponents } from '@/components/blog/MdxComponents'
 import { DEFAULT_AUTHOR, type PostMeta } from '@/lib/blog'
 import { company } from '@/lib/company'
+import { ORG_ID } from '@/lib/seo-entity'
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
@@ -64,7 +65,11 @@ export default async function ArticleView({
 }) {
   const base = company.siteUrl.replace(/\/$/, '')
   const author = meta.author ?? DEFAULT_AUTHOR
-  const ogImageUrl = `${base}/blog/${meta.slug}/opengraph-image`
+  // Structured-data image must be a URL that resolves. The generated OG route
+  // carries a build hash, so use the post's own cover or the stable site card.
+  const ogImageUrl = meta.coverImage
+    ? (meta.coverImage.startsWith('http') ? meta.coverImage : `${base}${meta.coverImage}`)
+    : `${base}/og-image.jpg`
 
   const { content: compiled } = await compileMDX({
     source: content,
@@ -111,12 +116,21 @@ export default async function ArticleView({
               '@type': 'BlogPosting',
               headline: meta.title,
               description: meta.description,
-              image: ogImageUrl,
+              image: [ogImageUrl],
               datePublished: meta.date,
               dateModified: meta.updatedDate ?? meta.date,
-              author: { '@type': 'Person', name: author.name },
+              inLanguage: 'en-IN',
+              articleSection: meta.category,
+              ...(meta.tags?.length ? { keywords: meta.tags.join(', ') } : {}),
+              ...(meta.wordCount ? { wordCount: meta.wordCount } : {}),
+              // The house byline is the organisation, not a person; a named
+              // human author stays a Person.
+              author: meta.author
+                ? { '@type': 'Person', name: author.name }
+                : { '@type': 'Organization', '@id': ORG_ID, name: company.legalName, url: base },
               publisher: {
                 '@type': 'Organization',
+                '@id': ORG_ID,
                 name: company.legalName,
                 logo: { '@type': 'ImageObject', url: `${base}/arc-icon.png` },
               },
@@ -129,8 +143,10 @@ export default async function ArticleView({
               '@context': 'https://schema.org',
               '@type': 'BreadcrumbList',
               itemListElement: [
-                { '@type': 'ListItem', position: 1, name: 'Blog', item: `${base}/blog` },
-                { '@type': 'ListItem', position: 2, name: meta.title, item: `${base}/blog/${meta.slug}` },
+                { '@type': 'ListItem', position: 1, name: 'Home', item: base },
+                { '@type': 'ListItem', position: 2, name: 'Blog', item: `${base}/blog` },
+                { '@type': 'ListItem', position: 3, name: meta.category, item: `${base}/blog/category/${meta.categorySlug}` },
+                { '@type': 'ListItem', position: 4, name: meta.title, item: `${base}/blog/${meta.slug}` },
               ],
             }}
           />

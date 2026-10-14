@@ -1,18 +1,19 @@
 import type { Metadata } from 'next'
 import LegalPage from '@/components/marketing/LegalPage'
 import { company } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Terms & Conditions',
-  description: 'The terms and conditions governing your use of ARC PEM software and services.',
-  alternates: { canonical: '/terms' },
-}
+  description: "The terms and conditions governing your use of ARC PEM software and services, including licensing, payments, acceptable use and liability.",
+  path: '/terms',
+})
 
 const UPDATED = '18 June 2026'
 
 export default function TermsPage() {
   return (
-    <LegalPage title="Terms & Conditions" updated={UPDATED}>
+    <LegalPage title="Terms & Conditions" path="/terms" updated={UPDATED}>
       <p>
         These Terms &amp; Conditions (&ldquo;Terms&rdquo;) govern your access to and use of the {company.brand}{' '}
         website, desktop software, and related services provided by {company.legalName} (&ldquo;we&rdquo;, &ldquo;us&rdquo;).

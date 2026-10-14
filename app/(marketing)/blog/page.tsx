@@ -8,6 +8,8 @@ import BrandedCover from '@/components/blog/BrandedCover'
 import CategoryNav from '@/components/blog/CategoryNav'
 import { getAllPosts, getCategories } from '@/lib/blog'
 import { company } from '@/lib/company'
+import { clampDescription, RSS_ALTERNATE } from '@/lib/seo'
+import BreadcrumbsLd from '@/components/seo/Breadcrumbs'
 
 const TITLE = 'Blog — BOQ, GST & Contractor Billing Guides'
 const DESCRIPTION =
@@ -15,10 +17,10 @@ const DESCRIPTION =
 
 export const metadata: Metadata = {
   title: TITLE,
-  description: DESCRIPTION,
-  alternates: { canonical: '/blog' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/blog' },
-  twitter: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
+  description: clampDescription(DESCRIPTION),
+  alternates: { canonical: '/blog', types: RSS_ALTERNATE },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: clampDescription(DESCRIPTION), url: '/blog' },
+  twitter: { title: `${TITLE} · ARC PEM`, description: clampDescription(DESCRIPTION) },
 }
 
 export const revalidate = 3600
@@ -32,6 +34,7 @@ export default async function BlogIndexPage() {
 
   return (
     <>
+      <BreadcrumbsLd trail={[{ name: 'Blog', path: '/blog' }]} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',

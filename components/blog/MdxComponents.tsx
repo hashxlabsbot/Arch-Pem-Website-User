@@ -14,6 +14,9 @@ function parseImage(src?: string): { url: string; size: string } {
 
 /** Custom renderers passed to <MDXRemote components={...}> — only overrides where the default HTML needs a wrapper or site-specific behaviour. */
 export const mdxComponents: MDXComponents = {
+  // The article header already renders the page's single <h1>; demote any
+  // `# Heading` an author put in the body so the page keeps one h1.
+  h1: (props) => <h2 {...props} />,
   table: (props) => (
     <div className="tool-table-wrap">
       <table className="tool-table" {...props} />

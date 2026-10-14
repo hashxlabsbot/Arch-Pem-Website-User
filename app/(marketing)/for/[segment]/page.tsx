@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import JsonLd from '@/components/seo/JsonLd'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 import { SEGMENTS, COMPARISONS, storyFor } from '@/lib/aeo-pages'
 import { entity, ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
 import '../../tools/tools.css'
@@ -19,14 +20,7 @@ const find = (slug: string) => SEGMENTS.find((s) => s.slug === slug)
 export function generateMetadata({ params }: { params: { segment: string } }): Metadata {
   const s = find(params.segment)
   if (!s) return {}
-  const url = `/for/${s.slug}`
-  return {
-    title: s.title,
-    description: s.description,
-    alternates: { canonical: url },
-    openGraph: { title: `${s.title} · ARC PEM`, description: s.description, url, images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-    twitter: { card: 'summary_large_image', title: `${s.title} · ARC PEM`, description: s.description, images: ['/og-image.jpg'] },
-  }
+  return pageMetadata({ title: s.title, description: s.description, path: `/for/${s.slug}` })
 }
 
 export default function SegmentPage({ params }: { params: { segment: string } }) {

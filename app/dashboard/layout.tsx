@@ -1,7 +1,14 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { getActiveSession } from '@/lib/auth'
 import SessionProvider from '@/components/SessionProvider'
 import DashboardShell from '@/components/dashboard/DashboardShell'
+
+// Signed-in area: keep every dashboard route out of search results.
+export const metadata: Metadata = {
+  title: { default: 'Dashboard', template: '%s · ARC PEM' },
+  robots: { index: false, follow: false },
+}
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getActiveSession()

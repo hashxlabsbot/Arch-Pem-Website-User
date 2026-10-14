@@ -7,6 +7,7 @@ import { entity, ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
 import { LIVE_TOOLS } from '@/lib/tools'
 import { SEGMENTS, COMPARISONS } from '@/lib/aeo-pages'
 import '../../tools/tools.css'
+import { pageMetadata } from '@/lib/seo'
 
 const PATH = '/guides/best-construction-software-india'
 const UPDATED = '2026-10-12'
@@ -16,13 +17,11 @@ const TITLE = 'Best Construction Management Software in India (2026 Guide)'
 const DESCRIPTION =
   'How to choose construction project and expense management software in India — GST, Tally, BOQ, labour and offline needs compared across ARC PEM, cloud suites, accounting software and Excel.'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: PATH },
-  openGraph: { type: 'article', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: PATH, images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
-}
+  path: PATH, type: 'article',
+})
 
 // Comparison cells describe each category's typical shape, not every vendor
 // in it — keep competitor claims to what their own pricing/marketing states.

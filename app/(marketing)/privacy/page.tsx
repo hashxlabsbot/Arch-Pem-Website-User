@@ -1,19 +1,20 @@
 import type { Metadata } from 'next'
 import LegalPage from '@/components/marketing/LegalPage'
 import { company, formatAddress } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Privacy Policy',
-  description: 'How ARC PEM collects, uses, stores and protects your personal and business data.',
-  alternates: { canonical: '/privacy' },
-}
+  description: "How ARC PEM collects, uses, stores and protects your personal and business data, and the choices and rights you have over it.",
+  path: '/privacy',
+})
 
 const UPDATED = '4 July 2026'
 
 export default function PrivacyPage() {
   const addr = formatAddress()
   return (
-    <LegalPage title="Privacy Policy" updated={UPDATED}>
+    <LegalPage title="Privacy Policy" path="/privacy" updated={UPDATED}>
       <p>
         This Privacy Policy explains how {company.legalName} (&ldquo;{company.brand}&rdquo;, &ldquo;we&rdquo;,
         &ldquo;us&rdquo;) collects, uses, and protects your information when you use our website and software.

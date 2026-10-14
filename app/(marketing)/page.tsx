@@ -3,6 +3,7 @@ import JsonLd from '@/components/seo/JsonLd'
 import { company } from '@/lib/company'
 import { entity, featureList, ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
 import HomeClient from './HomeClient'
+import { RSS_ALTERNATE } from '@/lib/seo'
 
 const TITLE = 'ARC PEM — Construction Expense Management Software · India'
 const DESCRIPTION =
@@ -11,7 +12,7 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
-  alternates: { canonical: '/' },
+  alternates: { canonical: '/', types: RSS_ALTERNATE },
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,

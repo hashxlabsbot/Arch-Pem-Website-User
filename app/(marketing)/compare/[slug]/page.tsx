@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import JsonLd from '@/components/seo/JsonLd'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 import { COMPARISONS, SEGMENTS } from '@/lib/aeo-pages'
 import { ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
 import '../../tools/tools.css'
@@ -19,14 +20,7 @@ const find = (slug: string) => COMPARISONS.find((c) => c.slug === slug)
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const c = find(params.slug)
   if (!c) return {}
-  const url = `/compare/${c.slug}`
-  return {
-    title: c.title,
-    description: c.description,
-    alternates: { canonical: url },
-    openGraph: { type: 'article', title: `${c.title} · ARC PEM`, description: c.description, url, images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-    twitter: { card: 'summary_large_image', title: `${c.title} · ARC PEM`, description: c.description, images: ['/og-image.jpg'] },
-  }
+  return pageMetadata({ title: c.title, description: c.description, path: `/compare/${c.slug}`, type: 'article' })
 }
 
 export default function ComparePage({ params }: { params: { slug: string } }) {

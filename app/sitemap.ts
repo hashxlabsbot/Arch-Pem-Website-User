@@ -6,7 +6,6 @@ import { getAllPosts, getCategories } from '@/lib/blog'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = company.siteUrl.replace(/\/$/, '')
-  const now = new Date()
 
   const paths = [
     '',            // home
@@ -36,7 +35,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticEntries: MetadataRoute.Sitemap = paths.map((p) => ({
     url: `${base}${p}`,
-    lastModified: now,
+    // No lastModified: these pages have no per-page edit date, and a timestamp
+    // that changes on every build teaches crawlers to ignore the field.
     changeFrequency: p === '' || p === '/pricing' ? 'weekly' : 'monthly',
     priority: priority(p),
   }))
@@ -52,9 +52,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  // A category changes when its newest post is published or updated.
+  const latestInCategory = (slug: string) => {
+    const dates = posts.filter((p) => p.categorySlug === slug).map((p) => new Date(p.updatedDate ?? p.date).getTime())
+    return dates.length ? new Date(Math.max(...dates)) : undefined
+  }
   const categoryEntries: MetadataRoute.Sitemap = (await getCategories()).map((c) => ({
     url: `${base}/blog/category/${c.slug}`,
-    lastModified: now,
+    lastModified: latestInCategory(c.slug),
     changeFrequency: 'weekly',
     priority: 0.6,
   }))

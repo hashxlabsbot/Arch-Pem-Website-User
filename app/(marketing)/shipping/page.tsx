@@ -1,18 +1,19 @@
 import type { Metadata } from 'next'
 import LegalPage from '@/components/marketing/LegalPage'
 import { company } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Shipping & Delivery Policy',
-  description: 'How ARC PEM, a digital software product, is delivered to customers.',
-  alternates: { canonical: '/shipping' },
-}
+  description: "How ARC PEM, a digital software product, is delivered — instant download after purchase, with no physical shipping involved.",
+  path: '/shipping',
+})
 
 const UPDATED = '18 June 2026'
 
 export default function ShippingPage() {
   return (
-    <LegalPage title="Shipping & Delivery Policy" updated={UPDATED}>
+    <LegalPage title="Shipping & Delivery Policy" path="/shipping" updated={UPDATED}>
       <p>
         {company.brand} is a <strong>digital software product</strong>. There is no physical shipment. This policy
         explains how access is delivered after purchase.

@@ -5,18 +5,17 @@ import JsonLd from '@/components/seo/JsonLd'
 import BBSCalculator from '@/components/tools/BBSCalculator'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
+import { pageMetadata } from '@/lib/seo'
 
 const TITLE = 'Bar Bending Schedule (BBS) Calculator'
 const DESCRIPTION =
   'Generate a bar bending schedule for beams, columns, slabs and footings, build a multi-member project schedule, and get a diameter-wise steel order sheet — free and instant.'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: '/tools/bar-bending-schedule-calculator' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/bar-bending-schedule-calculator', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
-}
+  path: '/tools/bar-bending-schedule-calculator',
+})
 
 const FAQS = [
   {
