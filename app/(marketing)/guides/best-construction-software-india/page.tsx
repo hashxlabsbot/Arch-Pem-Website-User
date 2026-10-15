@@ -252,7 +252,7 @@ export default function BestConstructionSoftwareGuide() {
             </p>
             <ul>
               {entity.proof.stories.map((s) => (
-                <li key={s.company}><strong>{s.company}</strong> ({s.segment}, {s.city}) — {s.result}.</li>
+                <li key={s.company}><strong>{s.company}</strong> ({s.segment}) — {s.result}.</li>
               ))}
             </ul>
             <p>Read the full stories on the <Link href="/about">customer stories page</Link>.</p>

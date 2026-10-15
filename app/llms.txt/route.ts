@@ -45,7 +45,7 @@ export async function GET() {
     '## Customers',
     '',
     ...entity.proof.stats.map((s) => `- ${s}`),
-    ...entity.proof.stories.map((s) => `- ${s.company} (${s.segment}, ${s.city}): ${s.result}`),
+    ...entity.proof.stories.map((s) => `- ${s.company} (${s.segment}): ${s.result}`),
     `- Customer stories: ${base}/about`,
     '',
     '## Features',

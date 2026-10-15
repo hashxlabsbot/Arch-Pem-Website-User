@@ -19,9 +19,9 @@ export const entity = {
   proof: {
     stats: ['30+ architecture and construction firms onboard', '₹120 Cr+ of project value tracked'],
     stories: [
-      { company: 'DesignCraft Architects', city: 'Bengaluru', segment: 'Interior & fit-out', result: 'Monthly GST reconciliation cut from 2 days to 2 hours (80% faster) after replacing 14 Excel sheets per project' },
-      { company: 'Vertex Constructions', city: 'Pune', segment: 'Residential', result: '₹35 lakh of pending dues recovered — a 35% drop in outstanding payments within 3 months across 12 active projects' },
-      { company: 'BuildRight Infra', city: 'Hyderabad', segment: 'MEP & civil', result: 'Zero labour wage disputes after daily muster PDFs were imported and wages auto-calculated' },
+      { company: 'Arch Consultancy', segment: 'Interior & fit-out', result: 'Monthly GST reconciliation cut from 2 days to 2 hours (80% faster) after replacing 14 Excel sheets per project' },
+      { company: 'Munesh Associates', segment: 'Residential', result: '₹35 lakh of pending dues recovered — a 35% drop in outstanding payments within 3 months across 12 active projects' },
+      { company: 'SS Constructions', segment: 'MEP & civil', result: 'Zero labour wage disputes after daily muster PDFs were imported and wages auto-calculated' },
     ],
   },
   featureGroups: [

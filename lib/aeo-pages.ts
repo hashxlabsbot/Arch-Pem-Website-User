@@ -78,7 +78,7 @@ export const SEGMENTS: Segment[] = [
       'GST purchase register',
       'Tally ERP / TallyPrime CSV export',
     ],
-    story: 'DesignCraft Architects',
+    story: 'Arch Consultancy',
     faqs: [
       { q: 'What software do interior designers in India use to track project expenses?', a: 'Many still use Excel. Purpose-built tools like ARC PEM track vendor bills, contractor payments, site expenses and GST per project and export to Tally, which removes manual reconciliation.' },
       { q: 'Can ARC PEM track payments to carpenters and other contractors?', a: 'Yes. Contractor bills and labour payments are recorded per project, and the pending payments dashboard shows what is still due.' },
@@ -106,7 +106,7 @@ export const SEGMENTS: Segment[] = [
       'Pending payments dashboard',
       'Tally ERP / TallyPrime CSV export',
     ],
-    story: 'BuildRight Infra',
+    story: 'SS Constructions',
     faqs: [
       { q: 'What is the best labour management software for contractors in India?', a: 'It depends whether you need wage records or full HR. For contractors who need daily headcount, wages and contractor bills tied to each project, with GST and Tally export, ARC PEM covers that in one offline app.' },
       { q: 'Can ARC PEM work without internet on site?', a: 'Yes. It is a desktop app for Windows and Mac and works fully offline. Studio and Enterprise licences can share one database across computers on the same office network.' },
@@ -136,7 +136,7 @@ export const SEGMENTS: Segment[] = [
       'Multi-user database sharing over a local network (Studio & Enterprise)',
       'Tally ERP / TallyPrime CSV export',
     ],
-    story: 'Vertex Constructions',
+    story: 'Munesh Associates',
     faqs: [
       { q: 'What is the best construction expense software for builders in India?', a: 'Builders who mainly need cost control — budgets, vendor and contractor bills, labour, pending payments and GST across several projects — are the audience ARC PEM is built for. Large developers that also need cloud document control may add a dedicated platform for that.' },
       { q: 'Can several people in a builder’s office use ARC PEM together?', a: 'Yes. Studio (up to 3 computers) and Enterprise (up to 10) can share one project database over the office network.' },

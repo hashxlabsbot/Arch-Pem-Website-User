@@ -203,6 +203,15 @@ export function FileIcon(p: P) {
 }
 
 /** Trending downward arrow — Budget Overrun Reduction */
+export function TrendingUpIcon(p: P) {
+  return (
+    <S {...p}>
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
+    </S>
+  )
+}
+
 export function TrendingDownIcon(p: P) {
   return (
     <S {...p}>
@@ -400,6 +409,16 @@ export function LinkIcon(p: P) {
   )
 }
 
+/** Arrow right — "read more" affordance on cards and CTAs */
+export function ArrowRightIcon(p: P) {
+  return (
+    <S {...p}>
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="13 6 19 12 13 18" />
+    </S>
+  )
+}
+
 /** Checkmark — success / copied state */
 export function CheckIcon(p: P) {
   return (
@@ -539,6 +558,48 @@ export function GoogleIcon({ size = 18, style, className }: Pick<P, 'size' | 'st
       <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" />
       <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" />
       <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" />
+    </svg>
+  )
+}
+
+/** WhatsApp glyph — filled brand mark, used on blog/tool share docks. */
+export function WhatsappIcon({ size = 18, color = '#25D366', style, className }: Pick<P, 'size' | 'color' | 'style' | 'className'>) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24" fill={color}
+      style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, ...style }}
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12.04 2c-5.52 0-10 4.48-10 10 0 1.84.5 3.56 1.36 5.04L2 22l5.12-1.34A9.96 9.96 0 0 0 12.04 22c5.52 0 10-4.48 10-10s-4.48-10-10-10zm0 18.2a8.17 8.17 0 0 1-4.17-1.14l-.3-.18-3.04.8.81-2.96-.2-.3a8.18 8.18 0 0 1-1.26-4.4c0-4.53 3.68-8.21 8.2-8.21 4.52 0 8.2 3.68 8.2 8.2 0 4.53-3.68 8.2-8.2 8.2zm4.48-6.15c-.25-.12-1.46-.72-1.68-.8-.23-.08-.4-.12-.56.12-.17.25-.64.8-.79.96-.14.17-.29.18-.54.06-1.46-.73-2.42-1.3-3.38-2.95-.26-.44.26-.41.73-1.37.08-.17.04-.31-.04-.44-.08-.12-.56-1.36-.77-1.86-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1s.9 2.43 1.03 2.6c.13.17 1.78 2.72 4.31 3.71 2.09.82 2.09.55 2.47.51.37-.04 1.46-.6 1.66-1.18.21-.58.21-1.08.15-1.18-.07-.11-.25-.17-.5-.3z" />
+    </svg>
+  )
+}
+
+/** LinkedIn "in" mark — filled brand square. */
+export function LinkedinIcon({ size = 18, color = '#0A66C2', style, className }: Pick<P, 'size' | 'color' | 'style' | 'className'>) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24" fill={color}
+      style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, ...style }}
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" />
+    </svg>
+  )
+}
+
+/** X (Twitter) glyph — filled brand mark. */
+export function XIcon({ size = 18, color = 'currentColor', style, className }: Pick<P, 'size' | 'color' | 'style' | 'className'>) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24" fill={color}
+      style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, ...style }}
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M17.53 2.75h3.08l-6.73 7.69 7.92 10.81h-6.2l-4.86-6.57-5.56 6.57H2.1l7.2-8.23L1.7 2.75h6.36l4.4 6 5.07-6zm-1.08 16.66h1.71L7.63 4.5H5.8l10.65 14.91z" />
     </svg>
   )
 }

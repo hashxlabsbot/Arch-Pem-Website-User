@@ -1,15 +1,16 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
 import { useDemoModal } from '@/components/marketing/DemoModalContext'
-import Comparison3D from '@/components/marketing/Comparison3D'
+import WhyArcPem from '@/components/home/WhyArcPem'
+import ProofBand from '@/components/home/ProofBand'
+import EarlyWarning from '@/components/home/EarlyWarning'
+import FitsYourOffice from '@/components/home/FitsYourOffice'
+import './home-sections.css'
 import {
   DashboardIcon, FolderIcon, WalletIcon, ClockIcon, ReceiptIcon,
   DocumentIcon, UsersIcon, SettingsIcon, BuildingIcon, LockIcon,
-  ClipboardIcon, StoreIcon, HardHatIcon, BoltIcon, PhoneIcon,
-  FileIcon, TrendingDownIcon, RocketIcon, CompassIcon,
-  PrinterIcon, ExportIcon, WarningIcon, BellIcon,
+  FileIcon, PrinterIcon, ExportIcon, WarningIcon,
 } from '@/components/icons'
 
 export default function HomeClient() {
@@ -115,34 +116,6 @@ export default function HomeClient() {
     { id: 'pane-pending', icon: <ClockIcon size={14} />,    label: 'Pending Payments' },
     { id: 'pane-gst',     icon: <ReceiptIcon size={14} />,  label: 'GST Report'       },
     { id: 'pane-summary', icon: <DocumentIcon size={14} />, label: 'Summary Sheet'    },
-  ]
-
-  const cmpNodes = [
-    { cls: 'cmp-n-top',    ico: <ClipboardIcon size={22} color="white" />, lbl: 'BOQ &\nBudget'    },
-    { cls: 'cmp-n-left',   ico: <StoreIcon size={22} color="white" />,     lbl: 'Vendor\nTracking' },
-    { cls: 'cmp-n-right',  ico: <HardHatIcon size={22} color="white" />,   lbl: 'Labour\nTracking' },
-    { cls: 'cmp-n-bottom', ico: <WalletIcon size={22} color="white" />,    lbl: 'Finance\nControl' },
-  ]
-
-  const cmpPetals = [
-    { cls: 'cp-top',    ico: <ClipboardIcon size={20} color="white" />, lbl: 'BOQ &\nBudget'    },
-    { cls: 'cp-left',   ico: <StoreIcon size={20} color="white" />,     lbl: 'Vendor\nTracking' },
-    { cls: 'cp-right',  ico: <HardHatIcon size={20} color="white" />,   lbl: 'Labour\nTracking' },
-    { cls: 'cp-bottom', ico: <WalletIcon size={20} color="white" />,    lbl: 'Finance\nControl' },
-  ]
-
-  const statItems = [
-    { icon: <TrendingDownIcon size={22} color="#6366f1" strokeWidth={2.5} />, num: '10%',    target: 10,   suffix: '%',  title: 'Budget Overrun Reduction', sub: 'Faster visibility on cost vs. budget across all projects', pct: 10  },
-    { icon: <BoltIcon size={22} color="#6366f1" />,                           num: '80%',    target: 80,   suffix: '%',  title: 'Faster Accounting Handoff', sub: 'Tally CSV eliminates manual CA re-entry',                pct: 80  },
-    { icon: <RocketIcon size={22} color="#6366f1" strokeWidth={1.5} />,       num: '<15 min',target: null, suffix: '',   title: 'Setup Guarantee',           sub: 'No server, no IT department required',                  pct: 95  },
-    { icon: <BuildingIcon size={22} color="#6366f1" strokeWidth={2} />,       num: '30+',    target: 30,   suffix: '+',  title: 'Construction Teams',        sub: 'Architecture & construction firms trust ARC PEM',       pct: 60  },
-  ]
-
-  const showcaseCards = [
-    { img: '/images/architecture-modern.jpg', chipIcon: <CompassIcon size={11} />,  chip: 'Architecture', title: 'Design to Budget',      desc: 'Turn drawings and BOQs into precise, client-ready cost estimates with GST and cost-per-sq.ft built in.' },
-    { img: '/images/construction-frame.jpg',  chipIcon: <BuildingIcon size={11} />, chip: 'Construction', title: 'Every Site, Tracked',   desc: 'Labour headcount, vendor bills and site expenses captured on the ground — foundation to handover.' },
-    { img: '/images/finance-laptop.jpg',      chipIcon: <WalletIcon size={11} />,   chip: 'Finance',      title: 'Every Rupee Accounted', desc: 'Vendor ledgers, contractor bills, GST registers and one-click Tally export — without a spreadsheet.' },
-    { img: '/images/management-meeting.jpg',  chipIcon: <DashboardIcon size={11} />,chip: 'Management',   title: 'One Source of Truth',   desc: 'Give principals and project managers live visibility on budget vs. actual across every project.' },
   ]
 
   const reportBtns = [
@@ -448,101 +421,16 @@ export default function HomeClient() {
             <span className="trusted-label">Trusted by teams of 2 to 200</span>
             <div className="trusted-sep" />
             <div className="trusted-logos">
-              {['Skyline Arch Studio','BuildRight Infra','DesignCraft Associates','Vertex Constructions','MetroSpace MEP','Pinnacle Interiors'].map(f=><span key={f} className="t-firm">{f}</span>)}
+              {['Arch Consultancy','Munesh Associates','SS Constructions'].map(f=><span key={f} className="t-firm">{f}</span>)}
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Comparison ── */}
-      <section className="cmp-section">
-        <div className="container">
-          <div className="cmp-head fade-up">
-            <span className="cmp-badge">Why ARC PEM</span>
-            <h2>One Platform Replaces Them All</h2>
-            <p>Stop managing your construction projects across disconnected Excel sheets, Tally entries, and WhatsApp threads. ARC PEM unifies everything — out of the box.</p>
-          </div>
-          <Comparison3D />
-        </div>
-      </section>
-
-      {/* ── Stats Band ── */}
-      <div className="stats-band">
-        <div className="container">
-          <div className="stats-grid">
-            {statItems.map((s, i) => (
-              <div key={s.title} className={`stat-block fade-up${i>0?' d'+i:''}`}>
-                <div className="stat-ring-wrap">
-                  <svg className="stat-ring-svg" width="84" height="84" viewBox="0 0 84 84">
-                    <circle className="stat-ring-bg" cx="42" cy="42" r="36"/>
-                    <circle className="stat-ring-fg" cx="42" cy="42" r="36" data-pct={s.pct}/>
-                  </svg>
-                  <div className="stat-ring-icon">{s.icon}</div>
-                </div>
-                <div className="stat-num" {...(s.target ? { 'data-target': s.target, 'data-suffix': s.suffix } : {})}>{s.num}</div>
-                <div className="stat-title">{s.title}</div>
-                <div className="stat-sub">{s.sub}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Desktop Alerts ── */}
-      <section className="section">
-        <div className="container">
-          <div className="sec-hd fade-up">
-            <span className="badge badge-amber">Project Control</span>
-            <h2>Your desktop tells you before your accountant does</h2>
-            <p>ARC PEM watches every project against its budget and its milestone dates. When something slips, it says so — on launch, and again when you close the app, so it stays in your notification centre.</p>
-          </div>
-          <div className="notif-grid">
-            {[
-              { ico: <WarningIcon size={17} color="#ef4444" />, cls: 'red',
-                t: 'Budget Overrun: Skyline Residency',
-                b: 'Exceeded budget by ₹2,40,000.' },
-              { ico: <ClockIcon size={17} color="#f59e0b" />, cls: 'amber',
-                t: '3 Overdue Milestones',
-                b: 'Some project milestones are past their target date. Open ARC PEM to update.' },
-              { ico: <BellIcon size={17} color="#4f46e5" />, cls: 'indigo',
-                t: '12 Pending Payments',
-                b: '₹8,40,000 outstanding. Open ARC PEM to review.' },
-            ].map((n, i) => (
-              <div key={n.t} className={`notif-toast fade-up${i>0?' d'+i:''}`}>
-                <div className={`notif-ico ${n.cls}`}>{n.ico}</div>
-                <div>
-                  <div className="notif-title">{n.t}</div>
-                  <div className="notif-body">{n.b}</div>
-                  <div className="notif-app">ARC PEM</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Industry Showcase ── */}
-      <section className="showcase">
-        <div className="container">
-          <div className="sec-hd fade-up">
-            <span className="badge badge-indigo">Built for how India builds</span>
-            <h2>From the First Sketch to the Final Handover</h2>
-            <p>One platform across every stage of a project — design budgets, live construction sites, day-to-day finances, and the partners steering it all.</p>
-          </div>
-          <div className="showcase-grid">
-            {showcaseCards.map((c, i) => (
-              <div key={c.title} className={`show-card fade-up${i>0?' d'+i:''}`}>
-                <Image src={c.img} alt={c.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw" />
-                <div className="show-card-body">
-                  <span className="show-chip" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>{c.chipIcon}{c.chip}</span>
-                  <h3>{c.title}</h3>
-                  <p>{c.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <WhyArcPem />
+      <ProofBand />
+      <EarlyWarning />
+      <FitsYourOffice />
     </>
   )
 }

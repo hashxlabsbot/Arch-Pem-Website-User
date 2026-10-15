@@ -102,7 +102,7 @@ export default function SegmentPage({ params }: { params: { segment: string } })
             <h2>Customer results</h2>
             {story ? (
               <p>
-                <strong>{story.company}</strong> ({story.segment}, {story.city}): {story.result}.{' '}
+                <strong>{story.company}</strong> ({story.segment}): {story.result}.{' '}
                 <Link href="/about">Read the customer stories</Link>.
               </p>
             ) : (
