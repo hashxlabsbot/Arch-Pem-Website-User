@@ -22,6 +22,7 @@ import { env } from '@/lib/env'
 import { logger } from '@/lib/logger'
 import { sendPaymentSuccessEmail } from '@/lib/email'
 import { annualPrice } from '@/lib/pricing'
+import { activateWebTerm, deliverOutbox, isDuplicatePayment } from '@/lib/web-app'
 
 /** Lazily build a Razorpay client; returns null when keys are not configured. */
 export function getRazorpay(): Razorpay | null {
@@ -123,6 +124,7 @@ export async function activatePaidPlan({
   // Record the payment + activate the plan atomically. Re-check inside the
   // transaction to narrow the verify/webhook race window.
   let alreadyProcessed = false
+  let webEventId: string | null = null
   try {
     await db.$transaction(async (tx) => {
       const dup = await tx.pendingPayment.findFirst({ where: { utr: paymentId } })
@@ -140,15 +142,30 @@ export async function activatePaidPlan({
           status: 'paid',
         },
       })
-      await tx.user.update({ where: { id: userId }, data: { planId: plan.id } })
+      if (plan.product === 'WEB') {
+        // ARC PEM Web: a firm subscription, not a desktop license, so User.planId is left alone.
+        const term = await activateWebTerm(tx, { userId, plan, paymentRef: paymentId, amount: yearly })
+        webEventId = term.eventId
+      } else {
+        await tx.user.update({ where: { id: userId }, data: { planId: plan.id } })
+      }
     })
   } catch (err) {
+    // The admin app's Razorpay webhook applied this web payment first (paymentRef is unique): nothing left to do.
+    if (plan.product === 'WEB' && isDuplicatePayment(err)) return { ok: true, alreadyProcessed: true, planName: plan.name }
     logger.error('activatePaidPlan: activation transaction failed', err, { orderId, paymentId })
     return { ok: false, status: 500, error: 'Could not activate plan.' }
   }
 
   if (alreadyProcessed) {
     return { ok: true, alreadyProcessed: true, planName: plan.name }
+  }
+
+  // Tell the web app now; anything that doesn't get through is retried by /api/cron/web-app-outbox.
+  if (webEventId) {
+    await deliverOutbox({ ids: [webEventId] }).catch((err: unknown) =>
+      logger.error('activatePaidPlan: web-app delivery failed (will retry)', err),
+    )
   }
 
   // Confirmation email — non-blocking; failure must not fail activation.
@@ -158,6 +175,7 @@ export async function activatePaidPlan({
     planName: plan.name,
     amount: yearly,
     paymentId,
+    webAppUrl: plan.product === 'WEB' ? env.webAppUrl() : undefined,
   }).catch((err: unknown) => logger.error('payment success email failed', err))
 
   return { ok: true, alreadyProcessed: false, planName: plan.name }

@@ -10,6 +10,7 @@ interface Props {
   price:     number
   userName:  string
   userEmail: string
+  label?:    string
 }
 
 // Razorpay injects this global once checkout.js is loaded.
@@ -39,7 +40,7 @@ function loadCheckout(): Promise<boolean> {
   })
 }
 
-export default function UpgradeButton({ planId, planName, userName, userEmail }: Props) {
+export default function UpgradeButton({ planId, planName, userName, userEmail, label = 'Upgrade →' }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)    // creating order / opening checkout
   const [verifying, setVerifying] = useState(false) // post-payment verification
@@ -152,7 +153,7 @@ export default function UpgradeButton({ planId, planName, userName, userEmail }:
         }}
       >
         {(loading || verifying) && <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />}
-        {verifying ? 'Confirming…' : loading ? 'Loading…' : 'Upgrade →'}
+        {verifying ? 'Confirming…' : loading ? 'Loading…' : label}
       </button>
 
       <p style={{ fontSize: '0.66rem', color: '#94a3b8', textAlign: 'center', marginTop: '8px', lineHeight: 1.4 }}>

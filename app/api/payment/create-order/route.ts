@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
 
   const plan = await db.plan.findUnique({ where: { id: planId } })
   if (!plan) return NextResponse.json({ error: 'Plan not found' }, { status: 404 })
+  if (!plan.isActive) return NextResponse.json({ error: 'This plan is no longer offered' }, { status: 400 })
   if (plan.price <= 0) return NextResponse.json({ error: 'Contact sales for this plan' }, { status: 400 })
 
   // Sold as a one-year license: charge 12× the stored monthly base price.
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
       currency: 'INR',
       receipt: `rcpt_${session.user.id.slice(-8)}_${Date.now()}`,
       // Server-set binding — verify/webhook trust ONLY these, never the client.
-      notes: { userId: session.user.id, planId: plan.id, planName: plan.name, term: 'annual' },
+      notes: { userId: session.user.id, planId: plan.id, planName: plan.name, product: plan.product, term: 'annual' },
     })
 
     return NextResponse.json({

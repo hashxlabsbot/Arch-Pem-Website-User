@@ -34,6 +34,15 @@ ARC PEM is split across (at least) two applications that **share one PostgreSQL 
 | **This repo** (`Arch-Pem-Website-User`) | Public marketing site, pricing, free tools, self-serve registration (email OTP), login, Razorpay checkout, and the logged-in customer dashboard (downloads, subscription, settings, support). |
 | **Arc-Pem-Admin** (separate repo) | Owns the Prisma schema and all migrations. Runs the internal admin panel: creates/suspends users, manages plans, issues machine licenses, and owns `planExpiresAt`. Registration (`POST /api/auth/register`) is proxied to this app. |
 | **ARC PEM desktop app** | The actual product (Windows/Mac). Downloaded from this site's `/dashboard/downloads` page; licensed per machine. |
+| **ARC PEM Web** (`ARCPEM-Web`, app.arcpem.com) | The product in the browser, with its **own** database. Firms buy a web plan here; owners sign in to it with their ARC PEM account (this site is its OpenID Connect provider); team members are invited inside it. |
+
+### ARC PEM Web integration
+
+- **Plans:** `Plan.product` is `DESKTOP` or `WEB`; web plans carry `tier` (SOLO/STUDIO/ENTERPRISE). `/api/plans?product=WEB` and `/pricing?product=web` list them.
+- **Purchase:** the normal Razorpay flow. For a web plan, `activatePaidPlan` applies a year to the buyer's `WebSubscription` (`lib/web-app.ts`) instead of setting `User.planId`. `WebSubscriptionPayment.paymentRef` is unique, so this site's and the admin's Razorpay webhooks can both see a payment and it still counts once.
+- **Owner sign-in:** `/.well-known/openid-configuration`, `/oauth/authorize|token|userinfo|jwks` (`lib/oidc.ts`). Authorization code + PKCE, one registered client (the web app), RS256 ID tokens signed with `OIDC_PRIVATE_KEY`. The ID token carries the firm's current subscription. The dashboard's "Open ARC PEM Web" button starts this flow.
+- **Keeping the web app in sync:** every change writes a `subscription.updated` event to `WebhookOutbox` in the same transaction; it is pushed to `{WEB_APP_URL}/api/webhooks/accounts` (HMAC-signed) immediately and retried by `GET /api/cron/web-app-outbox` (schedule every ~5 minutes with `CRON_SECRET`). Events carry full state, so retries and reordering are harmless.
+- The contract both sides implement is in the web app at `src/lib/accounts/contract.ts`.
 
 **Important:** this project only ever runs `prisma generate`, never `prisma migrate` / `prisma db push` — doing so against the shared database would attempt to drop the admin-only tables (`Client`, `License`, `ApiKey`, `ActivityLog`). See [`prisma/schema.prisma`](prisma/schema.prisma).
 

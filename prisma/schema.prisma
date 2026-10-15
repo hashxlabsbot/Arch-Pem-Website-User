@@ -34,6 +34,8 @@ model User {
   // it on paid activation; this app only READS it (mirror field — never migrate
   // from here). Null = no active paid license.
   planExpiresAt DateTime?
+  webSubscription WebSubscription?
+  billingProfile  BillingProfile?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -78,9 +80,99 @@ model Plan {
   maxProjects Int      @default(10)
   maxUsers    Int      @default(1)
   isActive    Boolean  @default(true)
+  // DESKTOP (machine license, User.planId) | WEB (ARC PEM Web firm subscription). Mirror — admin owns it.
+  product     String   @default("DESKTOP")
+  // WEB plans: SOLO | STUDIO | ENTERPRISE, the app's tier.
+  tier        String?
   users       User[]
+  webSubscriptions WebSubscription[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([product, isActive])
+}
+
+// ── ARC PEM Web (app.arcpem.com) — mirrors of admin-owned tables (see warning above) ──
+
+model WebSubscription {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firmName         String
+  planId           String
+  plan             Plan      @relation(fields: [planId], references: [id])
+  status           String    @default("ACTIVE")
+  currentPeriodEnd DateTime?
+  seatLimit        Int?
+  projectLimit     Int?
+  payments         WebSubscriptionPayment[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([status, currentPeriodEnd])
+}
+
+model WebSubscriptionPayment {
+  id             String          @id @default(cuid())
+  subscriptionId String
+  subscription   WebSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  paymentRef     String          @unique
+  planId         String
+  amount         Float
+  periodStart    DateTime
+  periodEnd      DateTime
+  createdAt      DateTime        @default(now())
+
+  @@index([subscriptionId, createdAt])
+}
+
+model WebhookOutbox {
+  id            String    @id
+  type          String
+  payload       Json
+  status        String    @default("PENDING")
+  attempts      Int       @default(0)
+  nextAttemptAt DateTime  @default(now())
+  lastError     String?
+  deliveredAt   DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([status, nextAttemptAt])
+  @@index([createdAt])
+}
+
+model OidcAuthCode {
+  codeHash      String   @id
+  userId        String
+  clientId      String
+  redirectUri   String
+  scope         String
+  nonce         String?
+  codeChallenge String
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
+// Read here for the firm name on a new web subscription. Mirror — admin owns it.
+model BillingProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  legalName    String
+  gstin        String?
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  stateCode    String
+  pincode      String
+  country      String   @default("India")
+  phone        String?
+  email        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 // Demo requests submitted from the "Book a Free Demo" modal — written here,

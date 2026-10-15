@@ -2,6 +2,7 @@ import { getActiveSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { CheckCircle2, ArrowRight, Zap, Star } from 'lucide-react'
 import UpgradeButton from '@/components/dashboard/UpgradeButton'
+import WebAppSubscription from '@/components/dashboard/WebAppSubscription'
 import { company } from '@/lib/company'
 import { annualPrice } from '@/lib/pricing'
 
@@ -11,13 +12,27 @@ export default async function SubscriptionPage() {
   const session = await getActiveSession()
   if (!session) return null
 
-  const [user, plans] = await Promise.all([
-    db.user.findUnique({ where: { id: session.user.id }, include: { plan: true } }),
-    db.plan.findMany({ where: { isActive: true }, orderBy: { price: 'asc' } }),
+  const [user, plans, webPlans] = await Promise.all([
+    db.user.findUnique({
+      where: { id: session.user.id },
+      include: { plan: true, webSubscription: { include: { plan: true } } },
+    }),
+    db.plan.findMany({ where: { isActive: true, product: 'DESKTOP' }, orderBy: { price: 'asc' } }),
+    db.plan.findMany({ where: { isActive: true, product: 'WEB' }, orderBy: { price: 'asc' } }),
   ])
 
   return (
     <div style={{ maxWidth: '900px' }}>
+      <WebAppSubscription
+        subscription={user?.webSubscription ?? null}
+        plans={webPlans}
+        userName={session.user.name ?? ''}
+        userEmail={session.user.email ?? ''}
+      />
+
+      <div className="text-sm font-black mb-4 uppercase tracking-widest" style={{ color: '#0f172a' }}>
+        Desktop app
+      </div>
 
       {/* Current plan banner */}
       <div

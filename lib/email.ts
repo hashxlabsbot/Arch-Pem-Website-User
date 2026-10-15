@@ -224,8 +224,12 @@ export async function sendDemoConfirmationEmail({
 }
 
 export async function sendPaymentSuccessEmail({
-  to, name, planName, amount, paymentId,
-}: { to: string; name: string; planName: string; amount: number; paymentId: string }) {
+  to, name, planName, amount, paymentId, webAppUrl,
+}: {
+  to: string; name: string; planName: string; amount: number; paymentId: string
+  // Set for ARC PEM Web plans: the email then takes the owner straight into their firm's workspace.
+  webAppUrl?: string
+}) {
   const safeName = esc(name)
   const rows = [
     ['Plan',        esc(planName)],
@@ -245,8 +249,16 @@ export async function sendPaymentSuccessEmail({
       <div style="padding:32px 36px;">
         <p style="font-size:15px;color:#1e293b;margin:0 0 20px;">Hi <strong>${safeName}</strong>,</p>
         <p style="font-size:14px;color:#475569;margin:0 0 24px;line-height:1.6;">
-          Thank you for your payment. Your <strong>${esc(planName)}</strong> plan is now active and all its features are unlocked in your dashboard.
+          Thank you for your payment. Your <strong>${esc(planName)}</strong> plan is now active${webAppUrl
+            ? ` and your firm's ARC PEM Web workspace is ready. Sign in with this account, then invite your team from the <strong>Team</strong> page.`
+            : ' and all its features are unlocked in your dashboard.'}
         </p>
+        ${webAppUrl ? `
+        <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px;"><tr>
+          <td bgcolor="#4f46e5" style="border-radius:10px;background:#4f46e5;">
+            <a href="${esc(webAppUrl)}/auth/arcpem" style="display:inline-block;padding:12px 24px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Open ARC PEM Web &rarr;</a>
+          </td>
+        </tr></table>` : ''}
         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
           <p style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 14px;">Receipt</p>
           ${rows.map(([label, value]) => `

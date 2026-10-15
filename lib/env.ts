@@ -30,6 +30,13 @@ type EnvKey =
   | 'GOOGLE_CALENDAR_REFRESH_TOKEN'
   | 'GOOGLE_CALENDAR_ID'
   | 'DEMO_LEADS_EMAILS'
+  | 'WEB_APP_URL'
+  | 'WEB_APP_WEBHOOK_SECRET'
+  | 'OIDC_CLIENT_ID'
+  | 'OIDC_CLIENT_SECRET'
+  | 'OIDC_REDIRECT_URIS'
+  | 'OIDC_PRIVATE_KEY'
+  | 'CRON_SECRET'
 
 const REQUIRED: EnvKey[] = ['DATABASE_URL', 'NEXTAUTH_SECRET', 'NEXTAUTH_URL']
 
@@ -84,4 +91,19 @@ export const env = {
   googleCalendarId: () => get('GOOGLE_CALENDAR_ID') ?? 'primary',
   // Comma-separated internal recipients for demo-lead notifications.
   demoLeadsEmails: () => (get('DEMO_LEADS_EMAILS') ?? 'info@arcpem.com').split(',').map((e) => e.trim()).filter(Boolean),
+
+  // ── ARC PEM Web (app.arcpem.com) ──
+  // Where the web app lives; subscription changes are pushed to {WEB_APP_URL}/api/webhooks/accounts.
+  webAppUrl: () => get('WEB_APP_URL')?.replace(/\/$/, ''),
+  // Signs those pushes (same value as ARCPEM_ACCOUNTS_WEBHOOK_SECRET in the web app; first one signs while rotating).
+  webAppWebhookSecret: () => get('WEB_APP_WEBHOOK_SECRET')?.split(',')[0]?.trim(),
+  // This site is the web app's OpenID Connect provider (owner sign-in). One registered client: the web app.
+  oidcClientId: () => get('OIDC_CLIENT_ID'),
+  oidcClientSecret: () => get('OIDC_CLIENT_SECRET'),
+  // Exact redirect URIs allowed, comma-separated. Defaults to the web app's Auth.js callback.
+  oidcRedirectUris: () => get('OIDC_REDIRECT_URIS'),
+  // RSA private key (PEM) that signs ID tokens. Required in production; a throwaway key is generated in development.
+  oidcPrivateKey: () => get('OIDC_PRIVATE_KEY'),
+  // Bearer secret for /api/cron/* (retrying undelivered web-app events).
+  cronSecret: () => get('CRON_SECRET'),
 }

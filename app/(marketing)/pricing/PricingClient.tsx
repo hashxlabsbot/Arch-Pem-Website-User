@@ -200,10 +200,17 @@ export default function PricingClient() {
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  // Desktop app (machine licenses) or ARC PEM Web (per firm, in the browser). /pricing?product=web opens on Web.
+  const [product, setProduct] = useState<'DESKTOP' | 'WEB'>('DESKTOP')
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('product')?.toLowerCase() === 'web') setProduct('WEB')
+  }, [])
 
   useEffect(() => {
     let active = true
-    fetch('/api/plans')
+    setLoading(true)
+    fetch(`/api/plans?product=${product}`)
       .then((r) => r.json())
       .then((d) => {
         if (active) setPlans(d.plans ?? [])
@@ -213,7 +220,7 @@ export default function PricingClient() {
     return () => {
       active = false
     }
-  }, [])
+  }, [product])
 
   useEffect(() => {
     if (loading) return
@@ -224,8 +231,9 @@ export default function PricingClient() {
   }, [loading])
 
   function openSignupWithPlan(planName: string) {
+    const anchor = product === 'WEB' ? '#web' : ''
     if (session) {
-      router.push(`/dashboard/subscription?plan=${encodeURIComponent(planName)}`)
+      router.push(`/dashboard/subscription?plan=${encodeURIComponent(planName)}${anchor}`)
     } else {
       router.push(`/register?plan=${encodeURIComponent(planName)}`)
     }
@@ -239,7 +247,29 @@ export default function PricingClient() {
           <div className="sec-hd fade-up">
             <span className="badge badge-indigo">Pricing</span>
             <h1>Simple Pricing for Every Firm Size</h1>
-            <p>Choose your plan based on how many machines you need. All the essentials are included from day one.</p>
+            <p>
+              {product === 'WEB'
+                ? 'ARC PEM Web runs in the browser for your whole firm. Choose by team seats and active projects.'
+                : 'Choose your plan based on how many machines you need. All the essentials are included from day one.'}
+            </p>
+            <div
+              role="tablist"
+              aria-label="Product"
+              style={{ display: 'inline-flex', gap: '4px', marginTop: '18px', padding: '4px', borderRadius: '999px', background: 'var(--gray-100, #f1f5f9)' }}
+            >
+              {(['DESKTOP', 'WEB'] as const).map((p) => (
+                <button
+                  key={p}
+                  role="tab"
+                  aria-selected={product === p}
+                  onClick={() => setProduct(p)}
+                  className={`btn ${product === p ? 'btn-primary' : ''}`}
+                  style={{ borderRadius: '999px', padding: '8px 18px', fontSize: '.85rem', ...(product === p ? {} : { background: 'transparent', color: 'var(--gray-500)' }) }}
+                >
+                  {p === 'DESKTOP' ? 'Desktop app' : 'ARC PEM Web'}
+                </button>
+              ))}
+            </div>
           </div>
 
           {loading ? (
@@ -292,7 +322,9 @@ export default function PricingClient() {
           )}
 
           <p style={{ textAlign: 'center', fontSize: '.84rem', color: 'var(--gray-400)', marginTop: '28px' }}>
-            One-year license · 12 months of updates included · Secure checkout by Razorpay
+            {product === 'WEB'
+              ? 'One-year subscription per firm · Invite your team from inside the app · Secure checkout by Razorpay'
+              : 'One-year license · 12 months of updates included · Secure checkout by Razorpay'}
           </p>
           <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--gray-400)', marginTop: '8px' }}>
             All prices are in Indian Rupees (₹).{' '}

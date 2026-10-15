@@ -73,6 +73,56 @@ const plans = [
     maxUsers: 10,
     isActive: true,
   },
+  // ── ARC PEM Web (app.arcpem.com): per firm, in the browser. maxUsers = team seats. ──
+  {
+    name: 'Web Solo',
+    product: 'WEB',
+    tier: 'SOLO',
+    price: 2499,
+    period: 'month',
+    description: 'ARC PEM in the browser for one person: every ledger, report and export, nothing to install.',
+    features: [
+      '1 team seat',
+      'Up to 10 active projects',
+      'BOQ, budgets and all expense ledgers',
+      'GST, TDS and Tally exports',
+      'Works on any device',
+      'Email support',
+    ],
+    maxProjects: 10,
+    maxUsers: 1,
+    isActive: true,
+  },
+  {
+    name: 'Web Studio',
+    product: 'WEB',
+    tier: 'STUDIO',
+    price: 4999,
+    period: 'month',
+    description: 'For studios and site teams working together, with roles, approvals and per-project access.',
+    features: [
+      '3 team seats',
+      'Up to 30 active projects',
+      'Roles, approvals and project access',
+      'Everything in Web Solo',
+      'Priority email support',
+    ],
+    maxProjects: 30,
+    maxUsers: 3,
+    isActive: true,
+  },
+  {
+    name: 'Web Enterprise',
+    product: 'WEB',
+    tier: 'ENTERPRISE',
+    price: 9999,
+    period: 'month',
+    description: 'For larger firms running many sites, with the highest limits and dedicated support.',
+    features: ['10 team seats', 'Up to 50 active projects', 'Everything in Web Studio', 'Dedicated onboarding', 'SLA support'],
+    maxProjects: 50,
+    maxUsers: 10,
+    isActive: true,
+  },
 ]
 
 async function main() {
@@ -88,7 +138,8 @@ async function main() {
       update: rest,
       create: data,
     })
-    console.log(`  ✓ ${p.name}  ₹${p.price}/mo  ${p.maxProjects} projects · ${p.maxUsers} machines`)
+    const unit = p.product === 'WEB' ? 'seats' : 'machines'
+    console.log(`  ✓ ${p.name}  ₹${p.price}/mo  ${p.maxProjects} projects · ${p.maxUsers} ${unit}`)
   }
 
   console.log('Done.')
