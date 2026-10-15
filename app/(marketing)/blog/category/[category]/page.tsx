@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import JsonLd from '@/components/seo/JsonLd'
-import PostCard from '@/components/blog/PostCard'
-import CategoryNav from '@/components/blog/CategoryNav'
+import JournalIndex from '@/components/blog/JournalIndex'
+import { toJPost } from '@/components/blog/journal-data'
+import { SEGMENTS } from '@/lib/aeo-pages'
+import { LIVE_TOOLS } from '@/lib/tools'
 import { getCategories, getPostsByCategory } from '@/lib/blog'
 import { company } from '@/lib/company'
 import { pageMetadata } from '@/lib/seo'
@@ -44,26 +45,15 @@ export default async function BlogCategoryPage({ params }: { params: { category:
         }}
       />
 
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <div className="category-hero fade-up in">
-            <div className="post-crumb">
-              <Link href="/blog">Blog</Link> / {cat.name}
-            </div>
-            <span className="badge badge-indigo">Category</span>
-            <h1>{cat.name}</h1>
-            <p>{posts.length} article{posts.length === 1 ? '' : 's'} in this category.</p>
-          </div>
-
-          <CategoryNav categories={categories} activeSlug={cat.slug} />
-
-          <div className="post-grid" style={{ marginTop: 40 }}>
-            {posts.map((p) => (
-              <PostCard key={p.slug} post={p} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <JournalIndex
+        mode="category"
+        categoryName={cat.name}
+        categorySlug={cat.slug}
+        posts={posts.map(toJPost)}
+        categories={categories}
+        tools={LIVE_TOOLS.map((t) => ({ slug: t.slug, name: t.name, short: t.short }))}
+        roles={SEGMENTS.map((r) => ({ slug: r.slug, label: r.label, description: r.description }))}
+      />
     </>
   )
 }
