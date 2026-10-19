@@ -18,14 +18,18 @@ export default function RegisterPage() {
 function RegisterForm() {
   const router  = useRouter()
   const params  = useSearchParams()
+  // A plan picked on /pricing: after sign-up the owner goes straight to its checkout (nothing is bought here).
   const preplan = params.get('plan') ?? ''
+  const billing = params.get('billing') === 'annual' ? 'annual' : params.get('billing') === 'monthly' ? 'monthly' : ''
+  const next = preplan || billing
+    ? `/dashboard/subscription?${new URLSearchParams({ ...(preplan ? { plan: preplan } : {}), ...(billing ? { billing } : {}) })}#web`
+    : '/dashboard'
 
   const [name,     setName]     = useState('')
   const [email,    setEmail]    = useState('')
   const [company,  setCompany]  = useState('')
   const [password, setPassword] = useState('')
   const [showPw,   setShowPw]   = useState(false)
-  const [plan]                  = useState(preplan)
   const [focused,  setFocused]  = useState<string | null>(null)
 
   const [step,     setStep]     = useState<'form' | 'otp'>('form')
@@ -45,7 +49,7 @@ function RegisterForm() {
 
   function handleGoogleSignUp() {
     setGoogleLoading(true)
-    signIn('google', { callbackUrl: '/dashboard' })
+    signIn('google', { callbackUrl: next })
   }
 
   useEffect(() => {
@@ -126,14 +130,13 @@ function RegisterForm() {
     try {
       const payload: Record<string, string> = { email, name, password, otp: code }
       if (company) payload.company  = company
-      if (plan)    payload.planName = plan
       const res  = await fetch('/api/auth/verify-otp', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Verification failed.'); setLoading(false); return }
-      router.push('/login?registered=true')
+      router.push(`/login?registered=true&callbackUrl=${encodeURIComponent(next)}`)
     } catch {
       setError('Could not connect. Please try again.')
       setLoading(false)

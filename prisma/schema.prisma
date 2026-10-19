@@ -79,13 +79,16 @@ model Plan {
   features    String
   maxProjects Int      @default(10)
   maxUsers    Int      @default(1)
+  // WEB plans: site seats included (Site engineer, Supervisor). 100000 = unlimited.
+  maxSiteUsers Int     @default(0)
   isActive    Boolean  @default(true)
   // DESKTOP (machine license, User.planId) | WEB (ARC PEM Web firm subscription). Mirror — admin owns it.
   product     String   @default("DESKTOP")
-  // WEB plans: SOLO | STUDIO | ENTERPRISE, the app's tier.
+  // WEB plans: SOLO | STUDIO | BUSINESS | ENTERPRISE, the app's tier.
   tier        String?
   users       User[]
   webSubscriptions WebSubscription[]
+  razorpayPlans    RazorpayPlan[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -105,11 +108,33 @@ model WebSubscription {
   currentPeriodEnd DateTime?
   seatLimit        Int?
   projectLimit     Int?
+  // MONTH | YEAR. Renewed automatically while autoRenew is true (a Razorpay subscription is running).
+  billingInterval  String    @default("YEAR")
+  autoRenew        Boolean   @default(false)
+  siteSeatLimit    Int?
+  // Add-on seats bought with the current subscription, on top of the plan's.
+  extraSeats       Int       @default(0)
+  extraSiteSeats   Int       @default(0)
+  // Set while the firm is on its free trial (no payment taken yet).
+  trialEndsAt      DateTime?
+  razorpaySubscriptionId String? @unique
   payments         WebSubscriptionPayment[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
   @@index([status, currentPeriodEnd])
+}
+
+/// The Razorpay plan object behind each (plan, billing interval, price); a price change gets a new one.
+model RazorpayPlan {
+  id              String   @id
+  planId          String
+  plan            Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  billingInterval String
+  amountPaise     Int
+  createdAt       DateTime @default(now())
+
+  @@unique([planId, billingInterval, amountPaise])
 }
 
 model WebSubscriptionPayment {
@@ -249,4 +274,16 @@ model BlogPostVisit {
   visitorHash String
 
   @@id([slug, date, visitorHash])
+}
+
+/// Billing rules editable from admin Settings (one row, id 'default'). Mirrored in the customer website's schema.
+model BillingSettings {
+  id                   String   @id @default("default")
+  seatAddonMonthly     Int      @default(599)
+  siteSeatAddonMonthly Int      @default(199)
+  annualBilledMonths   Int      @default(10)
+  trialDays            Int      @default(14)
+  maxAddonSeats        Int      @default(50)
+  updatedAt            DateTime @default(now()) @updatedAt
+  updatedBy            String?
 }

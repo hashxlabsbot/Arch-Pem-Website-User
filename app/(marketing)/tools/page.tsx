@@ -118,7 +118,7 @@ export default function ToolsIndexPage() {
           <div className="tool-prose">
             <h2>Why we give these away</h2>
             <p>
-              We build <Link href="/solutions">ARC PEM</Link> — offline desktop software that Indian
+              We build <Link href="/solutions">ARC PEM</Link> — cloud software that Indian
               construction and architecture firms use to track BOQs, vendor bills, labour and GST.
               These free tools solve the small, everyday versions of the same problems: raising a
               clean contractor bill, sanity-checking a construction budget, ordering the right number

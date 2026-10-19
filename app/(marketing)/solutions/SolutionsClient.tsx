@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useDemoModal } from '@/components/marketing/DemoModalContext'
 import {
   ClipboardIcon, WalletIcon, BoltIcon, BuildingIcon, CompassIcon, FolderIcon,
@@ -27,13 +28,21 @@ export default function SolutionsClient() {
             <div className="img-hero-inner">
               <span className="badge badge-indigo">Architecture &amp; Construction Software</span>
               <h1>Construction &amp; Architecture Software for Every Financial Workflow</h1>
-              <p>BOQ and budgets, vendor and labour expenses, GST and Tally exports, multi-user security — built for Indian architecture firms, contractors, and builders, fully offline.</p>
+              <p>BOQ and budgets, vendor and labour expenses, GST and Tally exports, team roles and approvals — built for Indian architecture firms, contractors, and builders. Live for the whole firm, on any phone or computer.</p>
             </div>
           </div>
+          <Link href="/pricing" className="sol-web-banner fade-up">
+            <span className="sol-web-ico"><GlobeIcon size={20} /></span>
+            <span className="sol-web-text">
+              <b>Every workflow below, live for your whole team</b>
+              <small>Team roles, payment approvals, GSTR-2B matching and phone access — monthly or annual plans.</small>
+            </span>
+            <span className="sol-web-cta">See plans →</span>
+          </Link>
           <div className="sec-hd fade-up">
             <span className="badge badge-indigo">All Your Construction Management</span>
             <h2>Everything Your Firm Needs, Out of the Box</h2>
-            <p>From the first sketch budget to the final handover report — ARC PEM covers every financial workflow your architecture or construction team needs, without spreadsheets or an internet connection.</p>
+            <p>From the first sketch budget to the final handover report — ARC PEM covers every financial workflow your architecture or construction team needs, without spreadsheets, for office and site alike.</p>
           </div>
           {/* ── Lead feature: Project Control (full-width, above the pillar grid) ── */}
           <div className="feat-row fade-up" style={{ paddingTop: 0, borderBottom: 'none', marginBottom: '8px' }}>
@@ -42,7 +51,7 @@ export default function SolutionsClient() {
               <h3>Know a project is overrunning while you can still fix it</h3>
               <p>ARC PEM connects your BOQ estimate to what you have actually spent. Every project shows budget vs. actual, what is left, and how far along it is — and the app tells you the moment a project crosses its budget or a milestone slips past its date.</p>
               <ul className="feat-bullets">
-                {['Budget vs. actual per project, per category — updated as you log expenses','Milestone tracker with target dates, progress states, and overdue flagging','Cash, cheque, and pending payment split at a glance','Desktop alerts for budget overruns and overdue milestones'].map(b=>(
+                {['Budget vs. actual per project, per category — updated as you log expenses','Milestone tracker with target dates, progress states, and overdue flagging','Cash, cheque, and pending payment split at a glance','Alerts and push reminders for budget overruns and overdue milestones'].map(b=>(
                   <li key={b} className="feat-bullet"><span className="fb-check">✓</span> {b}</li>
                 ))}
               </ul>
@@ -98,7 +107,7 @@ export default function SolutionsClient() {
             {[
               { id: 'project-mgmt', icon: <ClipboardIcon size={26} color="#4f46e5" />, cls: 'si-blue', title: 'Project & Budget Management', desc: 'Build precise cost estimates, track project status, and generate client-ready budget summaries with automatic GST and cost-per-sq.ft.', modal: 'modal-boq', cta: 'Explore BOQ Features', feats: [['b','Bill of Quantities (BOQ)'],['b','Project Dashboard & Status Tracking'],['b','BOQ Templates (Reusable)'],['b','Duplicate Projects'],['b','Cost Per Sq.Ft Calculator'],['b','Contingency & GST Auto-Compute'],['b','PDF & Excel Export']] },
               { id: 'expense-mgmt', icon: <WalletIcon size={26} color="#0ea5e9" />, cls: 'si-sky', title: 'Expense & Finance Management', desc: 'Track every rupee across vendor bills, labour wages, contractor invoices, and site expenses. Auto-compute GST and export directly to Tally.', modal: 'modal-expense', cta: 'Explore Finance Tools', feats: [['s','Vendor Ledger with GST Toggle'],['s','Labour Tracking (Daily Headcount)'],['s','Contractor Bill Management'],['s','Site Expense Tracking'],['s','GST Purchase Register'],['s','Pending Payments Dashboard'],['s','Tally ERP / Prime CSV Export']] },
-              { id: 'power-feat', icon: <BoltIcon size={26} color="#10b981" />, cls: 'si-green', title: 'Power & Productivity Features', desc: 'Enterprise-grade tools built for the field — offline operation, multi-user sharing, global search, and machine-locked security.', modal: 'modal-power', cta: 'Explore Power Tools', feats: [['g','Global Search (Ctrl+K)'],['g','Multi-User Database Sharing'],['g','PDF Manpower Report Import'],['g','Party Directory & Autocomplete'],['g','PIN Lock & RSA-2048 Licensing'],['g','Auto-Backup (Daily, 30-Day Rolling)'],['g','Multi-Currency — 8 Currencies'],['g','Silent Auto-Update']] },
+              { id: 'power-feat', icon: <BoltIcon size={26} color="#10b981" />, cls: 'si-green', title: 'Power & Productivity Features', desc: 'Built for a firm that works together — team roles, payment approvals, global search, change history and bank-grade data isolation.', modal: 'modal-power', cta: 'Explore Power Tools', feats: [['g','Global Search (Ctrl+K)'],['g','Team Roles & Project Access'],['g','Payment Approvals'],['g','Party Directory & Autocomplete'],['g','Change History on Every Entry'],['g','Automatic Daily Backups'],['g','GSTR-2B, TDS & Cheque Registers'],['g','Works on Any Phone or Computer']] },
             ].map((s, i) => (
               <div key={s.id} className={`sol-card fade-up${i===1?' d1':i===2?' d2':''}`} id={s.id}>
                 <div className={`sol-icon ${s.cls}`}>{s.icon}</div>
@@ -205,10 +214,10 @@ export default function SolutionsClient() {
             <div className="feat-text">
               <div className="feat-photo"><Image src="/images/construction-workers.jpg" alt="Construction workers on site" fill sizes="(max-width: 768px) 100vw, 50vw" /></div>
               <span className="badge badge-amber">Power Features</span>
-              <h3>Enterprise security. Zero server. Works on-site.</h3>
-              <p>ARC PEM is fully offline — your data never touches a cloud server. Share the database over LAN or Google Drive for multi-user access, protected by RSA-2048 machine-locked licensing.</p>
+              <h3>Enterprise security. Zero setup. Works on site.</h3>
+              <p>Every firm&apos;s data is isolated inside the database itself, encrypted in transit and backed up daily. Your whole team works on the same live numbers — each person seeing only what their role allows.</p>
               <ul className="feat-bullets">
-                {['Global search with Ctrl+K — find any project, vendor, or bill instantly','Multi-user via LAN, Google Drive, OneDrive, Dropbox','RSA-2048 signed, machine-locked licenses','Works fully offline — no internet after activation'].map(b=>(
+                {['Global search with Ctrl+K — find any project, vendor, or bill instantly','Invite your team with roles and per-project access','Approvals before money goes out, and a history of every change','Nothing to install — runs in any browser, installs on phones'].map(b=>(
                   <li key={b} className="feat-bullet"><span className="fb-check">✓</span> {b}</li>
                 ))}
               </ul>
@@ -228,10 +237,10 @@ export default function SolutionsClient() {
               </div>
               <div className="sec-tiles">
                 {[
-                  { ico: <LockIcon size={18} color="#4f46e5" />,    name: 'RSA-2048',     sub: 'Machine-locked license' },
-                  { ico: <GlobeIcon size={18} color="#4f46e5" />,   name: '100% Offline', sub: 'No cloud, no internet' },
-                  { ico: <UsersIcon size={18} color="#4f46e5" />,   name: 'Multi-User',   sub: 'LAN / Google Drive' },
-                  { ico: <RefreshIcon size={18} color="#4f46e5" />, name: 'Auto-Update',  sub: 'Silent background' },
+                  { ico: <LockIcon size={18} color="#4f46e5" />,    name: 'Isolated',     sub: 'Row-level security' },
+                  { ico: <GlobeIcon size={18} color="#4f46e5" />,   name: 'Any device',   sub: 'Browser & phone' },
+                  { ico: <UsersIcon size={18} color="#4f46e5" />,   name: 'Team roles',   sub: 'Owner to site engineer' },
+                  { ico: <RefreshIcon size={18} color="#4f46e5" />, name: 'Daily backup', sub: 'Automatic' },
                 ].map(({ ico, name, sub }) => (
                   <div key={name} className="sec-tile"><span className="st-icon">{ico}</span><div><div className="st-name">{name}</div><div className="st-sub">{sub}</div></div></div>
                 ))}
@@ -278,18 +287,18 @@ export default function SolutionsClient() {
           {i:<ClockIcon size={20} color="#0ea5e9" />,t:'Pending Payments Dashboard',d:'See all unpaid bills across every project in one view. Overdue alerts with days-past-due counter.'},
           {i:<DownloadIcon size={20} color="#0ea5e9" />,t:'Tally ERP / Prime Export',d:'One-click CSV export formatted for Tally ERP 9 and Tally Prime. Eliminates manual double-entry and CA reconciliation time.'},
         ]},
-        { id: 'modal-power', cls: 'si-green', icon: <BoltIcon size={26} color="#10b981" />, title: 'Power & Productivity Features', sub: 'Enterprise tools for the field — offline, secure, and fast', cards: [
+        { id: 'modal-power', cls: 'si-green', icon: <BoltIcon size={26} color="#10b981" />, title: 'Power & Productivity Features', sub: 'Enterprise tools for the whole firm — secure, live and fast', cards: [
           {i:<SearchIcon size={20} color="#10b981" />,t:'Global Search (Ctrl+K)',d:'Search across every project, vendor, bill, and entry in milliseconds. Fuzzy match finds records even with partial names.'},
-          {i:<UsersIcon size={20} color="#10b981" />,t:'Multi-User Sharing',d:'Share the database via LAN, Google Drive, or OneDrive. Multiple team members access the same data simultaneously.'},
-          {i:<LockIcon size={20} color="#10b981" />,t:'RSA-2048 Machine Lock',d:'License is tied to your hardware. Even if the software is copied, it will not run on another machine.'},
-          {i:<ClipboardIcon size={20} color="#10b981" />,t:'PDF Manpower Import',d:'Import labour attendance from standard PDF reports. Auto-parses headcount, skill categories, and daily wages — zero manual entry.'},
-          {i:<SaveIcon size={20} color="#10b981" />,t:'Auto-Backup & JSON Export',d:'Scheduled automatic backups to a folder of your choice. Full JSON export lets you migrate data or keep an off-site archive.'},
-          {i:<RefreshIcon size={20} color="#10b981" />,t:'Silent Auto-Update',d:'New features and bug fixes deploy silently in the background. You always have the latest version without disrupting your workflow.'},
+          {i:<UsersIcon size={20} color="#10b981" />,t:'Team Roles & Access',d:'Invite partners, accounts and site staff. Eight roles from Owner to Site engineer, each limited to the projects they work on.'},
+          {i:<LockIcon size={20} color="#10b981" />,t:'Payment Approvals',d:'Nothing goes out until an Admin or Owner approves it, and every decision is recorded with who made it and when.'},
+          {i:<ClipboardIcon size={20} color="#10b981" />,t:'Change History',d:'Who changed which entry, when, and what it was before. Mistakes are traceable and reversible; nothing silently disappears.'},
+          {i:<SaveIcon size={20} color="#10b981" />,t:'Daily Backups & Export',d:'An automatic copy of your firm’s data every day, ready to restore or download. Export everything to Excel or PDF at any time.'},
+          {i:<RefreshIcon size={20} color="#10b981" />,t:'Always Up to Date',d:'New features and fixes arrive automatically for everyone in the firm. There is nothing to install, update or maintain.'},
         ]},
         { id: 'modal-control', cls: 'si-amber', icon: <GaugeIcon size={26} color="#f59e0b" />, title: 'Project Control & Alerts', sub: 'Catch overruns and slipped milestones before they cost you', cards: [
           {i:<GaugeIcon size={20} color="#f59e0b" />,t:'Budget vs. Actual',d:'Your BOQ estimate sits alongside real logged expenses. See amount spent, amount remaining, and percentage of budget used — for the whole project and broken down by category.'},
           {i:<MilestoneIcon size={20} color="#f59e0b" />,t:'Milestone & Phase Tracker',d:'Define project phases with target dates. Move each through Pending, In Progress, and Completed. Anything past its target date is flagged automatically.'},
-          {i:<WarningIcon size={20} color="#f59e0b" />,t:'Budget Overrun Alerts',d:'Set an estimated budget per project. The moment total spend crosses it, ARC PEM raises a desktop notification naming the project and the exact amount you have gone over by.'},
+          {i:<WarningIcon size={20} color="#f59e0b" />,t:'Budget Overrun Alerts',d:'Set an estimated budget per project. The moment total spend crosses it, ARC PEM raises an alert naming the project and the exact amount you have gone over by.'},
           {i:<BellIcon size={20} color="#f59e0b" />,t:'Pending & Overdue Reminders',d:'On launch you are told how many payments are outstanding and their total value, plus any milestone past its date. A reminder fires on exit too, so it stays in your notification centre.'},
           {i:<DashboardIcon size={20} color="#f59e0b" />,t:'Spend Trend & Breakdown',d:'Every project carries a monthly spend trend and a category breakdown chart, so you can see which months and which trades are consuming the budget.'},
           {i:<ClockIcon size={20} color="#f59e0b" />,t:'Cash / Cheque / Pending Split',d:'Know exactly how much of a project has been settled in cash, how much by cheque, and how much is still outstanding — without opening a single ledger.'},

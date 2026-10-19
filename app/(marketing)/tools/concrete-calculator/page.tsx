@@ -247,7 +247,7 @@ export default function ConcreteCalculatorPage() {
 
       <ToolCta
         heading="You calculated 11 bags. Did the site actually consume 11?"
-        sub="ARC PEM tracks material purchases and vendor bills against your BOQ, project by project — so estimated vs actual is always one report away. Fully offline, built for Indian construction firms."
+        sub="ARC PEM tracks material purchases and vendor bills against your BOQ, project by project — so estimated vs actual is always one report away. Live for the whole firm, built for Indian construction firms."
       />
     </>
   )

@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import {
   motion,
-  AnimatePresence,
   useMotionValue,
   useSpring,
   useTransform,
@@ -17,10 +16,15 @@ import {
   Clock,
   Lock,
   Palette,
+  History,
+  CheckCheck,
   Users,
   Repeat,
-  Monitor,
+  Smartphone,
+  HardHat,
+  UserPlus,
   FolderKanban,
+  CreditCard,
   IndianRupee,
   HelpCircle,
   ChevronDown,
@@ -36,19 +40,10 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { company } from '@/lib/company'
-import { annualPrice } from '@/lib/pricing'
-import { PRICING_FAQS as FAQS } from '@/lib/pricing-faqs'
-
-interface Plan {
-  id: string
-  name: string
-  price: number
-  period: string
-  description: string
-  features: string
-  maxProjects: number
-  maxUsers: number
-}
+import { annualSavingPct, DEFAULT_BILLING_RULES, subscriptionPrice, type BillingInterval, type BillingRules } from '@/lib/pricing'
+import { isQuoted, isUnlimited } from '@/lib/plan-order'
+import type { PricingFaq } from '@/lib/pricing-faqs'
+import { planName, type PlansByProduct, type PublicPlan as Plan } from '@/lib/seo-entity'
 
 function inr(n: number) {
   return n.toLocaleString('en-IN')
@@ -63,33 +58,43 @@ function parseFeatures(raw: string): string[] {
   }
 }
 
-const PLAN_CTA: Record<string, string> = {
-  Solo: 'Get Solo',
-  Studio: 'Get Studio',
-  Enterprise: 'Get Enterprise',
+type Cell = boolean | string
+type Row = { feature: string; note?: string; icon: LucideIcon; cells: (plans: Plan[]) => Cell[] }
+
+const all = (v: Cell) => (plans: Plan[]) => plans.map(() => v)
+const limit = (n: number | undefined) => (n === undefined ? '—' : isUnlimited(n) ? 'Unlimited' : String(n))
+/** Popular = Studio; falls back to the second plan. */
+const isPopular = (p: Plan, i: number, plans: Plan[]) => (plans.some((x) => x.tier === 'STUDIO') ? p.tier === 'STUDIO' : i === 1)
+
+const comparisonRows = (rules: BillingRules): Row[] => [
+  { feature: 'Team seats', icon: Users, cells: (plans) => plans.map((p) => (isQuoted(p) ? `${p.maxUsers}+` : limit(p.maxUsers))),
+    note: 'Owner, partners, accounts and office staff' },
+  { feature: 'Site seats', icon: HardHat, cells: (plans) => plans.map((p) => limit(p.maxSiteUsers)),
+    note: 'Site engineers and supervisors adding bills and labour' },
+  { feature: 'Active projects', icon: FolderKanban, cells: (plans) => plans.map((p) => limit(p.maxProjects)) },
+  { feature: 'Add more seats anytime', icon: UserPlus, cells: all(true),
+    note: `₹${rules.seatAddonMonthly}/month per team seat · ₹${rules.siteSeatAddonMonthly}/month per site seat` },
+  { feature: 'Expense ledgers', icon: Receipt, cells: all(true), note: 'Labour, vendor, contractor and site expenses' },
+  { feature: 'BOQ, budgets & overrun alerts', icon: Gauge, cells: all(true) },
+  { feature: 'Roles, approvals & project access', icon: Lock, cells: all(true) },
+  { feature: 'GST register & GSTR-2B reconciliation', icon: FileText, cells: all(true) },
+  { feature: 'TDS & cheque registers', icon: CheckCheck, cells: all(true) },
+  { feature: 'Tally ERP / TallyPrime export', icon: FileSpreadsheet, cells: all(true) },
+  { feature: 'Pending payments & reminders', icon: Clock, cells: all(true) },
+  { feature: 'Branded PDF reports', icon: Palette, cells: all(true), note: 'Your logo and firm name on every export' },
+  { feature: 'Works on phone, tablet & computer', icon: Smartphone, cells: all(true) },
+  { feature: 'Change history & daily backups', icon: History, cells: all(true) },
+  { feature: 'Guided onboarding & data migration', icon: Repeat, cells: (plans) => plans.map((p) => p.tier === 'BUSINESS' || p.tier === 'ENTERPRISE') },
+  { feature: 'Support', icon: ShieldCheck, cells: (plans) => plans.map((p) => SUPPORT[p.tier ?? ''] ?? 'Email') },
+]
+const SUPPORT: Record<string, string> = {
+  SOLO: 'Email',
+  STUDIO: 'Priority email',
+  BUSINESS: 'Phone & WhatsApp',
+  ENTERPRISE: 'Dedicated manager + SLA',
 }
 
-const COMPARISON_ROWS: { feature: string; note?: string; icon: LucideIcon; solo: boolean | string; studio: boolean | string; enterprise: boolean | string }[] = [
-  { feature: 'Expense Tracking',           icon: Receipt,         solo: true,   studio: true,   enterprise: true,
-    note: 'Labour, vendor, contractor and site ledgers' },
-  { feature: 'Budget vs. Actual & Milestones', icon: Gauge,       solo: true,   studio: true,   enterprise: true,
-    note: 'Overrun alerts and overdue milestone warnings' },
-  { feature: 'Tally CSV Export',           icon: FileSpreadsheet, solo: true,   studio: true,   enterprise: true   },
-  { feature: 'GST Purchase Register',      icon: FileText,        solo: true,   studio: true,   enterprise: true   },
-  { feature: 'Pending Payments Report',    icon: Clock,           solo: true,   studio: true,   enterprise: true   },
-  { feature: 'PIN Lock & Security',        icon: Lock,            solo: true,   studio: true,   enterprise: true   },
-  { feature: 'Custom Branding on PDF Reports', icon: Palette,     solo: true,   studio: true,   enterprise: true,
-    note: 'Your logo and firm name on every exported report' },
-  { feature: 'Multi-User Database Sharing',icon: Users,           solo: false,  studio: true,   enterprise: true,
-    note: 'Share one database over LAN, Google Drive or OneDrive' },
-  { feature: 'Machine Transfer Support',   icon: Repeat,          solo: false,  studio: true,   enterprise: true,
-    note: 'Moving to a new PC? Transfer the license yourself' },
-  { feature: 'Machines',                   icon: Monitor,         solo: '1',    studio: '3',    enterprise: '10'   },
-  { feature: 'Max Projects',               icon: FolderKanban,    solo: '10',   studio: '30',   enterprise: '50'   },
-  { feature: 'Monthly Price',              icon: IndianRupee,     solo: '₹2,499', studio: '₹4,999', enterprise: '₹9,999' },
-]
-
-function CellValue({ val, highlight }: { val: boolean | string; highlight?: boolean }) {
+function CellValue({ val, highlight }: { val: Cell; highlight?: boolean }) {
   if (val === true) {
     return (
       <motion.span
@@ -194,33 +199,38 @@ function TiltPanel({ children, style }: { children: React.ReactNode; style?: Rea
   )
 }
 
-export default function PricingClient() {
+export default function PricingClient({ initialPlans, faqs: FAQS }: { initialPlans: PlansByProduct; faqs: PricingFaq[] }) {
+  const rules = initialPlans.rules ?? DEFAULT_BILLING_RULES
+  const TRIAL_DAYS = rules.trialDays
+  const COMPARISON_ROWS = comparisonRows(rules)
   const router = useRouter()
   const { data: session } = useSession()
-  const [plans, setPlans] = useState<Plan[]>([])
-  const [loading, setLoading] = useState(true)
+  // Plans arrive rendered from the server so prices are in the HTML; the fetch below only covers a list that
+  // came back empty (e.g. the database was unreachable when the page was built).
+  const [plans, setPlans] = useState<Plan[]>(initialPlans.WEB)
+  const [loading, setLoading] = useState(initialPlans.WEB.length === 0)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
-  // Desktop app (machine licenses) or ARC PEM Web (per firm, in the browser). /pricing?product=web opens on Web.
-  const [product, setProduct] = useState<'DESKTOP' | 'WEB'>('DESKTOP')
+  // /pricing?billing=annual opens on annual billing.
+  const [interval, setInterval] = useState<BillingInterval>('MONTH')
+  const saving = annualSavingPct(rules)
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get('product')?.toLowerCase() === 'web') setProduct('WEB')
+    const b = new URLSearchParams(window.location.search).get('billing')?.toLowerCase()
+    if (b === 'annual' || b === 'yearly') setInterval('YEAR')
   }, [])
 
   useEffect(() => {
+    if (initialPlans.WEB.length) return
     let active = true
-    setLoading(true)
-    fetch(`/api/plans?product=${product}`)
+    fetch('/api/plans?product=WEB')
       .then((r) => r.json())
-      .then((d) => {
-        if (active) setPlans(d.plans ?? [])
-      })
+      .then((d) => active && setPlans(d.plans ?? []))
       .catch(() => active && setPlans([]))
       .finally(() => active && setLoading(false))
     return () => {
       active = false
     }
-  }, [product])
+  }, [initialPlans])
 
   useEffect(() => {
     if (loading) return
@@ -228,15 +238,11 @@ export default function PricingClient() {
       document.querySelectorAll('#pricing .fade-up').forEach((el) => el.classList.add('in'))
     })
     return () => cancelAnimationFrame(id)
-  }, [loading])
+  }, [loading, plans])
 
-  function openSignupWithPlan(planName: string) {
-    const anchor = product === 'WEB' ? '#web' : ''
-    if (session) {
-      router.push(`/dashboard/subscription?plan=${encodeURIComponent(planName)}${anchor}`)
-    } else {
-      router.push(`/register?plan=${encodeURIComponent(planName)}`)
-    }
+  function choosePlan(name: string) {
+    const q = `plan=${encodeURIComponent(name)}&billing=${interval === 'YEAR' ? 'annual' : 'monthly'}`
+    router.push(session ? `/dashboard/subscription?${q}#web` : `/register?${q}`)
   }
 
   return (
@@ -246,27 +252,19 @@ export default function PricingClient() {
         <div className="container">
           <div className="sec-hd fade-up">
             <span className="badge badge-indigo">Pricing</span>
-            <h1>Simple Pricing for Every Firm Size</h1>
+            <h1>Simple pricing for every firm size</h1>
             <p>
-              {product === 'WEB'
-                ? 'ARC PEM Web runs in the browser for your whole firm. Choose by team seats and active projects.'
-                : 'Choose your plan based on how many machines you need. All the essentials are included from day one.'}
+              One subscription for your whole firm — office, accounts and site.{' '}
+              {TRIAL_DAYS > 0 ? `Start with a ${TRIAL_DAYS}-day free trial, pay` : 'Pay'} monthly or annually, cancel anytime.
             </p>
-            <div
-              role="tablist"
-              aria-label="Product"
-              style={{ display: 'inline-flex', gap: '4px', marginTop: '18px', padding: '4px', borderRadius: '999px', background: 'var(--gray-100, #f1f5f9)' }}
-            >
-              {(['DESKTOP', 'WEB'] as const).map((p) => (
-                <button
-                  key={p}
-                  role="tab"
-                  aria-selected={product === p}
-                  onClick={() => setProduct(p)}
-                  className={`btn ${product === p ? 'btn-primary' : ''}`}
-                  style={{ borderRadius: '999px', padding: '8px 18px', fontSize: '.85rem', ...(product === p ? {} : { background: 'transparent', color: 'var(--gray-500)' }) }}
-                >
-                  {p === 'DESKTOP' ? 'Desktop app' : 'ARC PEM Web'}
+            <div role="radiogroup" aria-label="Billing cycle" className="bill-toggle">
+              {(['MONTH', 'YEAR'] as const).map((i) => (
+                <button key={i} role="radio" aria-checked={interval === i} onClick={() => setInterval(i)} className={interval === i ? 'on' : ''}>
+                  {interval === i && <motion.span layoutId="bill-pill" className="bill-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
+                  <span className="bill-label">
+                    {i === 'MONTH' ? 'Monthly' : 'Annual'}
+                    {i === 'YEAR' && saving > 0 && <em>Save {saving}%</em>}
+                  </span>
                 </button>
               ))}
             </div>
@@ -279,26 +277,39 @@ export default function PricingClient() {
               No plans are available right now. Please check back soon.
             </p>
           ) : (
-            <div className="pricing-grid">
+            <div className={`pricing-grid${plans.length === 4 ? ' pricing-grid-4' : ''}`}>
               {plans.map((plan, i) => {
-                const popular = plans.length === 3 && i === 1
-                const features = parseFeatures(plan.features)
-                const yearly = annualPrice(plan.price)
-                const ctaLabel = PLAN_CTA[plan.name] ?? 'Get Started'
+                const popular = isPopular(plan, i, plans)
+                const quoted = isQuoted(plan)
+                const features = parseFeatures(plan.features).map((f) => f.replace(/\bWeb (Solo|Starter|Studio|Business|Enterprise)\b/g, '$1'))
+                const price = subscriptionPrice(plan.price, interval, undefined, rules)
+                const name = planName(plan.name)
 
                 return (
                   <div key={plan.id} className={`pricing-card fade-up${popular ? ' pop' : ''}`}>
                     {popular && <div className="pop-chip">Most Popular</div>}
                     <div className="plan-tier" style={{ color: popular ? 'var(--indigo)' : 'var(--gray-500)' }}>
-                      {plan.name}
+                      {name}
                     </div>
-                    <div className="plan-price">
-                      <span className="plan-cur">₹</span>
-                      <span className="plan-num">{inr(yearly)}</span>
-                      <span className="plan-per">/year</span>
-                    </div>
+                    {quoted ? (
+                      <div className="plan-price">
+                        <span className="plan-num" style={{ fontSize: '2.1rem' }}>Custom</span>
+                      </div>
+                    ) : (
+                      <div className="plan-price">
+                        <span className="plan-cur">₹</span>
+                        <motion.span key={`${plan.id}-${interval}`} className="plan-num" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
+                          {inr(price)}
+                        </motion.span>
+                        <span className="plan-per">/{interval === 'MONTH' ? 'month' : 'year'}</span>
+                      </div>
+                    )}
                     <p style={{ fontSize: '.8rem', color: 'var(--gray-400)', minHeight: '18px', marginTop: '-6px' }}>
-                      ≈ ₹{inr(plan.price)}/mo · billed annually
+                      {quoted
+                        ? 'Annual agreement · priced to your firm'
+                        : interval === 'MONTH'
+                          ? `Billed monthly · ₹${inr(subscriptionPrice(plan.price, 'YEAR', undefined, rules))}/year if paid annually`
+                          : `Billed annually · works out to ₹${inr(Math.round(price / 12))}/month`}
                     </p>
                     <p className="plan-desc">{plan.description}</p>
                     <ul className="plan-feats">
@@ -308,30 +319,43 @@ export default function PricingClient() {
                         </li>
                       ))}
                     </ul>
-                    <button
-                      className={`btn ${popular ? 'btn-primary' : 'btn-outline'}`}
-                      style={{ width: '100%' }}
-                      onClick={() => openSignupWithPlan(plan.name)}
-                    >
-                      {ctaLabel}
-                    </button>
+                    {quoted ? (
+                      <a className="btn btn-outline" style={{ width: '100%', textAlign: 'center' }} href={`mailto:${company.salesEmail}?subject=${encodeURIComponent('ARC PEM Enterprise')}`}>
+                        Talk to sales
+                      </a>
+                    ) : (
+                      <button
+                        className={`btn ${popular ? 'btn-primary' : 'btn-outline'}`}
+                        style={{ width: '100%' }}
+                        onClick={() => choosePlan(plan.name)}
+                      >
+                        {TRIAL_DAYS > 0 ? `Start ${TRIAL_DAYS}-day free trial` : `Get ${name}`}
+                      </button>
+                    )}
                   </div>
                 )
               })}
             </div>
           )}
 
-          <p style={{ textAlign: 'center', fontSize: '.84rem', color: 'var(--gray-400)', marginTop: '28px' }}>
-            {product === 'WEB'
-              ? 'One-year subscription per firm · Invite your team from inside the app · Secure checkout by Razorpay'
-              : 'One-year license · 12 months of updates included · Secure checkout by Razorpay'}
+          <p className="addon-note fade-up">
+            <b>Need more people?</b> Add team seats for ₹{rules.seatAddonMonthly}/month and site seats for ₹{rules.siteSeatAddonMonthly}/month on any plan.
+            {TRIAL_DAYS > 0 && <> {TRIAL_DAYS}-day free trial on your first subscription — nothing is charged until it ends.</>}
           </p>
-          <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--gray-400)', marginTop: '8px' }}>
+
+          <div className="pay-methods fade-up">
+            <span><CreditCard size={15} /> Credit &amp; debit cards</span>
+            <span><Smartphone size={15} /> UPI AutoPay</span>
+            <span><IndianRupee size={15} /> Netbanking e-mandate</span>
+            <span><Repeat size={15} /> Auto-renews · cancel anytime</span>
+          </div>
+          <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--gray-400)', marginTop: '14px' }}>
             All prices are in Indian Rupees (₹).{' '}
             {company.pricesIncludeGst
               ? `Inclusive of ${company.gstRatePct}% GST.`
-              : `Exclusive of ${company.gstRatePct}% GST, which is added at checkout where applicable.`}{' '}
-            Secure payments by Razorpay. See our{' '}
+              : `Exclusive of ${company.gstRatePct}% GST, which is added at checkout.`}{' '}
+            You authorise auto-pay once; each {interval === 'MONTH' ? 'month' : 'year'} is then charged automatically
+            until you turn auto-renew off. Secure payments by Razorpay. See our{' '}
             <a href="/refund" style={{ color: 'var(--indigo)' }}>Refund Policy</a> and{' '}
             <a href="/terms" style={{ color: 'var(--indigo)' }}>Terms</a>.
           </p>
@@ -365,10 +389,10 @@ export default function PricingClient() {
           >
             <span className="badge badge-indigo">Side by Side</span>
             <h2 style={{ fontSize: '1.8rem' }}>Compare Plans</h2>
-            <p>Every plan is packed with the essentials — pick the one that matches your team&apos;s scale.</p>
+            <p>Every plan has every feature. Pick by the size of your team and how many projects you run.</p>
           </motion.div>
 
-          <TiltPanel style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <TiltPanel style={{ maxWidth: '1080px', margin: '0 auto' }}>
             <div
               style={{
                 overflowX: 'auto',
@@ -383,59 +407,36 @@ export default function PricingClient() {
                 width: '100%',
                 borderCollapse: 'collapse',
                 fontSize: '.9rem',
-                minWidth: '560px',
+                minWidth: '720px',
               }}>
                 <thead>
                   <tr>
                     <th style={thStyle('left')}>Feature</th>
-                    <th style={thStyle('center')}>Solo</th>
-                    <th
-                      style={{
-                        ...thStyle('center'),
-                        color: '#fff',
-                        background: 'linear-gradient(135deg, var(--indigo), var(--indigo-d))',
-                        position: 'relative',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '6px',
-                        }}
-                      >
-                        Studio
-                        <motion.span
-                          aria-hidden="true"
-                          animate={{ opacity: [0.55, 1, 0.55] }}
-                          transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-                          style={{
-                            fontSize: '.56rem',
-                            letterSpacing: '.05em',
-                            fontWeight: 800,
-                            padding: '2px 6px',
-                            borderRadius: '999px',
-                            background: 'rgba(255,255,255,.22)',
-                          }}
+                    {plans.map((p, i) => {
+                      const pop = isPopular(p, i, plans)
+                      return (
+                        <th
+                          key={p.id}
+                          style={pop ? { ...thStyle('center'), color: '#fff', background: 'linear-gradient(135deg, var(--indigo), var(--indigo-d))' } : thStyle('center')}
                         >
-                          POPULAR
-                        </motion.span>
-                      </span>
-                    </th>
-                    <th style={thStyle('center')}>Enterprise</th>
+                          {planName(p.name)}
+                          {pop && <span className="th-pop">POPULAR</span>}
+                        </th>
+                      )
+                    })}
                   </tr>
                 </thead>
                 <tbody>
                   {COMPARISON_ROWS.map((row, i) => {
                     const Icon = row.icon
+                    const cells = row.cells(plans)
                     return (
                       <motion.tr
                         key={row.feature}
                         initial={{ opacity: 0, y: 14 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: '-60px' }}
-                        transition={{ duration: 0.4, delay: i * 0.045, ease: 'easeOut' }}
+                        transition={{ duration: 0.4, delay: i * 0.035, ease: 'easeOut' }}
                         whileHover={{ backgroundColor: 'rgba(99,102,241,.05)' }}
                         style={{ background: i % 2 === 0 ? 'var(--gray-50, #f9fafb)' : '#fff' }}
                       >
@@ -443,15 +444,8 @@ export default function PricingClient() {
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
                             <span
                               style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: 28,
-                                height: 28,
-                                borderRadius: '8px',
-                                background: 'var(--indigo-lt)',
-                                color: 'var(--indigo)',
-                                flexShrink: 0,
+                                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28,
+                                borderRadius: '8px', background: 'var(--indigo-lt)', color: 'var(--indigo)', flexShrink: 0,
                               }}
                             >
                               <Icon size={14} strokeWidth={2.2} />
@@ -466,11 +460,14 @@ export default function PricingClient() {
                             </span>
                           </span>
                         </td>
-                        <td style={tdStyle('center')}><CellValue val={row.solo} /></td>
-                        <td style={{ ...tdStyle('center'), background: 'rgba(99,102,241,.045)' }}>
-                          <CellValue val={row.studio} highlight />
-                        </td>
-                        <td style={tdStyle('center')}><CellValue val={row.enterprise} /></td>
+                        {plans.map((p, k) => {
+                          const pop = isPopular(p, k, plans)
+                          return (
+                            <td key={p.id} style={pop ? { ...tdStyle('center'), background: 'rgba(99,102,241,.045)' } : tdStyle('center')}>
+                              <CellValue val={cells[k] ?? '—'} highlight={pop} />
+                            </td>
+                          )
+                        })}
                       </motion.tr>
                     )
                   })}
@@ -572,28 +569,25 @@ export default function PricingClient() {
                       <ChevronDown size={15} strokeWidth={2.4} />
                     </motion.span>
                   </button>
-                  <AnimatePresence initial={false}>
-                    {open && (
-                      <motion.div
-                        key="content"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        style={{ overflow: 'hidden' }}
-                      >
-                        <p style={{
-                          margin: 0,
-                          padding: '0 22px 20px 66px',
-                          color: 'var(--gray-600)',
-                          fontSize: '.9rem',
-                          lineHeight: 1.65,
-                        }}>
-                          {faq.a}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {/* Always rendered (collapsed to zero height) so every answer is in the HTML that search and
+                      AI crawlers read, matching the page's FAQPage JSON-LD. */}
+                  <motion.div
+                    initial={false}
+                    animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    style={{ overflow: 'hidden' }}
+                    aria-hidden={!open}
+                  >
+                    <p style={{
+                      margin: 0,
+                      padding: '0 22px 20px 66px',
+                      color: 'var(--gray-600)',
+                      fontSize: '.9rem',
+                      lineHeight: 1.65,
+                    }}>
+                      {faq.a}
+                    </p>
+                  </motion.div>
                 </motion.div>
               )
             })}
@@ -694,7 +688,7 @@ export default function PricingClient() {
             Not sure which plan is right for you?
           </h2>
           <p style={{ color: 'rgba(255,255,255,.78)', marginBottom: '32px', fontSize: '1rem' }}>
-            Talk to us — we&apos;ll help you pick the right fit for your firm.
+            Book a free demo — we&apos;ll walk you through ARC PEM on projects like yours and help you pick a plan.
           </p>
 
           <motion.a
@@ -744,9 +738,9 @@ export default function PricingClient() {
             }}
           >
             {[
-              { icon: CalendarCheck, label: 'Annual license' },
-              { icon: BadgeCheck, label: 'Excl. of GST' },
-              { icon: ShieldCheck, label: 'Licensed, not sold' },
+              { icon: CalendarCheck, label: TRIAL_DAYS > 0 ? `${TRIAL_DAYS}-day free trial` : 'Monthly or annual' },
+              { icon: Repeat, label: 'Auto-renews, cancel anytime' },
+              { icon: BadgeCheck, label: 'GST invoice every cycle' },
             ].map(({ icon: PillIcon, label }, i) => (
               <motion.span
                 key={label}

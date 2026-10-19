@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { sortByTier } from '@/lib/plan-order'
 
 // Public, read-only. Returns the active plans the admin app manages, so the
 // pricing page always reflects whatever is configured in admin.
@@ -21,12 +22,13 @@ export async function GET(req: NextRequest) {
         features: true,
         maxProjects: true,
         maxUsers: true,
+        maxSiteUsers: true,
         product: true,
         tier: true,
       },
     })
 
-    return NextResponse.json({ plans })
+    return NextResponse.json({ plans: product === 'WEB' ? sortByTier(plans) : plans })
   } catch (err) {
     console.error('[GET /api/plans]', err)
     return NextResponse.json({ error: 'Failed to load plans' }, { status: 500 })

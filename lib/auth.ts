@@ -17,6 +17,18 @@ const REVALIDATE_INTERVAL_MS = 60 * 1000
 // Constant-time fallback hash so login timing doesn't reveal account existence.
 const DUMMY_HASH = '$2a$12$C6UzMDM.H6dfI/f/IKcEeO3Jj9hQ0c8Hn3a3oQ1qE0pXjJ4kqg2Iu'
 
+/** The plan shown in the account: the firm's ARC PEM subscription, else a legacy desktop licence. */
+const PLAN_INCLUDE = {
+  plan: { select: { name: true } },
+  webSubscription: { select: { plan: { select: { name: true } } } },
+} as const
+function planInfo(u: { plan: { name: string } | null; webSubscription: { plan: { name: string } } | null }) {
+  return {
+    planName: u.webSubscription ? u.webSubscription.plan.name.replace(/^web\s+/i, '') : u.plan?.name ?? null,
+    hasDesktop: Boolean(u.plan),
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -32,10 +44,7 @@ export const authOptions: NextAuthOptions = {
         const { allowed } = await rateLimit(`login:${email}`, 5, 15 * 60 * 1000)
         if (!allowed) throw new Error('TooManyRequests')
 
-        const user = await db.user.findUnique({
-          where: { email },
-          include: { plan: { select: { id: true, name: true } } },
-        })
+        const user = await db.user.findUnique({ where: { email }, include: PLAN_INCLUDE })
 
         // Always run a compare to keep response time constant (anti-enumeration).
         const valid = await bcrypt.compare(credentials.password, user?.password ?? DUMMY_HASH)
@@ -48,7 +57,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           role: user.role,
-          planName: user.plan?.name ?? null,
+          ...planInfo(user),
           tokenVersion: user.tokenVersion,
         } as {
           id: string
@@ -56,6 +65,7 @@ export const authOptions: NextAuthOptions = {
           email: string
           role: string
           planName: string | null
+          hasDesktop: boolean
           tokenVersion: number
         }
       },
@@ -82,10 +92,7 @@ export const authOptions: NextAuthOptions = {
       const googleProfile = profile as { email_verified?: boolean } | undefined
       if (googleProfile?.email_verified === false) return false
 
-      let dbUser = await db.user.findUnique({
-        where: { email },
-        include: { plan: { select: { name: true } } },
-      })
+      let dbUser = await db.user.findUnique({ where: { email }, include: PLAN_INCLUDE })
 
       if (!dbUser) {
         // Google users authenticate via OAuth only; this fills the (required,
@@ -93,7 +100,7 @@ export const authOptions: NextAuthOptions = {
         const unusablePassword = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12)
         dbUser = await db.user.create({
           data: { name: user.name || email.split('@')[0], email, password: unusablePassword },
-          include: { plan: { select: { name: true } } },
+          include: PLAN_INCLUDE,
         })
       }
 
@@ -102,7 +109,7 @@ export const authOptions: NextAuthOptions = {
       // Carried onto the `user` object into the jwt callback below (initial sign-in branch).
       user.id = dbUser.id
       user.role = dbUser.role
-      user.planName = dbUser.plan?.name ?? null
+      Object.assign(user, planInfo(dbUser))
       user.tokenVersion = dbUser.tokenVersion
 
       return true
@@ -110,10 +117,11 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger, session }) {
       // Initial sign-in.
       if (user) {
-        const u = user as { id: string; role?: string; planName?: string | null; tokenVersion?: number }
+        const u = user as { id: string; role?: string; planName?: string | null; hasDesktop?: boolean; tokenVersion?: number }
         token.id = u.id
         token.role = u.role ?? 'USER'
         token.planName = u.planName ?? null
+        token.hasDesktop = u.hasDesktop ?? false
         token.tokenVersion = u.tokenVersion ?? 0
         token.checkedAt = Date.now()
         return token
@@ -129,7 +137,7 @@ export const authOptions: NextAuthOptions = {
       if (Date.now() - lastChecked >= REVALIDATE_INTERVAL_MS) {
         const dbUser = await db.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true, status: true, tokenVersion: true, plan: { select: { name: true } } },
+          select: { role: true, status: true, tokenVersion: true, ...PLAN_INCLUDE },
         })
         if (
           !dbUser ||
@@ -139,7 +147,7 @@ export const authOptions: NextAuthOptions = {
           token.role = 'REVOKED'
         } else {
           token.role = dbUser.role
-          token.planName = dbUser.plan?.name ?? null
+          Object.assign(token, planInfo(dbUser))
         }
         token.checkedAt = Date.now()
       }
@@ -150,6 +158,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string
         session.user.role = token.role as string
         session.user.planName = token.planName as string | null
+        session.user.hasDesktop = Boolean(token.hasDesktop)
       }
       return session
     },

@@ -8,6 +8,7 @@ import { LayoutDashboard, CreditCard, Download, HelpCircle, LogOut, Settings } f
 const NAV = [
   { label: 'Dashboard',    href: '/dashboard',              icon: LayoutDashboard },
   { label: 'Subscription', href: '/dashboard/subscription', icon: CreditCard },
+  // Shown only to customers with a legacy desktop licence (see below).
   { label: 'Downloads',    href: '/dashboard/downloads',    icon: Download },
   { label: 'Support',      href: '/dashboard/support',      icon: HelpCircle },
   { label: 'Settings',     href: '/dashboard/settings',     icon: Settings },
@@ -85,7 +86,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
 
         {/* Nav */}
         <nav className="flex-1 px-3 flex flex-col gap-0.5 overflow-y-auto">
-          {NAV.map(({ label, href, icon: Icon }) => {
+          {NAV.filter((n) => n.href !== '/dashboard/downloads' || session?.user?.hasDesktop).map(({ label, href, icon: Icon }) => {
             const active = href === '/dashboard' ? path === '/dashboard' : path.startsWith(href)
             return (
               <a

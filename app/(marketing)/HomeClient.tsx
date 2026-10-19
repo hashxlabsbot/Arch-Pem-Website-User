@@ -1,436 +1,356 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { useDemoModal } from '@/components/marketing/DemoModalContext'
+import { useState } from 'react'
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { CountUp, Reveal, Stagger, StaggerItem } from '@/components/motion/Motion'
+import ClassicHero from '@/components/home/ClassicHero'
 import WhyArcPem from '@/components/home/WhyArcPem'
 import ProofBand from '@/components/home/ProofBand'
 import EarlyWarning from '@/components/home/EarlyWarning'
 import FitsYourOffice from '@/components/home/FitsYourOffice'
-import './home-sections.css'
+import { SegmentAccordion, SiteBand, StoryMarquee } from '@/components/home/Showcase'
 import {
-  DashboardIcon, FolderIcon, WalletIcon, ClockIcon, ReceiptIcon,
-  DocumentIcon, UsersIcon, SettingsIcon, BuildingIcon, LockIcon,
-  FileIcon, PrinterIcon, ExportIcon, WarningIcon,
+  BellIcon, CheckIcon, ClockIcon, DashboardIcon, DocumentIcon, ExportIcon, GlobeIcon, LockIcon, PhoneIcon, ReceiptIcon, RefreshIcon, UsersIcon, WalletIcon, SaveIcon, HardHatIcon,
 } from '@/components/icons'
+import { company } from '@/lib/company'
+import { annualSavingPct, DEFAULT_BILLING_RULES, subscriptionPrice, type BillingInterval, type BillingRules } from '@/lib/pricing'
+import { isQuoted, isUnlimited } from '@/lib/plan-order'
+import type { Faq, PublicPlan } from '@/lib/seo-entity'
+import './home-sections.css'
 
-export default function HomeClient() {
-  const openDemo = useDemoModal()
-  const [activePane, setActivePane] = useState('pane-dashboard')
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+const FEATURES = [
+  { icon: DashboardIcon, title: 'Live dashboards', text: 'Spend, pending payments and budget burn for every project, the moment a bill is entered on site.', tone: 'ind', span: 'w-span-2' },
+  { icon: UsersIcon, title: 'Roles & project access', text: 'Eight roles from Owner to Site engineer. Limit people to their projects and the areas they need.', tone: 'vio' },
+  { icon: CheckIcon, title: 'Payment approvals', text: 'Nothing goes out until an Admin or Owner approves it. Every decision is recorded.', tone: 'grn' },
+  { icon: ReceiptIcon, title: 'GST & GSTR-2B', text: 'GST purchase register and reconciliation against the GSTR-2B you download from the portal.', tone: 'sky' },
+  { icon: DocumentIcon, title: 'Project documents', text: 'Drawings, BOQs and agreements with versions and review, in one place per project.', tone: 'ind' },
+  { icon: WalletIcon, title: 'Vendor, labour & contractor ledgers', text: 'Bills, advances, settlements and TDS for every party, with statements to share.', tone: 'amb', span: 'w-span-2' },
+  { icon: PhoneIcon, title: 'Built for site teams', text: 'Install it on any phone, add bills with photos, get push reminders for what’s due.', tone: 'vio' },
+  { icon: ExportIcon, title: 'Tally, Excel & PDF', text: 'One-click exports your accountant already understands, branded with your firm.', tone: 'grn' },
+  { icon: RefreshIcon, title: 'Change history', text: 'Who changed which entry, when, and what it was before. Nothing silently disappears.', tone: 'sky', span: 'w-span-2' },
+]
 
-  // ── Particle canvas (hero only) ──
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')!
-    let W = 0, H = 0, mouseX = -1000, mouseY = -1000
-    let animId: number
+const steps = (trialDays: number) => [
+  trialDays > 0
+    ? { n: 1, title: 'Start your free trial', text: `${trialDays} days free on Starter, Studio or Business. Set up auto-pay by card, UPI or e-mandate; nothing is charged until the trial ends.` }
+    : { n: 1, title: 'Choose a plan', text: 'Starter, Studio or Business, monthly or annual. Pay by card, UPI AutoPay or e-mandate; it renews itself.' },
+  { n: 2, title: 'Sign in with your ARC PEM account', text: 'Your firm’s workspace is ready at once. Bring existing projects across from Excel or the earlier desktop app.' },
+  { n: 3, title: 'Invite your team', text: 'Send invites from the Team page. Each person sets their own password and lands in the right role.' },
+]
 
-    function resize() {
-      W = canvas!.width  = canvas!.offsetWidth
-      H = canvas!.height = canvas!.offsetHeight
-    }
-    resize()
-    window.addEventListener('resize', resize)
+const ROLES: { key: string; label: string; who: string; can: string[] }[] = [
+  { key: 'owner', label: 'Owner', who: 'The firm’s principal', can: ['Everything, across every project', 'Plan and billing at arcpem.com', 'Final say on approvals'] },
+  { key: 'admin', label: 'Admin', who: 'Office head or accounts lead', can: ['Invite and manage the team', 'Approve payments and documents', 'Settings, backups and exports'] },
+  { key: 'pm', label: 'Project manager', who: 'Runs one or more projects', can: ['Budgets and milestones', 'Entries for their projects', 'Reports for their clients'] },
+  { key: 'site', label: 'Site engineer', who: 'On site every day', can: ['Add bills, wages and site expenses', 'Attach photos of receipts', 'Only the projects they’re on'] },
+  { key: 'acct', label: 'Member', who: 'Accounts or data entry', can: ['Enter and edit ledger entries', 'Pending payments and statements', 'No access to settings or team'] },
+]
 
-    const hero = canvas.closest('.hero')
-    const onMove = (e: Event) => {
-      const me = e as MouseEvent
-      const r = canvas!.getBoundingClientRect()
-      mouseX = me.clientX - r.left; mouseY = me.clientY - r.top
-    }
-    const onLeave = () => { mouseX = mouseY = -1000 }
-    hero?.addEventListener('mousemove', onMove)
-    hero?.addEventListener('mouseleave', onLeave)
+const SECURITY = [
+  { icon: LockIcon, title: 'Isolated in the database', text: 'Row-level security keeps every firm’s rows separate, even if a query forgets to.' },
+  { icon: SaveIcon, title: 'Daily backups', text: 'An automatic copy of your firm’s data every day, ready to restore or download.' },
+  { icon: RefreshIcon, title: 'Every change recorded', text: 'An audit trail on the ledger, so mistakes are traceable and reversible.' },
+  { icon: ClockIcon, title: 'Never held hostage', text: 'If a plan lapses your data stays readable and exportable. Nothing is deleted.' },
+]
 
-    class Particle {
-      x = 0; y = 0; vx = 0; vy = 0; r = 0; alpha = 0; pulse = 0
-      constructor() { this.reset(true) }
-      reset(init: boolean) {
-        this.x     = Math.random() * W
-        this.y     = init ? Math.random() * H : (Math.random() > 0.5 ? -4 : H + 4)
-        this.vx    = (Math.random() - 0.5) * 0.45
-        this.vy    = (Math.random() - 0.5) * 0.45
-        this.r     = Math.random() * 1.4 + 0.4
-        this.alpha = Math.random() * 0.22 + 0.06
-        this.pulse = Math.random() * Math.PI * 2
-      }
-      update() {
-        this.pulse += 0.018
-        const dx = this.x - mouseX, dy = this.y - mouseY
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < 120) {
-          const force = (120 - dist) / 120 * 0.6
-          this.vx += (dx / dist) * force * 0.04
-          this.vy += (dy / dist) * force * 0.04
-        }
-        this.vx *= 0.98; this.vy *= 0.98
-        this.x += this.vx; this.y += this.vy
-        if (this.x < -10 || this.x > W + 10 || this.y < -10 || this.y > H + 10) this.reset(false)
-      }
-      draw() {
-        const a = this.alpha * (0.75 + 0.25 * Math.sin(this.pulse))
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(99,102,241,${a})`; ctx.fill()
-      }
-    }
 
-    const particles = Array.from({ length: 140 }, () => new Particle())
+const parseFeatures = (raw: string): string[] => {
+  try {
+    const arr = JSON.parse(raw || '[]')
+    return Array.isArray(arr) ? arr.map((f: string) => f.replace(/\bWeb (Solo|Starter|Studio|Business|Enterprise)\b/g, '$1')) : []
+  } catch {
+    return []
+  }
+}
 
-    function drawLines() {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y
-          const d2 = dx * dx + dy * dy
-          if (d2 < 9000) {
-            ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.strokeStyle = `rgba(99,102,241,${0.045 * (1 - d2 / 9000)})`; ctx.lineWidth = 0.5; ctx.stroke()
-          }
-        }
-      }
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, W, H)
-      particles.forEach(p => { p.update(); p.draw() })
-      drawLines()
-      animId = requestAnimationFrame(animate)
-    }
-    animate()
-
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', resize)
-      hero?.removeEventListener('mousemove', onMove)
-      hero?.removeEventListener('mouseleave', onLeave)
-    }
-  }, [])
-
-  const navMain = [
-    { id: 'pane-dashboard', icon: <DashboardIcon size={14} />, label: 'Dashboard' },
-    { id: 'pane-projects',  icon: <FolderIcon size={14} />,    label: 'Projects'  },
-    { id: 'pane-expenses',  icon: <WalletIcon size={14} />,    label: 'Expenses'  },
-  ]
-
-  const navReports = [
-    { id: 'pane-pending', icon: <ClockIcon size={14} />,    label: 'Pending Payments' },
-    { id: 'pane-gst',     icon: <ReceiptIcon size={14} />,  label: 'GST Report'       },
-    { id: 'pane-summary', icon: <DocumentIcon size={14} />, label: 'Summary Sheet'    },
-  ]
-
-  const reportBtns = [
-    { key: 'print', icon: <PrinterIcon size={10} />, label: 'Print' },
-    { key: 'pdf',   icon: <FileIcon size={10} />,    label: 'PDF'   },
-    { key: 'excel', icon: <ExportIcon size={10} />,  label: 'Excel' },
-  ]
+export default function HomeClient({ plans, faqs, rules = DEFAULT_BILLING_RULES }: { plans: PublicPlan[]; faqs: Faq[]; rules?: BillingRules }) {
+  const STEPS = steps(rules.trialDays)
+  const reduce = useReducedMotion()
+  const { data: session } = useSession()
+  const [role, setRole] = useState(ROLES[0].key)
+  const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const [interval, setBilling] = useState<BillingInterval>('MONTH')
+  const activeRole = ROLES.find((r) => r.key === role) ?? ROLES[0]
+  const popular = plans.find((p) => p.tier === 'STUDIO')?.id ?? (plans.length >= 3 ? plans[1]?.id : undefined)
+  const saving = annualSavingPct(rules)
+  const planHref = (name: string) => {
+    const q = `plan=${encodeURIComponent(name)}&billing=${interval === 'YEAR' ? 'annual' : 'monthly'}`
+    return session ? `/dashboard/subscription?${q}#web` : `/register?${q}`
+  }
 
   return (
     <>
-      {/* ── Hero ── */}
-      <section className="hero">
-        <canvas id="particle-canvas" ref={canvasRef} />
-        <div className="container hero-inner">
-          <div className="hero-left">
-            <div className="hero-tag">
-              <BuildingIcon size={13} style={{ marginRight: 6 }} />
-              Built for Indian Architects &amp; Builders
-            </div>
-            <h1>
-              India&apos;s Complete<br />
-              <span className="hi">Construction Finance</span><br />
-              Platform
-            </h1>
-            <p className="hero-sub">
-              ARC PEM unifies BOQ, vendor bills, labour tracking, contractor ledgers and GST into one offline desktop platform  built specifically for Indian construction firms.
-            </p>
-            <div className="hero-ctas">
-              <button className="btn btn-primary btn-lg" onClick={openDemo}>Book a Free Demo</button>
-            </div>
-          </div>
+    <ClassicHero />
+    <div className="wp">
 
-          {/* Hero right — App window mockup */}
-          <div className="hero-right">
-            <div style={{ position: 'relative' }}>
-              <div className="app-window">
-                <div className="win-bar">
-                  <div className="win-dot" /><div className="win-dot" /><div className="win-dot" />
-                  <div className="win-url">
-                    <LockIcon size={10} color="#22c55e" style={{ marginRight: 4 }} />
-                    archpem.app/dashboard
-                  </div>
-                </div>
-                <div className="win-body">
-                  <div className="win-side">
-                    <div className="ws-logo" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px', padding: '6px 10px', marginBottom: '12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <svg width="26" height="26" viewBox="0 0 44 44" fill="none"><rect width="44" height="44" rx="11" fill="#3b82f6" /><path d="M11 34 L11 21 Q11 8 22 8 Q33 8 33 21 L33 34" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" /><line x1="7" y1="34" x2="37" y2="34" stroke="white" strokeWidth="4" strokeLinecap="round" /></svg>
-                        <span style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '0.82rem', color: 'white' }}>ARC PEM</span>
-                      </div>
-                      <span style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.4)', fontWeight: 500, marginLeft: '2px' }}>Project Expense Manager</span>
-                    </div>
-                    <div className="ws-section">Main</div>
-                    {navMain.map(({ id, icon, label }) => (
-                      <div
-                        key={id}
-                        className={`ws-item${activePane === id ? ' active' : ''}`}
-                        onClick={() => setActivePane(id)}
-                      >
-                        <span className="ico">{icon}</span>{label}
-                      </div>
-                    ))}
-                    <div className="ws-section">Reports</div>
-                    {navReports.map(({ id, icon, label }) => (
-                      <div key={id} className={`ws-item${activePane === id ? ' active' : ''}`} onClick={() => setActivePane(id)}>
-                        <span className="ico">{icon}</span>{label}
-                      </div>
-                    ))}
-                    <div className="ws-section">Directory</div>
-                    <div className={`ws-item${activePane === 'pane-vendors' ? ' active' : ''}`} onClick={() => setActivePane('pane-vendors')}>
-                      <span className="ico"><UsersIcon size={14} /></span>Party Directory
-                    </div>
-                    <div className="ws-item"><span className="ico"><SettingsIcon size={14} /></span>Settings</div>
-                    <div style={{ marginTop: 'auto', padding: '10px', background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: '8px', fontSize: '0.65rem', color: '#93c5fd', textAlign: 'left' }}>
-                      <div style={{ fontWeight: 700, color: '#ffffff' }}>100% Offline</div>
-                      <div style={{ color: 'rgba(255,255,255,0.4)', marginTop: '1px' }}>All data stored locally.</div>
-                    </div>
-                  </div>
-                  <div className="win-main">
-                    {/* Dashboard Pane */}
-                    <div id="pane-dashboard" className={`app-pane${activePane === 'pane-dashboard' ? ' active' : ''}`} style={{ display: activePane === 'pane-dashboard' ? 'flex' : 'none' }}>
-                      <div className="win-topbar">
-                        <span className="wt-title" style={{ whiteSpace: 'nowrap' }}>Dashboard</span>
-                        <div className="wt-actions" style={{ flexShrink: 0 }}>
-                          <button className="wt-btn sec" style={{ whiteSpace: 'nowrap', fontSize: '.62rem', padding: '4px 8px' }}>⌘K</button>
-                          <button className="wt-btn prim" style={{ whiteSpace: 'nowrap', fontSize: '.62rem', padding: '4px 8px' }}>+ New</button>
-                        </div>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '6px', padding: '10px 12px 0', flexShrink: 0 }}>
-                        {[['Projects','3','Active'],['Expenses','₹82.4L g','Jun 2026'],['GST','₹1,05,268','Jun 2026'],['Pending','₹24.86L a','5 dues']].map(([lbl,val,chg],i) => (
-                          <div key={i} className="ws-card" style={{ padding: '8px 9px' }}>
-                            <div className="ws-card-lbl" style={{ fontSize: '.52rem', whiteSpace: 'nowrap' }}>{lbl}</div>
-                            <div className={`ws-card-val${val.endsWith('g') ? ' g' : val.endsWith('a') ? ' a' : ''}`} style={{ fontSize: '.88rem', color: lbl==='GST' ? 'var(--indigo)' : undefined }}>{val.replace(/[ga]$/,'')}</div>
-                            <div className="ws-card-chg" style={{ fontSize: '.52rem', whiteSpace: 'nowrap', color: lbl==='Pending' ? 'var(--amber)' : undefined }}>{chg}</div>
-                          </div>
-                        ))}
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '8px', padding: '8px 12px 0', flexShrink: 0 }}>
-                        <div className="wc-card" style={{ padding: '10px 12px', overflow: 'hidden' }}>
-                          <div className="wc-head"><span className="wc-title" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Expense Distribution</span><span className="wc-sub" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>May–Jun 2026</span></div>
-                          <div className="wc-bars" style={{ height: '55px' }}>
-                            {[30,44,38,56,94,100].map((h,i) => <div key={i} className={`wc-bar${h>80?' hi':''}`} style={{ height: `${h}%` }} />)}
-                          </div>
-                          <div className="wc-months">{['Jan','Feb','Mar','Apr','May','Jun'].map(m=><div key={m} className="wc-month">{m}</div>)}</div>
-                        </div>
-                        <div className="wc-card" style={{ padding: '8px 12px', minWidth: '130px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                          <div style={{ fontSize: '.65rem', fontWeight: 700, color: 'var(--gray-500)', marginBottom: '6px' }}>By Project</div>
-                          <div className="dash-donut dash-donut-proj" style={{ margin: '0 auto 8px' }} />
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                            {[['#3b82f6','50 CS','39%'],['#0ea5e9','41A Cafe','27%'],['#10b981','Resident Villa','34%']].map(([color,label,pct])=>(
-                              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.58rem', color: '#334155' }}>
-                                <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: color, flexShrink: 0 }} /><span>{label}</span><span style={{ marginLeft: 'auto', fontWeight: 700 }}>{pct}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="win-table" style={{ padding: '8px 14px 10px' }}>
-                        <div className="wt-card">
-                          <div className="wt-head" style={{ gridTemplateColumns: '2fr 1fr 1fr 56px' }}>
-                            {['Project','Expenses','Last Entry','Status'].map(h=><div key={h} className="wt-th" style={{ whiteSpace: 'nowrap' }}>{h}</div>)}
-                          </div>
-                          {[
-                            ['Resident Villa','M.K Thakur · Delhi','₹28,42,500','13-Jun-26'],
-                            ['41A Cafe','Rahul · Omax','₹22,18,640','09-May-26'],
-                            ['50 CS','Ankit · NIT Faridabad','₹31,82,760','07-May-26'],
-                          ].map(([name,city,amt,date])=>(
-                            <div key={name} className="wt-row" style={{ gridTemplateColumns: '2fr 1fr 1fr 56px' }}>
-                              <div><div className="wt-name" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</div><div className="wt-city" style={{ whiteSpace: 'nowrap' }}>{city}</div></div>
-                              <div className="wt-amt" style={{ color: 'var(--indigo)', whiteSpace: 'nowrap' }}>{amt}</div>
-                              <div className="wt-city" style={{ whiteSpace: 'nowrap' }}>{date}</div>
-                              <div><span className="wt-tag tag-a">Active</span></div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+      {/* ── Stats ── */}
+      <section className="w-stats">
+        <div className="container">
+          <Stagger className="w-stats-grid">
+            {[
+              { v: <CountUp to={30} suffix="+" />, l: 'architecture and construction firms onboard' },
+              { v: <CountUp to={120} prefix="₹" suffix=" Cr+" />, l: 'of project value tracked' },
+              { v: <>8</>, l: 'team roles, from Owner to Site engineer' },
+              { v: <>₹0</>, l: 'to set up — nothing to install or maintain' },
+            ].map((s, i) => (
+              <StaggerItem key={i} className="w-stat">
+                <div className="w-stat-v">{s.v}</div>
+                <div className="w-stat-l">{s.l}</div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
 
-                    {/* Projects Pane */}
-                    <div id="pane-projects" className={`app-pane${activePane === 'pane-projects' ? ' active' : ''}`} style={{ display: activePane === 'pane-projects' ? 'flex' : 'none', padding: 0, background: '#f8fafc' }}>
-                      <div style={{ background: 'linear-gradient(135deg,#2563eb,#3b82f6)', padding: '12px 16px 14px', flexShrink: 0 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                          <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '.88rem', color: 'white' }}>Projects</div><div style={{ fontSize: '.6rem', color: 'rgba(255,255,255,.6)', marginTop: '1px' }}>Active 3 · On Hold 0 · Completed 0</div></div>
-                          <button className="wt-btn" style={{ background: 'rgba(255,255,255,.15)', color: 'white', border: '1px solid rgba(255,255,255,.25)', fontSize: '.65rem' }}>+ New Project</button>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '8px' }}>
-                          {[['Projects','3 Active','white'],['Total Expenses','₹7,66,294','#a5f3d0'],['Latest Entry','13-Jun-2026','#fde68a']].map(([lbl,val,color])=>(
-                            <div key={lbl} style={{ background: 'rgba(255,255,255,.1)', borderRadius: '8px', padding: '7px 9px', backdropFilter: 'blur(8px)' }}>
-                              <div style={{ fontSize: '.55rem', color: 'rgba(255,255,255,.6)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.05em' }}>{lbl}</div>
-                              <div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '.85rem', color, marginTop: '2px' }}>{val}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {[
-                          { id: '403_B', name: 'Resident Villa', client: 'M.K Thakur · Delhi-101110', amt: '₹28,42,500', pct: 82 },
-                          { id: '41A',   name: 'Cafe',           client: 'Client: Rahul · Omax',       amt: '₹22,18,640', pct: 58 },
-                          { id: '50',    name: 'CS',             client: 'Client: Ankit · NIT Faridabad', amt: '₹31,82,760', pct: 65 },
-                        ].map(p => (
-                          <div key={p.id} className="proj-card">
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                                <div style={{ background: '#eff6ff', color: '#2563eb', borderRadius: '7px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                  <FolderIcon size={14} color="#2563eb" />
-                                </div>
-                                <div>
-                                  <div style={{ fontSize: '.5rem', fontWeight: 700, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '.06em' }}>{p.id}</div>
-                                  <div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 700, fontSize: '.78rem', color: '#0f172a' }}>{p.name}</div>
-                                  <div style={{ fontSize: '.6rem', color: '#64748b', marginTop: '1px' }}>{p.client}</div>
-                                </div>
-                              </div>
-                              <span className="wt-tag tag-a" style={{ fontSize: '.56rem' }}>Active</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <div><div style={{ fontSize: '.55rem', color: '#64748b', fontWeight: 600, marginBottom: '2px' }}>Total Expenses</div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '.82rem', color: '#2563eb' }}>{p.amt}</div></div>
-                            </div>
-                            <div style={{ marginTop: '8px', height: '4px', background: '#e2e8f0', borderRadius: '100px', overflow: 'hidden' }}>
-                              <div style={{ width: `${p.pct}%`, height: '100%', background: 'linear-gradient(to right,#3b82f6,#93c5fd)', borderRadius: '100px' }} />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+      <WhyArcPem />
+      <SegmentAccordion />
 
-                    {/* Expenses Pane */}
-                    <div id="pane-expenses" className={`app-pane${activePane === 'pane-expenses' ? ' active' : ''}`} style={{ display: activePane === 'pane-expenses' ? 'flex' : 'none', padding: '14px' }}>
-                      <div className="win-topbar" style={{ margin: '-14px -14px 14px', flexShrink: 0 }}>
-                        <span className="wt-title">Expenses</span>
-                        <div className="wt-actions"><button className="wt-btn sec">Filter</button><button className="wt-btn prim">+ Add Expense</button></div>
-                      </div>
-                      <div style={{ flex: 1, overflowY: 'auto' }}>
-                        {[
-                          { dot: 'v', name: 'Shree Cement Ltd.', sub: 'Invoice #4021 - Today',    amt: '₹3,85,000',  status: 'paid'    },
-                          { dot: 'l', name: 'Weekly Labour Payment', sub: 'Site A - Yesterday',   amt: '₹1,24,800',  status: 'paid'    },
-                          { dot: 's', name: 'Site Safety Gear',  sub: 'Hardware Store - 2 days',  amt: '₹42,500',  status: 'pending' },
-                          { dot: 'v', name: 'Ultratech Concrete', sub: 'Invoice #912 - 3 days',   amt: '₹8,90,000', status: 'pending' },
-                        ].map(r => (
-                          <div key={r.name} className="exp-row">
-                            <div className={`exp-dot ${r.dot}`} />
-                            <div className="exp-name">{r.name}<div className="exp-date">{r.sub}</div></div>
-                            <div className="exp-amt">{r.amt}</div>
-                            <div className={`exp-status es-${r.status}`}>{r.status.charAt(0).toUpperCase() + r.status.slice(1)}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+      {/* ── Features bento ── */}
+      <section className="w-section" id="features">
+        <div className="container">
+          <Reveal className="w-head">
+            <span className="w-eyebrow">Everything a project office needs</span>
+            <h2 className="w-h2">From the site to the books, <span className="w-grad">in one place</span></h2>
+            <p className="w-sub">Built for a firm that works together in real time — office, accounts and site.</p>
+          </Reveal>
+          <Stagger className="w-bento">
+            {FEATURES.map((f) => (
+              <StaggerItem key={f.title} className={`w-tile ${f.span ?? ''}`}>
+                <div className={`w-tile-ico ${f.tone}`}><f.icon size={20} /></div>
+                <h3>{f.title}</h3>
+                <p>{f.text}</p>
+                <div className="w-tile-glow" aria-hidden />
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
 
-                    {/* Vendors Pane */}
-                    <div id="pane-vendors" className={`app-pane${activePane === 'pane-vendors' ? ' active' : ''}`} style={{ display: activePane === 'pane-vendors' ? 'flex' : 'none', padding: '14px' }}>
-                      <div className="win-topbar" style={{ margin: '-14px -14px 14px', flexShrink: 0 }}><span className="wt-title">Vendors</span><div className="wt-actions"><button className="wt-btn prim">+ Add Vendor</button></div></div>
-                      <div className="win-table" style={{ flex: 1, padding: 0, overflowY: 'auto' }}>
-                        <div className="wt-card">
-                          <div className="wt-head">{['Vendor Name','Category','Paid','Pending'].map(h=><div key={h} className="wt-th">{h}</div>)}</div>
-                          {[['Shree Cement Ltd.','+91 98765 43210','Materials','₹2.4L','₹45K'],['R.K. Hardware','+91 91234 56780','Hardware','₹80K','₹0'],['Praveen Electricals','+91 99887 76655','Electrical','₹1.1L','₹12K']].map(([name,phone,cat,paid,pend])=>(
-                            <div key={name} className="wt-row">
-                              <div><div className="wt-name">{name}</div><div className="wt-city">{phone}</div></div>
-                              <div className="wt-city">{cat}</div><div className="wt-amt">{paid}</div>
-                              <div className="wt-amt" style={{ color: pend==='₹0'?undefined:'var(--amber)' }}>{pend}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+      <SiteBand />
+      <FitsYourOffice />
+      <EarlyWarning />
 
-                    {/* GST Pane */}
-                    <div id="pane-gst" className={`app-pane${activePane === 'pane-gst' ? ' active' : ''}`} style={{ display: activePane === 'pane-gst' ? 'flex' : 'none', flexDirection: 'column', overflow: 'hidden', background: '#f8fafc' }}>
-                      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '9px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-                        <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '0.82rem', fontWeight: 800, color: '#0f172a' }}>GST Purchase Sheet</div><div style={{ fontSize: '0.58rem', color: '#64748b' }}>Monthly · share with CA for filing</div></div>
-                        <div style={{ display: 'flex', gap: '4px' }}>
-                          {reportBtns.map(b => (
-                            <button key={b.key} className="rep-btn" style={{ padding: '4px 7px', fontSize: '0.58rem', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                              {b.icon}{b.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      <div style={{ flex: 1, overflow: 'auto', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '8px' }}>
-                          {[['Total Taxable','Rs.5,84,820','#0f172a'],['Total GST','Rs.1,05,268','#2563eb'],['Net Amount','Rs.6,90,088','#16a34a']].map(([lbl,val,color])=>(
-                            <div key={lbl} style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '8px 10px' }}>
-                              <div style={{ fontSize: '0.52rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', lineHeight: '1.3' }}>{lbl}</div>
-                              <div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '0.72rem', fontWeight: 800, color, marginTop: '3px' }}>{val}</div>
-                            </div>
-                          ))}
-                        </div>
-                        <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '8px 12px', fontSize: '0.6rem', color: '#64748b' }}>
-                          GST detail table — June 2026 · All Projects · 4 entries · Total GST: Rs.1,05,268
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Pending Pane */}
-                    <div id="pane-pending" className={`app-pane${activePane === 'pane-pending' ? ' active' : ''}`} style={{ display: activePane === 'pane-pending' ? 'flex' : 'none', flexDirection: 'column', padding: '16px', overflow: 'auto', background: '#f8fafc' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexShrink: 0 }}>
-                        <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '0.85rem', fontWeight: 800, color: '#0f172a' }}>Pending Payments</div><div style={{ fontSize: '0.6rem', color: '#64748b' }}>All unpaid bills · oldest first</div></div>
-                        <button className="rep-btn" style={{ flexShrink: 0, fontSize: '0.6rem', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                          <ExportIcon size={10} />Export
-                        </button>
-                      </div>
-                      <div className="warning-banner" style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '12px', padding: '10px 14px', marginBottom: '14px' }}>
-                        <WarningIcon size={18} color="#f59e0b" style={{ flexShrink: 0 }} />
-                        <div><div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#92400e' }}>Rs.24,86,340 pending across 5 bills</div><div style={{ fontSize: '0.6rem', color: '#b45309', marginTop: '1px' }}>2 bills are over 30 days old</div></div>
-                      </div>
-                      <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '0.62rem', color: '#64748b', padding: '12px' }}>
-                        5 pending bills · Total pending: Rs.24,86,340
-                      </div>
-                    </div>
-
-                    {/* Summary Sheet Pane */}
-                    <div id="pane-summary" className={`app-pane${activePane === 'pane-summary' ? ' active' : ''}`} style={{ display: activePane === 'pane-summary' ? 'flex' : 'none', flexDirection: 'column', padding: '16px', overflow: 'auto', background: '#f8fafc' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                        <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Summary Sheet</div><p style={{ fontSize: '0.68rem', color: '#64748b', margin: '2px 0 0' }}>Skyline Residency • Mr. Mehta • Pune, MH</p></div>
-                        <div style={{ display: 'flex', gap: '6px' }}>
-                          {[
-                            { key: 'excel', icon: <ExportIcon size={10} />,  label: 'Excel' },
-                            { key: 'pdf',   icon: <FileIcon size={10} />,    label: 'PDF'   },
-                            { key: 'print', icon: <PrinterIcon size={10} />, label: 'Print' },
-                          ].map(b => (
-                            <button key={b.key} className="rep-btn" style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                              {b.icon}{b.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px', fontSize: '0.65rem' }}>
-                        Full ledger: Labour ₹31,40,000 · Site ₹5,80,000 · Contractors ₹5,30,000 · Vendors ₹3,20,000<br />
-                        <strong>Total: ₹45,70,000 · GST: ₹1,49,000</strong>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* ── How it works ── */}
+      <section className="w-section w-section-tint">
+        <div className="container">
+          <Reveal className="w-head">
+            <span className="w-eyebrow">Live in three steps</span>
+            <h2 className="w-h2">From sign-up to your first entry <span className="w-grad">in minutes</span></h2>
+          </Reveal>
+          <div className="w-steps">
+            <motion.div
+              className="w-steps-line"
+              initial={reduce ? false : { scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true, margin: '0px 0px -20% 0px' }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              aria-hidden
+            />
+            {STEPS.map((s, i) => (
+              <Reveal key={s.n} className="w-step" delay={0.15 * i}>
+                <div className="w-step-n">{s.n}</div>
+                <h3>{s.title}</h3>
+                <p>{s.text}</p>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── Trusted By ── */}
-      <div className="trusted">
-        <div className="container">
-          <div className="trusted-inner">
-            <span className="trusted-label">Trusted by teams of 2 to 200</span>
-            <div className="trusted-sep" />
-            <div className="trusted-logos">
-              {['Arch Consultancy','Munesh Associates','SS Constructions'].map(f=><span key={f} className="t-firm">{f}</span>)}
+      {/* ── Roles ── */}
+      <section className="w-section">
+        <div className="container w-roles">
+          <Reveal className="w-roles-copy">
+            <span className="w-eyebrow">The right access for everyone</span>
+            <h2 className="w-h2">Your whole team, <span className="w-grad">one source of truth</span></h2>
+            <p className="w-sub">
+              Invite partners, accounts staff and site teams. Each person sees exactly the projects and areas their role
+              allows, and every entry is signed with who made it.
+            </p>
+            <div className="w-role-tabs" role="tablist" aria-label="Roles">
+              {ROLES.map((r) => (
+                <button
+                  key={r.key}
+                  role="tab"
+                  aria-selected={role === r.key}
+                  className={`w-role-tab${role === r.key ? ' on' : ''}`}
+                  onClick={() => setRole(r.key)}
+                >
+                  {r.label}
+                </button>
+              ))}
             </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="w-role-card">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeRole.key}
+                  initial={reduce ? false : { opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduce ? undefined : { opacity: 0, y: -12 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="w-role-top">
+                    <div className="w-role-avatar">{activeRole.label.slice(0, 1)}</div>
+                    <div>
+                      <div className="w-role-name">{activeRole.label}</div>
+                      <div className="w-role-who">{activeRole.who}</div>
+                    </div>
+                  </div>
+                  <ul className="w-role-list">
+                    {activeRole.can.map((c) => (
+                      <li key={c}><span><CheckIcon size={13} /></span>{c}</li>
+                    ))}
+                  </ul>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <ProofBand />
+      <StoryMarquee />
+
+      {/* ── Security ── */}
+      <section className="w-section w-dark">
+        <div className="w-dark-glow" aria-hidden />
+        <div className="container">
+          <Reveal className="w-head">
+            <span className="w-eyebrow light">Security by design</span>
+            <h2 className="w-h2 light">Your firm’s money data, <span className="w-grad-light">locked to your firm</span></h2>
+          </Reveal>
+          <Stagger className="w-sec-grid">
+            {SECURITY.map((s) => (
+              <StaggerItem key={s.title} className="w-sec">
+                <div className="w-sec-ico"><s.icon size={20} /></div>
+                <h3>{s.title}</h3>
+                <p>{s.text}</p>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
+      {/* ── Plans ── */}
+      <section className="w-section w-section-tint" id="plans">
+        <div className="container">
+          <Reveal className="w-head">
+            <span className="w-eyebrow">Simple plans, monthly or annual</span>
+            <h2 className="w-h2">One subscription <span className="w-grad">for your whole firm</span></h2>
+            <p className="w-sub">
+              Every plan has every feature — choose by team size and projects.{rules.trialDays > 0 ? ` ${rules.trialDays}-day free trial,` : ''} cancel anytime. Prices in ₹,{' '}
+              {company.pricesIncludeGst ? `including ${company.gstRatePct}% GST` : `plus ${company.gstRatePct}% GST`}.
+            </p>
+            <div role="radiogroup" aria-label="Billing cycle" className="bill-toggle">
+              {(['MONTH', 'YEAR'] as const).map((i) => (
+                <button key={i} role="radio" aria-checked={interval === i} onClick={() => setBilling(i)} className={interval === i ? 'on' : ''}>
+                  {interval === i && <motion.span layoutId="home-bill-pill" className="bill-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
+                  <span className="bill-label">
+                    {i === 'MONTH' ? 'Monthly' : 'Annual'}
+                    {i === 'YEAR' && saving > 0 && <em>Save {saving}%</em>}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </Reveal>
+          {plans.length === 0 ? (
+            <p className="w-sub" style={{ textAlign: 'center' }}>
+              <Link href="/pricing">See current plans and prices</Link>
+            </p>
+          ) : (
+            <Stagger className={`w-plans${plans.length === 4 ? ' w-plans-4' : ''}`}>
+              {plans.map((p) => {
+                const name = p.name.replace(/^web\s+/i, '')
+                const quoted = isQuoted(p)
+                const price = subscriptionPrice(p.price, interval, undefined, rules)
+                const site = p.maxSiteUsers ?? 0
+                return (
+                  <StaggerItem key={p.id} className={`w-plan${p.id === popular ? ' pop' : ''}`}>
+                    {p.id === popular && <div className="w-plan-badge">Most popular</div>}
+                    <div className="w-plan-name">{name}</div>
+                    {quoted ? (
+                      <div className="w-plan-price">Custom</div>
+                    ) : (
+                      <div className="w-plan-price">
+                        <span>₹</span>{price.toLocaleString('en-IN')}<small>/{interval === 'MONTH' ? 'month' : 'year'}</small>
+                      </div>
+                    )}
+                    <div className="w-plan-month">
+                      {quoted
+                        ? 'Annual agreement for large firms'
+                        : interval === 'MONTH'
+                          ? 'Billed monthly · auto-renews'
+                          : `Billed annually · ≈ ₹${Math.round(price / 12).toLocaleString('en-IN')}/month`}
+                    </div>
+                    <div className="w-plan-limits">
+                      <span><UsersIcon size={13} /> {p.maxUsers}{quoted ? '+' : ''} seats</span>
+                      <span><HardHatIcon size={13} /> {isUnlimited(site) ? 'Unlimited' : site} site</span>
+                      <span><GlobeIcon size={13} /> {isUnlimited(p.maxProjects) ? 'Unlimited' : p.maxProjects} projects</span>
+                    </div>
+                    <ul>
+                      {parseFeatures(p.features).slice(0, 5).map((f) => (
+                        <li key={f}><CheckIcon size={13} /> {f}</li>
+                      ))}
+                    </ul>
+                    {quoted ? (
+                      <a href={`mailto:${company.salesEmail}?subject=${encodeURIComponent('ARC PEM Enterprise')}`} className="w-btn w-btn-outline w-btn-block">
+                        Talk to sales
+                      </a>
+                    ) : (
+                      <Link href={planHref(p.name)} className={`w-btn ${p.id === popular ? 'w-btn-primary' : 'w-btn-outline'} w-btn-block`}>
+                        {rules.trialDays > 0 ? 'Start free trial' : `Get ${name}`}
+                      </Link>
+                    )}
+                  </StaggerItem>
+                )
+              })}
+            </Stagger>
+          )}
+          <Reveal className="w-plans-note">
+            <BellIcon size={14} /> Extra team seats ₹{rules.seatAddonMonthly}/month · site seats ₹{rules.siteSeatAddonMonthly}/month · card, UPI AutoPay or e-mandate · GST invoice every cycle
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="w-section" id="faq">
+        <div className="container w-faq-wrap">
+          <Reveal className="w-head">
+            <span className="w-eyebrow">Questions</span>
+            <h2 className="w-h2">ARC PEM, <span className="w-grad">answered</span></h2>
+          </Reveal>
+          <div className="w-faq">
+            {faqs.map((f, i) => (
+              <div key={f.q} className={`w-faq-item${openFaq === i ? ' open' : ''}`}>
+                <button className="w-faq-q" aria-expanded={openFaq === i} onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                  <span>{f.q}</span>
+                  <span className="w-faq-plus" aria-hidden>+</span>
+                </button>
+                <AnimatePresence initial={false}>
+                  {openFaq === i && (
+                    <motion.div
+                      className="w-faq-a"
+                      initial={reduce ? false : { height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={reduce ? undefined : { height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <p>{f.a}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                {/* Every answer stays in the HTML for crawlers and answer engines. */}
+                {openFaq !== i && <p className="w-sr-only">{f.a}</p>}
+              </div>
+            ))}
           </div>
         </div>
-      </div>
-
-      <WhyArcPem />
-      <ProofBand />
-      <EarlyWarning />
-      <FitsYourOffice />
+      </section>
+    </div>
     </>
   )
 }

@@ -1,10 +1,16 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 
+const TITLE = 'About Us — Customer Success Stories'
+const DESCRIPTION =
+  'See how architecture studios and construction firms across India use ARC PEM to reduce costs, speed up accounting, and take control of project finances.'
+
 export const metadata: Metadata = {
-  title: 'About Us — ARC PEM Customer Success Stories',
-  description: 'See how architecture studios and construction firms across India use ARC PEM to reduce costs, speed up accounting, and take control of project finances.',
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: '/about' },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/about', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
 }
 
 export default function AboutPage() {
@@ -20,7 +26,7 @@ export default function AboutPage() {
             <div className="img-hero-stats">
               <div className="img-hero-stat"><div className="ihs-num">30+</div><div className="ihs-lbl">Firms onboard</div></div>
               <div className="img-hero-stat"><div className="ihs-num">₹120Cr+</div><div className="ihs-lbl">Project value tracked</div></div>
-              <div className="img-hero-stat"><div className="ihs-num">100%</div><div className="ihs-lbl">Offline &amp; secure</div></div>
+              <div className="img-hero-stat"><div className="ihs-num">24×7</div><div className="ihs-lbl">Live on any device</div></div>
             </div>
           </div>
         </div>

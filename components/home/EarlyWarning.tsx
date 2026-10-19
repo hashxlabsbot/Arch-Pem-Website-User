@@ -19,7 +19,7 @@ const watches = [
   },
 ]
 
-// Notification wording mirrors what the desktop app shows.
+// Notification wording mirrors what the app shows.
 const toasts = [
   { tone: 'red', title: 'Budget overrun: Skyline Residency', body: 'Exceeded budget by ₹2,40,000.' },
   { tone: 'amber', title: '3 overdue milestones', body: 'Some project milestones are past their target date. Open ARC PEM to update.' },
@@ -41,7 +41,7 @@ export default function EarlyWarning() {
       <div className="container ew-grid">
         <div className="ew-copy fade-up">
           <span className="hs-eyebrow hs-eyebrow--amber"><i />Project control</span>
-          <h2 id="ew-title">Your desktop tells you before your accountant does</h2>
+          <h2 id="ew-title">ARC PEM tells you before your accountant does</h2>
           <p className="ew-lead">
             ARC PEM checks every project against its budget, its milestone dates and its unpaid bills. When
             something slips, it says so the moment you open the app — and again when you close it, so the
@@ -60,7 +60,7 @@ export default function EarlyWarning() {
           </ul>
         </div>
 
-        <div className="ew-stage" ref={ref} data-reveal={reveal} aria-label="Example of ARC PEM desktop alerts for a sample project" role="img">
+        <div className="ew-stage" ref={ref} data-reveal={reveal} aria-label="Example of ARC PEM alerts for a sample project" role="img">
           <div className="ew-desk">
             <div className="ew-win" aria-hidden="true">
               <div className="ew-win-head">

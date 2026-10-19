@@ -51,11 +51,16 @@ export const company = {
     windowDays: 7,
   },
 
+  // Fill these in: they become Organization.sameAs in the JSON-LD, the strongest signal search engines and
+  // AI assistants use to tie ARC PEM to the same company across the web.
   socials: {
     linkedin: '', // TODO: full URL or leave blank to hide
     twitter: '',  // TODO
     youtube: '',  // TODO
   },
+
+  /** The publisher's own company website (Hash X Labs). */
+  parentSite: 'https://www.hashxlabs.com',
 
   /** Used for canonical URLs, sitemap, OG tags. Must match the domain that
    *  actually serves the site (www.arcpem.com 307-redirects here in production). */

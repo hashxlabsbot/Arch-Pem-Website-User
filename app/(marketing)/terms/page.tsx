@@ -8,14 +8,14 @@ export const metadata: Metadata = {
   alternates: { canonical: '/terms' },
 }
 
-const UPDATED = '18 June 2026'
+const UPDATED = '16 October 2026'
 
 export default function TermsPage() {
   return (
     <LegalPage title="Terms & Conditions" updated={UPDATED}>
       <p>
         These Terms &amp; Conditions (&ldquo;Terms&rdquo;) govern your access to and use of the {company.brand}{' '}
-        website, desktop software, and related services provided by {company.legalName} (&ldquo;we&rdquo;, &ldquo;us&rdquo;).
+        website, the ARC PEM web application at app.arcpem.com, and related services provided by {company.legalName} (&ldquo;we&rdquo;, &ldquo;us&rdquo;).
         By creating an account or making a purchase, you agree to these Terms.
       </p>
 
@@ -38,6 +38,28 @@ export default function TermsPage() {
         <li>Paid plans are billed at the prices shown on our <a href="/pricing">Pricing</a> page in Indian Rupees (INR).</li>
         <li>Payments are processed securely through Razorpay.</li>
         <li>Access to paid features is granted once payment is confirmed.</li>
+        <li>
+          Subscriptions are billed monthly or annually, as chosen at checkout, and <strong>renew automatically</strong>{' '}
+          at the end of each period using the payment method you authorised (card, UPI AutoPay or bank e-mandate) until
+          you turn auto-renewal off from Account &rarr; Subscription. Turning it off stops future charges; access
+          continues until the end of the period already paid for.
+        </li>
+        <li>
+          A firm&apos;s first subscription may include a free trial. Auto-pay is authorised when the trial starts and the
+          first charge is taken when it ends, unless auto-renewal is turned off before then. One trial per firm.
+        </li>
+        <li>
+          Add-on seats are billed with your plan at the prices shown on the Pricing page, for as long as they remain on
+          your subscription.
+        </li>
+        <li>
+          We may change plan prices; any change applies from your next renewal, and we will tell you by email before it
+          takes effect.
+        </li>
+        <li>
+          If a payment fails, your firm keeps full access for a 14-day grace period after the paid period ends; after
+          that the workspace is read-only until renewed. Your data is not deleted for non-payment.
+        </li>
         <li>Refunds, where applicable, are governed by our <a href="/refund">Refund &amp; Cancellation Policy</a>.</li>
       </ul>
 

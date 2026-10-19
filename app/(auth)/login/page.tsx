@@ -134,7 +134,7 @@ function LoginForm() {
         </h2>
         <p style={{ fontSize: '0.84rem', color: '#94a3b8', fontWeight: 500 }}>
           {params.get('for') === 'web-app'
-            ? 'Sign in with your ARC PEM account to continue to ARC PEM Web'
+            ? 'Sign in with your ARC PEM account to continue to your workspace'
             : 'Sign in to your ARC PEM account'}
         </p>
       </div>

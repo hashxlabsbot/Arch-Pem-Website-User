@@ -562,7 +562,7 @@ export default function BBSCalculator() {
       </div>
 
       <div className="inv-brand">
-        Generated using ARC PEM Free Tools (arcpem.com/tools) — offline project &amp; material tracking for builders
+        Generated using ARC PEM Free Tools (arcpem.com/tools) — project &amp; material tracking for builders
       </div>
     </div>
   )
@@ -649,7 +649,7 @@ export default function BBSCalculator() {
       </div>
 
       <div className="inv-brand">
-        Generated using ARC PEM Free Tools (arcpem.com/tools) — offline project &amp; material tracking for builders
+        Generated using ARC PEM Free Tools (arcpem.com/tools) — project &amp; material tracking for builders
       </div>
     </div>
   )

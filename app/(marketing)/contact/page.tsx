@@ -2,10 +2,15 @@ import type { Metadata } from 'next'
 import { Mail, Phone, MapPin, Building2, Clock } from 'lucide-react'
 import { company, formatAddress, hasAddress } from '@/lib/company'
 
+const DESCRIPTION =
+  'Talk to the ARC PEM team at Hash X Labs, Faridabad — sales, demos, support and billing for ARC PEM. Mon–Sat, 10:00–18:00 IST.'
+
 export const metadata: Metadata = {
   title: 'Contact Us',
-  description: 'Get in touch with the ARC PEM team for sales, support, or billing questions.',
+  description: DESCRIPTION,
   alternates: { canonical: '/contact' },
+  openGraph: { title: 'Contact Us · ARC PEM', description: DESCRIPTION, url: '/contact', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
+  twitter: { card: 'summary_large_image', title: 'Contact Us · ARC PEM', description: DESCRIPTION, images: ['/og-image.jpg'] },
 }
 
 export default function ContactPage() {

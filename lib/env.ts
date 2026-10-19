@@ -24,6 +24,9 @@ type EnvKey =
   | 'UPSTASH_REDIS_REST_TOKEN'
   | 'NEXT_PUBLIC_GA_MEASUREMENT_ID'
   | 'GOOGLE_SITE_VERIFICATION'
+  | 'BING_SITE_VERIFICATION'
+  | 'YANDEX_SITE_VERIFICATION'
+  | 'INDEXNOW_KEY'
   | 'NEXT_PUBLIC_VAPI_PUBLIC_KEY'
   | 'GOOGLE_CLIENT_ID'
   | 'GOOGLE_CLIENT_SECRET'
@@ -82,6 +85,11 @@ export const env = {
   upstashToken: () => get('UPSTASH_REDIS_REST_TOKEN'),
   gaMeasurementId: () => get('NEXT_PUBLIC_GA_MEASUREMENT_ID'),
   googleSiteVerification: () => get('GOOGLE_SITE_VERIFICATION'),
+  // Bing Webmaster Tools (msvalidate.01) — Bing's index also feeds ChatGPT search and Copilot answers.
+  bingSiteVerification: () => get('BING_SITE_VERIFICATION'),
+  yandexSiteVerification: () => get('YANDEX_SITE_VERIFICATION'),
+  // IndexNow key (8–128 chars of a-z, A-Z, 0-9, '-'): served at /indexnow-key.txt; unset => no pings.
+  indexNowKey: () => get('INDEXNOW_KEY'),
   vapiPublicKey: () => get('NEXT_PUBLIC_VAPI_PUBLIC_KEY'),
   // Both unset => Google button hidden and provider omitted (see lib/auth.ts).
   googleClientId: () => get('GOOGLE_CLIENT_ID'),

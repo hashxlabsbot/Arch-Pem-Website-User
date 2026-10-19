@@ -8,22 +8,23 @@ export const metadata: Metadata = {
   alternates: { canonical: '/refund' },
 }
 
-const UPDATED = '18 June 2026'
+const UPDATED = '16 October 2026'
 const days = company.refund.windowDays
 
 export default function RefundPage() {
   return (
     <LegalPage title="Refund & Cancellation Policy" updated={UPDATED}>
       <p>
-        This policy explains how refunds and cancellations work for {company.brand} licenses, provided by{' '}
+        This policy explains how refunds and cancellations work for {company.brand} subscriptions, provided by{' '}
         {company.legalName}. We want you to be confident in your purchase, so please read this carefully. We recommend
         booking a demo before purchasing.
       </p>
 
       <h2>1. Try before you buy</h2>
       <p>
-        {company.brand} is sold as a one-year license. Before purchasing, you can book a free live demo so you can see
-        the software in action and confirm it meets your needs.
+        {company.brand} is sold as a subscription per firm, billed monthly or annually. A firm&apos;s first subscription
+        starts with a free trial (its length is shown on our <a href="/pricing">Pricing</a> page): you set up auto-pay at the start, but nothing is charged until the trial ends,
+        and if you turn off auto-renew before then you are not charged at all. You can also book a free live demo.
       </p>
 
       <h2>2. Refund window</h2>
@@ -37,7 +38,7 @@ export default function RefundPage() {
           <p>Refunds may be declined where:</p>
           <ul>
             <li>The request is made after the {days}-day window.</li>
-            <li>There is evidence of misuse, licence sharing, or violation of our <a href="/terms">Terms</a>.</li>
+            <li>There is evidence of misuse, account sharing, or violation of our <a href="/terms">Terms</a>.</li>
             <li>The plan was a custom/enterprise agreement with separate terms.</li>
           </ul>
         </>
@@ -62,10 +63,21 @@ export default function RefundPage() {
         <strong> 5&ndash;7 business days</strong> for the amount to reflect in your account, depending on your bank.
       </p>
 
-      <h2>5. Cancellation</h2>
+      <h2>5. Auto-renewal and cancellation</h2>
       <p>
-        You may cancel at any time by contacting us. Your license stays valid for the one-year period already paid for —
-        there is no auto-renewal, and we'll remind you before it expires so you can choose to renew. {days > 0 ? 'Cancellation outside the refund window does not entitle you to a refund of the current period.' : ''}
+        Subscriptions renew automatically at the end of each billing period (monthly or annual) using the payment method
+        you authorised at checkout — card, UPI AutoPay or bank e-mandate — at the price of your plan at that time. Your
+        bank or UPI app may notify you before each charge, and we email a receipt and GST invoice after every payment.
+      </p>
+      <p>
+        You can turn off auto-renewal at any time from <strong>Account &rarr; Subscription</strong> on {company.siteUrl.replace(/^https?:\/\//, '')},
+        or by contacting us. No further charges are made after that, and your firm keeps full access until the end of
+        the period already paid for. {days > 0 ? 'Cancelling outside the refund window does not entitle you to a refund of the current period.' : 'Payments already made for the current period are not refunded.'}
+      </p>
+      <p>
+        If a renewal payment fails, we retry it over the following days. Your firm has a 14-day grace period after the
+        paid period ends, after which the workspace becomes read-only until the plan is renewed. Your data is never
+        deleted because of a lapsed payment and stays available to export.
       </p>
 
       <h2>6. Contact</h2>

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 const FAQS = [
   {
     q: 'Is this contractor bill generator really free?',
-    a: 'Yes — completely free, with no sign-up, watermark fees, or bill limits. It is built by the team behind ARC PEM, desktop expense-management software for Indian construction firms, as a free utility for contractors and builders.',
+    a: 'Yes — completely free, with no sign-up, watermark fees, or bill limits. It is built by the team behind ARC PEM, construction expense-management software for Indian construction firms, as a free utility for contractors and builders.',
   },
   {
     q: 'Is my billing data uploaded anywhere?',
@@ -342,7 +342,7 @@ export default function BillGeneratorPage() {
 
       <ToolCta
         heading="Raising the bill is the easy part. Tracking 200 of them isn't."
-        sub="ARC PEM keeps every vendor bill, contractor RA bill, labour payment and GST entry organised project-wise — with one-click purchase registers and Tally export. Fully offline, on your own PC."
+        sub="ARC PEM keeps every vendor bill, contractor RA bill, labour payment and GST entry organised project-wise — with one-click purchase registers and Tally export. Live for the whole firm, on any phone or computer."
       />
     </>
   )

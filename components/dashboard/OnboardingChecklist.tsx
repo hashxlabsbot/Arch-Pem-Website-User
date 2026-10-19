@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { CheckCircle2, Circle, X, Download, CreditCard, Key, UserCheck } from 'lucide-react'
+import { CheckCircle2, Circle, X, CreditCard, Globe, Users, UserCheck } from 'lucide-react'
 
 interface Props {
   hasPlan: boolean
@@ -16,23 +16,23 @@ const STEPS = [
     href:  null,
   },
   {
-    icon: Download,
-    label: 'Download ARC PEM',
-    desc:  'Get the Windows or Mac installer from the Downloads page.',
-    done:  false,
-    href:  '/dashboard/downloads',
-  },
-  {
     icon: CreditCard,
     label: 'Choose a plan',
-    desc:  'Unlock full access with a subscription.',
+    desc:  'Monthly or annual, renewed automatically. Cancel anytime.',
     done:  false,
     href:  '/dashboard/subscription',
   },
   {
-    icon: Key,
-    label: 'Activate your license',
-    desc:  'Enter your license key inside the app.',
+    icon: Globe,
+    label: 'Open ARC PEM',
+    desc:  'Sign in with this account; your firm\'s workspace is ready.',
+    done:  false,
+    href:  null,
+  },
+  {
+    icon: Users,
+    label: 'Invite your team',
+    desc:  'Add office and site staff with roles from the Team page in the app.',
     done:  false,
     href:  null,
   },
@@ -54,7 +54,7 @@ export default function OnboardingChecklist({ hasPlan }: Props) {
 
   const steps = STEPS.map((s, i) => ({
     ...s,
-    done: i === 0 ? true : i === 2 ? hasPlan : false,
+    done: i === 0 ? true : i === 1 ? hasPlan : false,
   }))
 
   const completedCount = steps.filter(s => s.done).length

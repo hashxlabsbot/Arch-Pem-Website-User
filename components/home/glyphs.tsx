@@ -65,16 +65,6 @@ export function SlipGlyph({ size = 16, className }: G) {
   )
 }
 
-export function WifiOffGlyph({ size = 16, className }: G) {
-  return (
-    <svg {...base(size)} className={className}>
-      <path d="M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M5 12.5a10 10 0 0 1 5.2-2.7M16.8 11.2a10 10 0 0 1 2.2 1.3M8.5 16a5 5 0 0 1 7 0" />
-      <path d="M12 19.5h.01" />
-      <path d="M3 3l18 18" />
-    </svg>
-  )
-}
-
 export function MonitorGlyph({ size = 16, className }: G) {
   return (
     <svg {...base(size)} className={className}>
@@ -94,12 +84,3 @@ export function DatabaseGlyph({ size = 16, className }: G) {
   )
 }
 
-export function PdfGlyph({ size = 16, className }: G) {
-  return (
-    <svg {...base(size)} className={className}>
-      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-      <path d="M14 3v5h5" />
-      <path d="M8.5 15.5h7M8.5 12.5h4" />
-    </svg>
-  )
-}

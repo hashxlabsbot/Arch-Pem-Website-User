@@ -1,7 +1,7 @@
 'use client'
 
-import { CheckIcon, ExportIcon, ArrowRightIcon, LockIcon, SaveIcon } from '@/components/icons'
-import { WifiOffGlyph, MonitorGlyph, DatabaseGlyph, PdfGlyph } from './glyphs'
+import { CheckIcon, ExportIcon, ArrowRightIcon, LockIcon, SaveIcon, PhoneIcon, BellIcon, HardHatIcon } from '@/components/icons'
+import { MonitorGlyph, DatabaseGlyph } from './glyphs'
 import { useReveal, trackSpotlight } from './useReveal'
 
 // Sample figures. Register: taxable + 18% GST = ₹1,85,000 / ₹2,10,000 / ₹50,000.
@@ -11,11 +11,11 @@ const register = [
   { vendor: 'Patel Hardware & Paints', gstin: '27AAD•••4Z8', taxable: '42,373', gst: '7,627' },
 ]
 
-// 12×900 + 18×600 + 6×850 = ₹26,700
+// 12×900 + 18×600 + 6×650 = ₹25,500
 const muster = [
   { trade: 'Mason', n: 12, rate: 900 },
   { trade: 'Helper', n: 18, rate: 600 },
-  { trade: 'Carpenter', n: 6, rate: 850 },
+  { trade: 'Coolie', n: 6, rate: 650 },
 ]
 
 // 26,45,000 + 5% contingency = 27,77,250; + 18% GST = 32,77,155; ÷ 1,400 sq ft ≈ ₹2,341
@@ -36,7 +36,7 @@ export default function FitsYourOffice() {
           <h2 id="bn-title">Fits the way your office already works</h2>
           <p>
             Your CA keeps Tally. Your supervisor keeps sending the muster. ARC PEM sits between them and does
-            the reconciling — on your own computer.
+            the reconciling — live, for everyone in the firm.
           </p>
         </div>
 
@@ -82,22 +82,22 @@ export default function FitsYourOffice() {
             </div>
           </article>
 
-          {/* Offline */}
+          {/* On site, on the phone */}
           <article className="bn-tile bn-tile--dark" data-spot style={{ '--i': 1 } as React.CSSProperties}>
             <div className="bn-vis bn-off" aria-hidden="true">
-              <span className="bn-off-ring"><span /><span /><WifiOffGlyph size={26} /></span>
+              <span className="bn-off-ring"><span /><span /><PhoneIcon size={26} /></span>
               <ul>
-                <li><span>Internet</span><b>Not needed</b></li>
-                <li><span>Your data</span><b>On this computer</b></li>
-                <li><span><SaveIcon size={12} /> Backup</span><b>Daily · 30-day history</b></li>
-                <li><span><LockIcon size={12} /> App lock</span><b>PIN</b></li>
+                <li><span>Install</span><b>Nothing</b></li>
+                <li><span>Works on</span><b>Phone · tablet · computer</b></li>
+                <li><span><BellIcon size={12} /> Reminders</span><b>Push, for what&apos;s due</b></li>
+                <li><span><SaveIcon size={12} /> Backup</span><b>Automatic, daily</b></li>
               </ul>
             </div>
             <div className="bn-copy">
-              <h3>Runs with no internet</h3>
+              <h3>On site, on the phone</h3>
               <p>
-                A desktop app for Windows and Mac. It works in a site office on patchy 4G, and your accounts
-                never sit on someone else&apos;s server.
+                Site engineers add bills with a photo of the receipt the moment they are paid. Install ARC PEM on the
+                home screen like an app; there is nothing to set up or update.
               </p>
             </div>
           </article>
@@ -105,7 +105,7 @@ export default function FitsYourOffice() {
           {/* Muster */}
           <article className="bn-tile" data-spot style={{ '--i': 2 } as React.CSSProperties}>
             <div className="bn-vis bn-mus" aria-hidden="true">
-              <span className="bn-pdf"><PdfGlyph size={14} /> manpower_15oct.pdf</span>
+              <span className="bn-pdf"><HardHatIcon size={14} /> Site A · today</span>
               {muster.map((m) => (
                 <div key={m.trade} className="bn-mus-row" style={{ '--w': `${(m.n / 18) * 100}%` } as React.CSSProperties}>
                   <span>{m.trade}</span>
@@ -113,13 +113,13 @@ export default function FitsYourOffice() {
                   <span className="bn-mono">{m.n} × ₹{m.rate}</span>
                 </div>
               ))}
-              <div className="bn-mus-total"><span>Wages today</span><b>₹26,700</b></div>
+              <div className="bn-mus-total"><span>Wages today</span><b>₹25,500</b></div>
             </div>
             <div className="bn-copy">
               <h3>Muster in, wages out</h3>
               <p>
-                Import the supervisor&apos;s PDF manpower report. ARC PEM records the day&apos;s headcount and
-                works out wages for each project.
+                Enter the day&apos;s headcount by trade from site. ARC PEM works out the wages for each project
+                and keeps every labour contractor&apos;s ledger up to date.
               </p>
             </div>
           </article>
@@ -147,7 +147,7 @@ export default function FitsYourOffice() {
             </div>
           </article>
 
-          {/* Office network */}
+          {/* Whole firm */}
           <article className="bn-tile" data-spot style={{ '--i': 4 } as React.CSSProperties}>
             <div className="bn-vis bn-lan" aria-hidden="true">
               <svg className="bn-lan-lines" viewBox="0 0 300 120" preserveAspectRatio="none">
@@ -157,16 +157,16 @@ export default function FitsYourOffice() {
               </svg>
               <div className="bn-lan-pcs">
                 <span><MonitorGlyph size={18} />Accounts</span>
-                <span><MonitorGlyph size={18} />Projects</span>
+                <span><PhoneIcon size={18} />Site</span>
                 <span><MonitorGlyph size={18} />Partner</span>
               </div>
-              <span className="bn-lan-db"><DatabaseGlyph size={18} /> One shared database</span>
+              <span className="bn-lan-db"><DatabaseGlyph size={18} /> One live ledger <LockIcon size={12} /></span>
             </div>
             <div className="bn-copy">
-              <h3>One database, whole office</h3>
+              <h3>One ledger, whole firm</h3>
               <p>
-                On Studio and Enterprise, computers on your office network share one database — accounts,
-                project leads and partners see the same numbers.
+                Accounts, site teams and partners work on the same live numbers from wherever they are — each
+                person seeing only the projects their role allows.
               </p>
             </div>
           </article>

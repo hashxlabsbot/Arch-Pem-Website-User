@@ -1,12 +1,16 @@
 import type { Metadata } from 'next'
 import JsonLd from '@/components/seo/JsonLd'
-import { company } from '@/lib/company'
-import { entity, featureList, ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
+import { getPublicPlans } from '@/lib/plans'
+import { homeFaqs, softwareJsonLd } from '@/lib/seo-entity'
 import HomeClient from './HomeClient'
+import './home.css'
+
+// The SoftwareApplication offers and the pricing FAQ answer carry live plan prices.
+export const revalidate = 3600
 
 const TITLE = 'ARC PEM — Construction Expense Management Software · India'
 const DESCRIPTION =
-  'ARC PEM unifies BOQ, vendor bills, labour, GST and Tally exports into one offline platform built for Indian architects and construction firms.'
+  'Cloud construction expense management for Indian architects, contractors and builders: BOQ & budgets, vendor bills, labour, payment approvals, GST, GSTR-2B and Tally export on one live ledger for the whole firm. Monthly or annual plans.'
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -26,29 +30,20 @@ export const metadata: Metadata = {
   },
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const plans = await getPublicPlans()
+  const faqs = homeFaqs(plans)
   return (
     <>
+      <JsonLd data={softwareJsonLd(plans)} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
-          '@type': 'SoftwareApplication',
-          '@id': SOFTWARE_ID,
-          name: company.brand,
-          applicationCategory: 'BusinessApplication',
-          applicationSubCategory: entity.category,
-          operatingSystem: 'Windows, macOS',
-          softwareVersion: company.product.version,
-          description: entity.definition,
-          url: company.siteUrl,
-          image: `${company.siteUrl}/og-image.jpg`,
-          featureList,
-          audience: { '@type': 'BusinessAudience', audienceType: entity.audience.join(', ') },
-          areaServed: { '@type': 'Country', name: 'India' },
-          publisher: { '@id': ORG_ID },
+          '@type': 'FAQPage',
+          mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
         }}
       />
-      <HomeClient />
+      <HomeClient plans={plans.WEB} faqs={faqs} rules={plans.rules} />
     </>
   )
 }

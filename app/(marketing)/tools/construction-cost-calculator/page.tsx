@@ -224,7 +224,7 @@ export default function CostCalculatorPage() {
 
       <ToolCta
         heading="Estimating is step one. Staying on budget is the real game."
-        sub="ARC PEM tracks your BOQ against actual vendor bills, labour and contractor payments as the build progresses — so overruns show up in weeks, not at the end. Fully offline desktop software."
+        sub="ARC PEM tracks your BOQ against actual vendor bills, labour and contractor payments as the build progresses — so overruns show up in weeks, not at the end. Live for the whole firm, on any phone or computer."
       />
     </>
   )

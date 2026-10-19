@@ -1,0 +1,23 @@
+/* Motion kit styles (see Motion.tsx). */
+
+.mq {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.mq-track {
+  display: flex;
+  width: max-content;
+  animation: mq-scroll var(--mq-speed, 40s) linear infinite;
+}
+.mq:hover .mq-track { animation-play-state: paused; }
+.mq-group { display: flex; align-items: center; gap: 56px; padding-right: 56px; }
+@keyframes mq-scroll { to { transform: translateX(-50%); } }
+
+.wc-wrap { position: relative; display: inline-grid; vertical-align: bottom; }
+.wc-sizer { visibility: hidden; grid-area: 1 / 1; white-space: nowrap; }
+.wc-word { grid-area: 1 / 1; white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mq-track { animation: none; }
+}

@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
   if (!plan) return NextResponse.json({ error: 'Plan not found' }, { status: 404 })
   if (!plan.isActive) return NextResponse.json({ error: 'This plan is no longer offered' }, { status: 400 })
   if (plan.price <= 0) return NextResponse.json({ error: 'Contact sales for this plan' }, { status: 400 })
+  // ARC PEM plans are auto-renewing subscriptions: /api/subscription/checkout.
+  if (plan.product === 'WEB') return NextResponse.json({ error: 'Subscribe to this plan from your account page.' }, { status: 400 })
 
   // Sold as a one-year license: charge 12× the stored monthly base price.
   // Razorpay requires an integer amount in paise; Float * 100 can drift.

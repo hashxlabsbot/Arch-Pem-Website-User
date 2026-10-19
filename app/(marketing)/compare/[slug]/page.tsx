@@ -5,7 +5,7 @@ import JsonLd from '@/components/seo/JsonLd'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
 import { COMPARISONS, SEGMENTS } from '@/lib/aeo-pages'
-import { ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
+import { CONTENT_UPDATED, ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
 import '../../tools/tools.css'
 
 export const dynamicParams = false
@@ -47,6 +47,7 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
           author: { '@id': ORG_ID },
           publisher: { '@id': ORG_ID },
           about: { '@id': SOFTWARE_ID },
+          dateModified: CONTENT_UPDATED,
           inLanguage: 'en-IN',
         }}
       />
@@ -87,7 +88,7 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
             <div className="tool-table-wrap">
               <table className="tool-table">
                 <thead>
-                  <tr><th></th><th>ARC PEM</th><th>{c.other}</th></tr>
+                  <tr><th></th><th>{c.arcLabel ?? 'ARC PEM'}</th><th>{c.other}</th></tr>
                 </thead>
                 <tbody>
                   {c.rows.map((r) => (
@@ -101,9 +102,9 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
               </table>
             </div>
 
-            <h2>Choose ARC PEM if</h2>
+            <h2>Choose {c.arcLabel ?? 'ARC PEM'} if</h2>
             <ul>{c.chooseArc.map((x) => <li key={x}>{x}</li>)}</ul>
-            <h2>{c.other} alone is enough if</h2>
+            <h2>{c.otherHeading ?? `${c.other} alone is enough if`}</h2>
             <ul>{c.chooseOther.map((x) => <li key={x}>{x}</li>)}</ul>
 
             <h2>Frequently asked questions</h2>

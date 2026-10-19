@@ -9,10 +9,14 @@ import VapiAssistant from './VapiAssistant'
 import { DemoModalContext } from './DemoModalContext'
 import { company, phoneTel } from '@/lib/company'
 import { SEGMENTS, COMPARISONS } from '@/lib/aeo-pages'
+import { LIVE_TOOLS } from '@/lib/tools'
 import {
-  ClipboardIcon, WalletIcon, BoltIcon, DocumentIcon, VideoIcon,
-  DashboardIcon, DownloadIcon, ReceiptIcon, ChatIcon, CalculatorIcon,
+  ClipboardIcon, WalletIcon, BoltIcon, DocumentIcon, GlobeIcon,
+  DashboardIcon, CompareIcon, ReceiptIcon, ChatIcon, CalculatorIcon,
 } from '@/components/icons'
+
+/** ARC PEM Web (the app). NEXT_PUBLIC so local and staging builds can point elsewhere. */
+const WEB_APP = (process.env.NEXT_PUBLIC_WEB_APP_URL || 'https://app.arcpem.com').replace(/\/$/, '')
 
 // Demo time slots the customer can request (IST, Mon–Sat).
 const DEMO_SLOTS = [
@@ -218,17 +222,17 @@ export default function MarketingShell({ children }: { children: React.ReactNode
             <Link href="/pricing" className="nav-link">Pricing</Link>
             <Link href="/tools" className="nav-link">Free Tools</Link>
             <Link href="/blog" className="nav-link">Blog</Link>
-            <Link href="/about" className="nav-link">About Us</Link>
             <div className="nav-item">
               <button className="nav-link">Resources <span className="nav-chevron">▼</span></button>
               <div className="dropdown dropdown-wide">
-                <Link href="/tools" className="dd-item"><div className="dd-icon amb"><CalculatorIcon size={18} color="#f59e0b" /></div><div><div className="dd-title">Free Tools &amp; Calculators</div><div className="dd-sub">GST bills, cost &amp; concrete calculators</div></div></Link>
-                <Link href="/resources" className="dd-item"><div className="dd-icon ind"><DocumentIcon size={18} color="#4f46e5" /></div><div><div className="dd-title">User Guide</div><div className="dd-sub">Full documentation</div></div></Link>
-                <Link href="/resources" className="dd-item"><div className="dd-icon sky"><VideoIcon size={18} color="#0ea5e9" /></div><div><div className="dd-title">Video Tutorials</div><div className="dd-sub">Step-by-step walkthroughs</div></div></Link>
-                <Link href="/about" className="dd-item"><div className="dd-icon grn"><DashboardIcon size={18} color="#10b981" /></div><div><div className="dd-title">Case Studies</div><div className="dd-sub">Customer success stories</div></div></Link>
-                <Link href="/resources" className="dd-item"><div className="dd-icon amb"><DownloadIcon size={18} color="#f59e0b" /></div><div><div className="dd-title">BOQ Templates</div><div className="dd-sub">Free project templates</div></div></Link>
-                <Link href="/resources" className="dd-item"><div className="dd-icon ind"><ReceiptIcon size={18} color="#4f46e5" /></div><div><div className="dd-title">GST Guide</div><div className="dd-sub">GST setup &amp; Tally export</div></div></Link>
-                <Link href="/resources" className="dd-item"><div className="dd-icon sky"><ChatIcon size={18} color="#0ea5e9" /></div><div><div className="dd-title">Help Centre</div><div className="dd-sub">FAQs &amp; support</div></div></Link>
+                <Link href="/tools" className="dd-item"><div className="dd-icon amb"><CalculatorIcon size={18} color="#f59e0b" /></div><div><div className="dd-title">Free Tools &amp; Calculators</div><div className="dd-sub">GST bills, cost, concrete &amp; BBS</div></div></Link>
+                <Link href="/guides/best-construction-software-india" className="dd-item"><div className="dd-icon ind"><DocumentIcon size={18} color="#4f46e5" /></div><div><div className="dd-title">Buyer&apos;s Guide</div><div className="dd-sub">Choosing construction software</div></div></Link>
+                <Link href="/glossary" className="dd-item"><div className="dd-icon sky"><ReceiptIcon size={18} color="#0ea5e9" /></div><div><div className="dd-title">Construction Glossary</div><div className="dd-sub">BOQ, RA bill, GSTR-2B &amp; more</div></div></Link>
+                <Link href="/guides/best-construction-software-india" className="dd-item"><div className="dd-icon grn"><GlobeIcon size={18} color="#10b981" /></div><div><div className="dd-title">Buyer&apos;s guide</div><div className="dd-sub">Choosing construction software in India</div></div></Link>
+                <Link href="/about" className="dd-item"><div className="dd-icon amb"><DashboardIcon size={18} color="#f59e0b" /></div><div><div className="dd-title">Case Studies</div><div className="dd-sub">Customer success stories</div></div></Link>
+                <Link href="/compare/arc-pem-vs-excel" className="dd-item"><div className="dd-icon ind"><CompareIcon size={18} color="#4f46e5" /></div><div><div className="dd-title">ARC PEM vs Excel</div><div className="dd-sub">When spreadsheets stop working</div></div></Link>
+                <Link href="/about" className="dd-item"><div className="dd-icon sky"><DocumentIcon size={18} color="#0ea5e9" /></div><div><div className="dd-title">About Hash X Labs</div><div className="dd-sub">The team behind ARC PEM</div></div></Link>
+                <Link href="/contact" className="dd-item"><div className="dd-icon sky"><ChatIcon size={18} color="#0ea5e9" /></div><div><div className="dd-title">Help Centre</div><div className="dd-sub">Talk to our team</div></div></Link>
               </div>
             </div>
           </nav>
@@ -250,17 +254,24 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                     </div>
                     <div className="ud-divider" />
                     <Link href="/dashboard" className="ud-item">My Dashboard</Link>
+                    <a href={`${WEB_APP}/auth/arcpem`} className="ud-item">Open ARC PEM ↗</a>
                     <Link href="/dashboard/subscription" className="ud-item">My Subscription</Link>
-                    <Link href="/dashboard/downloads" className="ud-item">Downloads</Link>
+                    {session.user.hasDesktop && <Link href="/dashboard/downloads" className="ud-item">Desktop downloads</Link>}
                     <div className="ud-divider" />
                     <button className="ud-signout" onClick={() => signOut({ callbackUrl: '/' })}>Sign Out</button>
                   </div>
                 )}
               </div>
             ) : (
-              <Link href="/login" className="nav-signin" style={{ textDecoration: 'none' }}>User Sign In</Link>
+              <div className="nav-item">
+                <button className="nav-signin nav-signin-btn">Sign in <span className="nav-chevron">▼</span></button>
+                <div className="dropdown dropdown-right">
+                  <a href={`${WEB_APP}/login`} className="dd-item"><div className="dd-icon grn"><GlobeIcon size={18} color="#10b981" /></div><div><div className="dd-title">ARC PEM app</div><div className="dd-sub">Open your workspace · owners &amp; team members</div></div></a>
+                  <Link href="/login" className="dd-item"><div className="dd-icon ind"><DashboardIcon size={18} color="#4f46e5" /></div><div><div className="dd-title">Account &amp; billing</div><div className="dd-sub">Subscription, auto-renew, invoices</div></div></Link>
+                </div>
+              </div>
             )}
-            <Link href="/pricing" className="btn btn-primary btn-sm nav-cta">Let&apos;s Talk</Link>
+            <Link href="/pricing" className="btn btn-primary btn-sm nav-cta">Get started</Link>
           </div>
 
           <button className="hamburger" id="hamburger" aria-label="Open menu" onClick={() => setDrawerOpen(true)}>
@@ -289,10 +300,11 @@ export default function MarketingShell({ children }: { children: React.ReactNode
         <Link href="/about" className="mob-link">About Us</Link>
         <Link href="/resources" className="mob-link">Resources</Link>
         <div className="mob-actions">
+          <a href={`${WEB_APP}/login`} className="btn btn-outline" style={{ textDecoration: 'none' }}>Open ARC PEM</a>
           {session
             ? <Link href="/dashboard" className="btn btn-outline">My Dashboard</Link>
-            : <Link href="/login" className="btn btn-outline" style={{ textDecoration: 'none' }}>User Sign In</Link>}
-          <Link href="/pricing" className="btn btn-primary">Let&apos;s Talk</Link>
+            : <Link href="/login" className="btn btn-outline" style={{ textDecoration: 'none' }}>Account &amp; billing</Link>}
+          <Link href="/pricing" className="btn btn-primary">Get started</Link>
         </div>
       </div>
 
@@ -328,10 +340,11 @@ export default function MarketingShell({ children }: { children: React.ReactNode
             {/* Actions + social proof on one row */}
             <div className="cta-action-row">
               <div className="cta-actions">
-                <button className="cta-btn-primary" onClick={openDemo}>
-                  <span>Book a Free Demo</span>
+                <Link href="/pricing" className="cta-btn-primary">
+                  <span>Start your plan</span>
                   <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </button>
+                </Link>
+                <button className="cta-btn-ghost" onClick={openDemo}>Book a free demo</button>
               </div>
               <div className="cta-social">
                 <div className="cta-avatars">
@@ -362,7 +375,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                 </span>
                 <div className="cta-meta-text">
                   <strong>Bank-grade Security</strong>
-                  <small>256-bit encrypted &amp; local</small>
+                  <small>Encrypted, isolated per firm</small>
                 </div>
               </div>
 
@@ -371,8 +384,8 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                   <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 </span>
                 <div className="cta-meta-text">
-                  <strong>Works 100% Offline</strong>
-                  <small>No internet required</small>
+                  <strong>Monthly or annual</strong>
+                  <small>Auto-renews · cancel anytime</small>
                 </div>
               </div>
 
@@ -444,7 +457,8 @@ export default function MarketingShell({ children }: { children: React.ReactNode
 
             <div className="fv2-cols">
               <div className="fv2-col">
-                <h4 className="fv2-col-title">Solutions</h4>
+                <h4 className="fv2-col-title">Product</h4>
+                <a href={`${WEB_APP}/login`} className="fv2-link">Sign in to ARC PEM</a>
                 <Link href="/solutions#project-mgmt" className="fv2-link">Project &amp; Budget Management</Link>
                 <Link href="/solutions#expense-mgmt" className="fv2-link">Expense &amp; Finance Tracking</Link>
                 <Link href="/solutions#power-feat" className="fv2-link">Power Features</Link>
@@ -456,14 +470,13 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                 <Link href="/blog" className="fv2-link">Blog</Link>
                 <Link href="/contact" className="fv2-link">Contact Us</Link>
                 <Link href="/pricing" className="fv2-link">Pricing</Link>
-                <Link href="/resources" className="fv2-link">Help Centre</Link>
-                <Link href="/dashboard/downloads" className="fv2-link">Download App</Link>
+                <Link href="/resources" className="fv2-link">Resources</Link>
               </div>
               <div className="fv2-col">
                 <h4 className="fv2-col-title">Free Tools</h4>
-                <Link href="/tools/contractor-bill-generator" className="fv2-link">GST Bill Generator</Link>
-                <Link href="/tools/construction-cost-calculator" className="fv2-link">Construction Cost Calculator</Link>
-                <Link href="/tools/concrete-calculator" className="fv2-link">Concrete Calculator</Link>
+                {LIVE_TOOLS.map((t) => (
+                  <Link key={t.slug} href={`/tools/${t.slug}`} className="fv2-link">{t.name}</Link>
+                ))}
                 <Link href="/tools" className="fv2-link">All Free Tools</Link>
               </div>
               <div className="fv2-col">
@@ -475,10 +488,8 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                 {COMPARISONS.map((c) => (
                   <Link key={c.slug} href={`/compare/${c.slug}`} className="fv2-link">{c.label}</Link>
                 ))}
-                <Link href="/resources" className="fv2-link">User Guide (PDF)</Link>
-                <Link href="/resources" className="fv2-link">BOQ Templates</Link>
-                <Link href="/resources" className="fv2-link">GST Export Guide</Link>
-                <Link href="/resources" className="fv2-link">Tally Integration</Link>
+                <Link href="/glossary" className="fv2-link">Construction Glossary</Link>
+                <Link href="/resources" className="fv2-link">All Resources</Link>
                 <a href={`mailto:${company.salesEmail}`} className="fv2-link">Contact Sales</a>
               </div>
             </div>
@@ -548,7 +559,7 @@ export default function MarketingShell({ children }: { children: React.ReactNode
               </div>
             </div>
           )}
-          <p className="modal-note">Trusted by 30+ construction firms · Fully offline · No internet needed</p>
+          <p className="modal-note">Trusted by 30+ construction firms · Works on any phone or computer</p>
         </div>
       </div>
 

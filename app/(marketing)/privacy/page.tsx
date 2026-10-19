@@ -25,7 +25,7 @@ export default function PrivacyPage() {
         <li><strong>Account data:</strong> name, email address, and password (stored only as a secure hash).</li>
         <li><strong>Payment data:</strong> processed by our payment partner Razorpay. We never see or store your full card, UPI, or bank credentials — we only receive a payment confirmation and reference id.</li>
         <li><strong>Usage data:</strong> basic technical logs (such as IP address and timestamps) used for security and rate-limiting.</li>
-        <li><strong>Product data:</strong> the project, expense, and accounting data you create is primarily stored locally in the desktop application; we store only what is necessary to operate your account and subscription.</li>
+        <li><strong>Product data:</strong> the project, expense and accounting data your firm enters in ARC PEM is stored on our cloud infrastructure, isolated per firm, encrypted in transit and backed up daily. It is used only to provide the service to your firm and is never sold. You can export it at any time.</li>
       </ul>
 
       <h2>2. How we use your information</h2>

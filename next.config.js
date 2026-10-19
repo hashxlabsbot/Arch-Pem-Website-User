@@ -34,6 +34,13 @@ const config = {
   experimental: {
     serverActions: { allowedOrigins },
   },
+  // ARC PEM is now one web product: the old edition page folds into the home page.
+  async redirects() {
+    return [
+      { source: '/web', destination: '/', permanent: true },
+      { source: '/compare/arc-pem-desktop-vs-web', destination: '/pricing', permanent: true },
+    ]
+  },
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }]
   },

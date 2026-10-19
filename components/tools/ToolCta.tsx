@@ -9,7 +9,7 @@ import { useDemoModal } from '@/components/marketing/DemoModalContext'
  */
 export default function ToolCta({
   heading = 'This tool is free forever. The full app goes much further.',
-  sub = 'ARC PEM tracks your BOQ, vendor bills, labour attendance, contractor ledgers and GST across every project — fully offline, on your own computer.',
+  sub = 'ARC PEM tracks your BOQ, vendor bills, labour attendance, contractor ledgers and GST across every project — live for the whole firm, on any phone or computer.',
 }: {
   heading?: string
   sub?: string

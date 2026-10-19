@@ -5,6 +5,7 @@ declare module 'next-auth' {
   interface User {
     role?:         string
     planName?:     string | null
+    hasDesktop?:   boolean
     tokenVersion?: number
   }
   interface Session {
@@ -15,6 +16,7 @@ declare module 'next-auth' {
       image?:   string | null
       role:     string
       planName: string | null
+      hasDesktop: boolean
     }
   }
 }
@@ -24,6 +26,7 @@ declare module 'next-auth/jwt' {
     id:           string
     role:         string
     planName:     string | null
+    hasDesktop?:   boolean
     tokenVersion: number
     checkedAt:    number
   }

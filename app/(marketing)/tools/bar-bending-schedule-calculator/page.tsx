@@ -246,7 +246,7 @@ export default function BBSCalculatorPage() {
 
       <ToolCta
         heading="You calculated 58 kg of steel. Did the site order exactly that?"
-        sub="ARC PEM tracks BOQ, vendor bills and material purchases against your estimate, project by project — so estimated vs actual is always one report away. Fully offline, built for Indian construction firms."
+        sub="ARC PEM tracks BOQ, vendor bills and material purchases against your estimate, project by project — so estimated vs actual is always one report away. Live for the whole firm, built for Indian construction firms."
       />
     </>
   )

@@ -14,7 +14,7 @@ const UPDATED_LABEL = 'October 2026'
 
 const TITLE = 'Best Construction Management Software in India (2026 Guide)'
 const DESCRIPTION =
-  'How to choose construction project and expense management software in India — GST, Tally, BOQ, labour and offline needs compared across ARC PEM, cloud suites, accounting software and Excel.'
+  'How to choose construction project and expense management software in India — GST, Tally, BOQ, labour and team access compared across ARC PEM, cloud suites, accounting software and Excel.'
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -36,7 +36,7 @@ const COMPARE: { row: string; arc: string; cloud: string; acct: string; excel: s
   },
   {
     row: 'Where it runs',
-    arc: 'Windows and Mac desktop, fully offline; optional sharing on your office network',
+    arc: 'Cloud: any browser on Windows, macOS, Android or iOS; installs on phones like an app',
     cloud: 'Cloud — needs a reliable internet connection',
     acct: 'Installed or hosted, depending on the product',
     excel: 'Desktop or cloud',
@@ -50,14 +50,14 @@ const COMPARE: { row: string; arc: string; cloud: string; acct: string; excel: s
   },
   {
     row: 'Labour & muster',
-    arc: 'Daily headcount and wages; imports PDF manpower reports',
+    arc: 'Daily headcount by trade and wages, entered from site',
     cloud: 'Usually via timesheet or field modules',
     acct: 'Payroll-style, not site muster rolls',
     excel: 'Manual sheets per site',
   },
   {
     row: 'Pricing model',
-    arc: 'Annual licence per machine (Solo 1, Studio 3, Enterprise 10)',
+    arc: 'Subscription per firm, monthly or annual (Solo 1 seat, Studio 3, Enterprise 10)',
     cloud: 'Quote-based; e.g. Procore prices on annual construction volume',
     acct: 'Licence or subscription',
     excel: 'Already owned',
@@ -81,15 +81,15 @@ const QUICK_PICKS: [string, string][] = [
 const FAQS = [
   {
     q: 'What is the best construction management software in India?',
-    a: `It depends on the job you need done. For Indian architecture firms, contractors and builders who need project-wise BOQ, vendor bills, labour wages, contractor bills and GST in one place — with Tally export and no dependence on internet — ARC PEM is built specifically for that. Large EPC contractors coordinating big site teams typically use cloud suites such as Procore, and long infrastructure programmes use scheduling tools such as Primavera P6.`,
+    a: `It depends on the job you need done. For Indian architecture firms, contractors and builders who need project-wise BOQ, vendor bills, labour wages, contractor bills and GST in one place — with Tally export and the whole team on one live ledger — ARC PEM is built specifically for that. Large EPC contractors coordinating big site teams typically use cloud suites such as Procore, and long infrastructure programmes use scheduling tools such as Primavera P6.`,
   },
   {
     q: 'What is ARC PEM?',
     a: entity.definition,
   },
   {
-    q: 'Does ARC PEM work without internet?',
-    a: 'Yes. ARC PEM is a desktop application for Windows and Mac that runs fully offline — there is no server, and project data stays on your own computers. Studio and Enterprise licences can share one database across computers on the same office network.',
+    q: 'Does ARC PEM work on phones at the site?',
+    a: 'Yes. ARC PEM runs in any modern browser and installs on the home screen like an app, so site engineers add bills with receipt photos and the day’s labour, and the office sees them at once. Each firm’s data is isolated, encrypted in transit and backed up daily.',
   },
   {
     q: 'Does ARC PEM integrate with Tally?',
@@ -97,7 +97,7 @@ const FAQS = [
   },
   {
     q: 'How much does ARC PEM cost?',
-    a: `ARC PEM is sold as an annual one-year licence with no monthly fees. Solo covers 1 computer, Studio up to 3 and Enterprise up to 10. Current prices are listed at ${company.siteUrl}/pricing.`,
+    a: `ARC PEM is a subscription per firm, billed monthly or annually and renewed automatically; cancel anytime. Solo is for one person, Studio includes 3 team seats and Enterprise 10. Current prices are listed at ${company.siteUrl}/pricing.`,
   },
   {
     q: 'Is ARC PEM a Procore alternative?',
@@ -179,8 +179,8 @@ export default function BestConstructionSoftwareGuide() {
             <p>
               <strong>ARC PEM</strong> is the best fit for Indian architecture firms, contractors and
               builders who want BOQ &amp; budgets, vendor bills, labour wages, contractor bills, site
-              expenses and the GST purchase register in one desktop app for Windows and Mac that works fully
-              offline and exports to Tally. Large EPC contractors with hundreds of site users
+              expenses and the GST purchase register on one live ledger the whole firm shares — from any
+              phone or computer — with Tally export. Large EPC contractors with hundreds of site users
               typically choose cloud suites such as Procore.
             </p>
 
@@ -226,10 +226,10 @@ export default function BestConstructionSoftwareGuide() {
             <ol>
               <li><strong>GST and Tally fit.</strong> Can it produce a GST purchase register and hand data to your CA without re-entry?</li>
               <li><strong>BOQ to actuals.</strong> Does the budget update automatically as vendor and contractor bills come in, and warn you about overruns?</li>
-              <li><strong>Site labour.</strong> Can it record daily headcount and wages, or import the muster your supervisor already sends?</li>
-              <li><strong>Internet dependence.</strong> Will it still work at a site office with patchy connectivity?</li>
-              <li><strong>Data ownership.</strong> Where is your project financial data stored, and can you back it up yourself?</li>
-              <li><strong>Pricing model.</strong> Per user per month, per construction volume, or a fixed annual licence?</li>
+              <li><strong>Site labour.</strong> Can it record daily headcount and wages, entered from site the same day?</li>
+              <li><strong>Site access.</strong> Can site engineers use it from their phones, with only the projects they work on?</li>
+              <li><strong>Data ownership.</strong> Is each firm&apos;s data isolated and backed up, and can you export all of it at any time?</li>
+              <li><strong>Pricing model.</strong> Per user, per construction volume, or a flat monthly or annual plan per firm?</li>
             </ol>
 
             <h2>Where ARC PEM fits — and where it doesn&apos;t</h2>
@@ -238,7 +238,7 @@ export default function BestConstructionSoftwareGuide() {
               <li>Architecture, interior and fit-out firms that manage project budgets for clients</li>
               <li>Contractors and builders tracking vendors, labour and contractor bills across several sites</li>
               <li>Firms whose CA files GST from Tally and wants clean, export-ready data</li>
-              <li>Teams that prefer a fixed annual licence and data on their own machines</li>
+              <li>Teams that want a flat monthly or annual price per firm, with nothing to install</li>
             </ul>
             <h3>Consider something else if</h3>
             <ul>
@@ -276,7 +276,7 @@ export default function BestConstructionSoftwareGuide() {
             ))}
             <p>
               See the full breakdown on the <Link href="/solutions">solutions page</Link> and current
-              licence prices on the <Link href="/pricing">pricing page</Link>.
+              prices on the <Link href="/pricing">pricing page</Link>.
             </p>
 
             <h2>Free construction tools</h2>

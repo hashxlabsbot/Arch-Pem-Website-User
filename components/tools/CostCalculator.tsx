@@ -276,7 +276,7 @@ export default function CostCalculator() {
       </p>
 
       <div className="inv-brand">
-        Generated using ARC PEM Free Tools (arcpem.com/tools) — offline expense &amp; budget tracking software for builders
+        Generated using ARC PEM Free Tools (arcpem.com/tools) — expense &amp; budget tracking software for builders
       </div>
     </div>
   )
