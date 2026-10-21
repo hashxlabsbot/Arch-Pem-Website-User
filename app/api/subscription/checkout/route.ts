@@ -47,6 +47,15 @@ export async function POST(req: NextRequest) {
   if (!plan.isActive) return NextResponse.json({ error: 'This plan is no longer offered' }, { status: 400 })
   if (plan.price <= 0) return NextResponse.json({ error: 'Contact sales for this plan' }, { status: 400 })
 
+  // Every payment gets a GST invoice, which needs the customer's billing name, address and state.
+  const billing = await db.billingProfile.findUnique({ where: { userId: session.user.id }, select: { id: true } })
+  if (!billing) {
+    return NextResponse.json(
+      { error: 'Add your billing details first: they are printed on your GST invoice.', code: 'billing_details_required' },
+      { status: 409 },
+    )
+  }
+
   // Extra site seats add nothing to a plan whose site seats are already unlimited: never charge for them.
   if (plan.maxSiteUsers >= 100_000) addons.siteSeats = 0
 

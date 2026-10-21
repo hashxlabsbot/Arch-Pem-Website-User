@@ -1,6 +1,8 @@
-import { ExternalLink, Globe, RefreshCcw } from 'lucide-react'
+import { Download, ExternalLink, FileText, Globe, RefreshCcw } from 'lucide-react'
 import type { Plan, WebSubscription } from '@prisma/client'
 import WebPlanPicker from '@/components/dashboard/WebPlanPicker'
+import BillingDetailsForm from '@/components/dashboard/BillingDetailsForm'
+import type { BillingDetails } from '@/lib/gst'
 import CancelAutoRenew from '@/components/dashboard/CancelAutoRenew'
 import { company } from '@/lib/company'
 import { env } from '@/lib/env'
@@ -27,6 +29,8 @@ export default function WebAppSubscription({
   userEmail,
   initialInterval,
   rules,
+  billing,
+  invoices,
 }: {
   rules: BillingRules
   initialInterval?: BillingInterval
@@ -34,6 +38,8 @@ export default function WebAppSubscription({
   plans: Plan[]
   userName: string
   userEmail: string
+  billing: BillingDetails | null
+  invoices: { id: string; invoiceNumber: string; planName: string; total: number; issuedAt: Date }[]
 }) {
   const appUrl = env.webAppUrl()
   const end = subscription?.currentPeriodEnd ?? null
@@ -125,8 +131,11 @@ export default function WebAppSubscription({
         )}
       </div>
 
+      <BillingDetailsForm initial={billing} />
+
       {plans.length > 0 && (
         <WebPlanPicker
+          billingReady={Boolean(billing)}
           plans={plans.map((p) => ({
             id: p.id,
             name: p.name,
@@ -156,6 +165,28 @@ export default function WebAppSubscription({
           gstNote={gstNote}
           initialInterval={initialInterval}
         />
+      )}
+
+      {invoices.length > 0 && (
+        <div className="rounded-2xl p-6 mt-6 bg-white" style={{ border: '1px solid #f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+          <div className="flex items-center gap-2 mb-3">
+            <FileText size={16} style={{ color: '#4f46e5' }} />
+            <span className="text-sm font-bold" style={{ color: '#0f172a' }}>GST invoices</span>
+          </div>
+          <ul className="flex flex-col">
+            {invoices.map((inv) => (
+              <li key={inv.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5" style={{ borderTop: '1px solid #f1f5f9' }}>
+                <div className="text-sm" style={{ color: '#475569' }}>
+                  <span className="font-semibold" style={{ color: '#0f172a' }}>{inv.invoiceNumber}</span> · {day(inv.issuedAt)} ·{' '}
+                  {inv.planName.replace(/^web\s+/i, 'ARC PEM ')} · ₹{inv.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+                <a href={`/api/invoices/${inv.id}`} className="flex items-center gap-1 text-xs font-bold no-underline" style={{ color: '#4f46e5' }}>
+                  <Download size={12} /> PDF
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </section>
   )

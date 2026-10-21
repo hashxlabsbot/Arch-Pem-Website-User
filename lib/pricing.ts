@@ -52,6 +52,19 @@ export const subscriptionPrice = (
       (interval === 'MONTH' ? 1 : rules.annualBilledMonths),
   )
 
+/**
+ * GST on ARC PEM subscriptions (SAC 998314). Prices are shown before GST and the tax is added at checkout, so what
+ * Razorpay charges is the price plus GST and the GST invoice (issued by the admin app) is worked back from that
+ * amount. Keep equal to the seller tax rate in admin → Settings, and to GST_RATE_PCT in the admin app's lib/pricing.ts.
+ */
+export const GST_RATE_PCT = 18
+
+/** GST on a price before tax (₹, to the paisa). */
+export const gstOn = (price: number): number => Math.round(price * GST_RATE_PCT) / 100
+
+/** What Razorpay charges for a price before tax, in paise: the price plus GST. */
+export const chargePaise = (price: number): number => Math.round(price * (100 + GST_RATE_PCT))
+
 /** Percentage saved by paying annually instead of monthly (0 when annual has no discount). */
 export const annualSavingPct = (rules: BillingRules = DEFAULT_BILLING_RULES): number =>
   Math.round((1 - rules.annualBilledMonths / MONTHS_PER_YEAR) * 100)

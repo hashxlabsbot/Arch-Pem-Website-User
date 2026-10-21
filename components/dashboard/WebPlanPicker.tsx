@@ -5,6 +5,7 @@ import { CheckCircle2, Minus, Plus } from 'lucide-react'
 import SubscribeButton from '@/components/dashboard/SubscribeButton'
 import {
   annualSavingPct,
+  gstOn,
   subscriptionPrice,
   type BillingInterval,
   type BillingRules,
@@ -31,7 +32,7 @@ export type CurrentSubscription = {
   extraSiteSeats: number
 }
 
-const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`
+const inr = (n: number) => `₹${n.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
 const shortName = (name: string) => name.replace(/^web\s+/i, '')
 const cleanFeature = (f: string) => f.replace(/\bWeb (Solo|Starter|Studio|Business|Enterprise)\b/g, '$1')
 
@@ -69,7 +70,10 @@ export default function WebPlanPicker({
   trialAvailable,
   salesEmail,
   rules,
+  billingReady,
 }: {
+  /** Billing details for the GST invoice are on file; checkout is refused without them. */
+  billingReady: boolean
   rules: BillingRules
   initialInterval?: BillingInterval
   gstNote: string
@@ -167,6 +171,11 @@ export default function WebPlanPicker({
                     <span className="text-xs mb-1.5" style={{ color: '#94a3b8' }}>/{per}</span>
                   </div>
                 )}
+                {!quoted && (
+                  <p className="text-[11px] mb-1" style={{ color: '#94a3b8' }}>
+                    + {inr(gstOn(price))} GST · {inr(price + gstOn(price))} charged per {per}
+                  </p>
+                )}
                 <p className="text-[11px] mb-2 font-semibold" style={{ color: '#6366f1' }}>
                   {quoted ? 'Annual agreement' : `${seats} team seats · ${siteSeats} site seats`}
                 </p>
@@ -191,6 +200,14 @@ export default function WebPlanPicker({
                   <div className="rounded-xl py-2.5 text-center text-sm font-bold" style={{ background: '#eef2ff', color: '#4f46e5' }}>
                     Your current plan
                   </div>
+                ) : !billingReady ? (
+                  <a
+                    href="#billing-details"
+                    className="w-full rounded-xl py-2.5 text-center text-sm font-bold no-underline"
+                    style={{ border: '1px solid #e2e8f0', color: '#64748b', background: '#f8fafc' }}
+                  >
+                    Add billing details to continue
+                  </a>
                 ) : (
                   <SubscribeButton
                     planId={plan.id}

@@ -1,6 +1,7 @@
-// Idempotent seed for the three subscription plans.
-// Upserts by unique `name` — never deletes users or other plans, so it is safe
-// to run against the shared production (Neon) database. Re-running just updates.
+// Idempotent seed for the ARC PEM web plans (Starter, Studio, Business, Enterprise).
+// Upserts by unique `name` and touches only these web plans: the old desktop plans (Solo, Studio, Enterprise)
+// and their customers are left exactly as they are. Safe to run against the shared production (Neon) database;
+// re-running just updates.
 //
 //   node scripts/seed-plans.mjs
 //
@@ -12,67 +13,9 @@ import { PrismaClient } from '@prisma/client'
 
 const db = new PrismaClient()
 
-// Monthly BASE price only. ARC PEM is sold as a one-year license: the website
-// charges and displays the annual price (= monthly base × 12, no discount) at
-// render time, so admin only ever has to set the monthly base price here / in
-// the admin UI. See lib/pricing.ts (annualPrice).
+// Monthly price before GST (₹). The website derives every amount from it (lib/pricing.ts): monthly = price,
+// annual = price × the annual billed months, plus add-on seats, plus GST at checkout.
 const plans = [
-  {
-    name: 'Solo',
-    price: 4999,
-    period: 'month',
-    description: 'For individual architects managing up to 10 active projects on a single machine.',
-    features: [
-      'Single machine license',
-      'Up to 10 active projects',
-      'BOQ + all expense ledgers',
-      'PDF & Excel exports',
-      'Vendor directory',
-      '12 months of updates',
-      'Email support',
-    ],
-    maxProjects: 10,
-    maxUsers: 1,
-    isActive: true,
-  },
-  {
-    name: 'Studio',
-    price: 9999,
-    period: 'month',
-    description: 'For studios and construction firms with teams — multi-user sharing across up to 5 machines.',
-    features: [
-      'Up to 5 machine licenses',
-      'Up to 30 active projects',
-      'All exports incl. Tally CSV',
-      'Multi-user database sharing',
-      'GST Purchase Register',
-      'Pending Payments Report',
-      'Priority email support',
-      'PIN lock & security',
-    ],
-    maxProjects: 30,
-    maxUsers: 5,
-    isActive: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 19999,
-    period: 'month',
-    description: 'For large firms running up to 50 projects across multiple offices with SLA support.',
-    features: [
-      'Up to 10 machine licenses',
-      'Up to 50 active projects',
-      'Everything in Studio',
-      'Custom branding on reports',
-      'Dedicated onboarding manager',
-      'API / custom integration',
-      'SLA support agreement',
-      'Machine transfer support',
-    ],
-    maxProjects: 50,
-    maxUsers: 10,
-    isActive: true,
-  },
   // ── ARC PEM (app.arcpem.com): one subscription per firm, billed monthly or annually (annual = 10 months).
   // maxUsers = full seats; maxSiteUsers = site seats (Site engineer, Supervisor). 100000 = unlimited.
   // Keep the limits in step with PLAN_LIMITS in ARCPEM-Web/src/lib/plans.ts.

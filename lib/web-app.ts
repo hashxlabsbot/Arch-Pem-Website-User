@@ -15,7 +15,7 @@ import { Prisma, type Plan, type WebSubscription } from '@prisma/client'
 import { db } from '@/lib/db'
 import { env } from '@/lib/env'
 import { logger } from '@/lib/logger'
-import { isBillingInterval, NO_ADDONS, subscriptionPrice, type BillingInterval, type SeatAddons } from '@/lib/pricing'
+import { chargePaise, isBillingInterval, NO_ADDONS, subscriptionPrice, type BillingInterval, type SeatAddons } from '@/lib/pricing'
 import { getBillingRules } from '@/lib/billing-rules'
 
 export const WEB_TIERS = ['SOLO', 'STUDIO', 'BUSINESS', 'ENTERPRISE'] as const
@@ -200,7 +200,7 @@ export type SubscriptionCharge =
 /**
  * Checks a captured charge of a Razorpay subscription and works out what it pays for. The firm, plan and interval
  * come only from the subscription's notes, which this site writes when it creates the subscription; the amount must
- * be the plan's price for that interval.
+ * be the plan's price for that interval plus GST.
  */
 export async function readSubscriptionCharge(
   client: Prisma.TransactionClient | typeof db,
@@ -219,7 +219,7 @@ export async function readSubscriptionCharge(
   // The Razorpay plan behind a subscription fixes its price when it is sold, so accept that price as well as today's.
   const sold = await client.razorpayPlan.findFirst({ where: { planId, billingInterval: interval, amountPaise: paid } })
   const addons = readAddons(notes)
-  if (!sold && paid !== Math.round(subscriptionPrice(plan.price, interval, addons, await getBillingRules(client)) * 100)) {
+  if (!sold && paid !== chargePaise(subscriptionPrice(plan.price, interval, addons, await getBillingRules(client)))) {
     return { ok: false, reason: 'amount does not match the plan price' }
   }
   return { ok: true, userId, plan, interval, addons, amount: paid / 100, firstCharge: (subscription.paid_count ?? 1) <= 1 }

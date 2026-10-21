@@ -36,6 +36,7 @@ model User {
   planExpiresAt DateTime?
   webSubscription WebSubscription?
   billingProfile  BillingProfile?
+  invoices        Invoice[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -198,6 +199,46 @@ model BillingProfile {
   email        String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+// GST invoices, issued by the admin app for every payment (see its lib/invoice.ts). Read-only here: customers
+// list and download theirs from the dashboard.
+model Invoice {
+  id            String   @id @default(cuid())
+  invoiceNumber String   @unique
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Links the approved PendingPayment that triggered this invoice (one invoice per payment).
+  paymentId     String?  @unique
+  planName      String
+
+  // Snapshot of buyer details at issue time (so later profile edits never alter past invoices).
+  buyerName      String
+  buyerGstin     String?
+  buyerAddress   String
+  buyerStateCode String
+
+  // Snapshot of seller details at issue time.
+  sellerName      String
+  sellerGstin     String
+  sellerAddress   String
+  sellerStateCode String
+
+  placeOfSupply String
+  hsnSac        String
+  taxRate       Float
+  taxableAmount Float
+  cgst          Float    @default(0)
+  sgst          Float    @default(0)
+  igst          Float    @default(0)
+  total         Float
+  currency      String   @default("INR")
+  // Rendered PDF bytes, served on download.
+  pdf           Bytes
+  issuedAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([issuedAt])
 }
 
 // Demo requests submitted from the "Book a Free Demo" modal — written here,

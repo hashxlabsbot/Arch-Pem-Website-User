@@ -7,6 +7,8 @@
  *     before going live. Razorpay verifies the legal entity name, a reachable
  *     business address, phone, and support email against your account.
  */
+import { GST_RATE_PCT } from './pricing'
+
 export const company = {
   /** Public product/brand name. */
   brand: 'ARC PEM',
@@ -41,9 +43,9 @@ export const company = {
   /** Tax registration — shown in the footer/invoices for Indian SaaS. */
   gstin: '', // TODO: 15-char GSTIN, or leave blank to hide
 
-  /** Whether displayed prices already include 18% GST. Drives the pricing note. */
+  /** Displayed prices are before GST; checkout adds it (lib/pricing.ts chargePaise). Drives the pricing notes. */
   pricesIncludeGst: false,
-  gstRatePct: 18,
+  gstRatePct: GST_RATE_PCT,
 
   /** Refund stance, surfaced in the Refund Policy + at checkout. */
   refund: {

@@ -11,13 +11,19 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
   const session = await getActiveSession()
   if (!session) return null
 
-  const [user, plans, rules] = await Promise.all([
+  const [user, plans, rules, invoices] = await Promise.all([
     db.user.findUnique({
       where: { id: session.user.id },
-      include: { plan: true, webSubscription: { include: { plan: true } } },
+      include: { plan: true, webSubscription: { include: { plan: true } }, billingProfile: true },
     }),
     db.plan.findMany({ where: { isActive: true, product: 'WEB' } }).then(sortByTier),
     getBillingRules(),
+    db.invoice.findMany({
+      where: { userId: session.user.id },
+      orderBy: { issuedAt: 'desc' },
+      take: 24,
+      select: { id: true, invoiceNumber: true, planName: true, total: true, issuedAt: true },
+    }),
   ])
   // /pricing sends ?billing=annual|monthly with the plan the visitor picked.
   const billing: BillingInterval | undefined =
@@ -33,6 +39,8 @@ export default async function SubscriptionPage({ searchParams }: { searchParams:
         userEmail={session.user.email ?? ''}
         initialInterval={billing}
         rules={rules}
+        billing={user?.billingProfile ?? null}
+        invoices={invoices}
       />
 
       {/* Customers from before ARC PEM moved to the web keep seeing their desktop licence here. */}

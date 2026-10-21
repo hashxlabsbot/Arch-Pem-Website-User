@@ -10,7 +10,7 @@ import type Razorpay from 'razorpay'
 import type { Plan } from '@prisma/client'
 import { db } from '@/lib/db'
 import { isDuplicatePayment } from '@/lib/web-app'
-import { subscriptionPrice, type BillingInterval, type BillingRules, type SeatAddons } from '@/lib/pricing'
+import { chargePaise, subscriptionPrice, type BillingInterval, type BillingRules, type SeatAddons } from '@/lib/pricing'
 
 /** How many cycles a subscription runs before Razorpay asks the customer to authorise again (~10 years). */
 const TOTAL_COUNT: Record<BillingInterval, number> = { MONTH: 120, YEAR: 10 }
@@ -29,7 +29,8 @@ export async function ensureRazorpayPlan(
   addons: SeatAddons,
   rules: BillingRules,
 ) {
-  const amountPaise = Math.round(subscriptionPrice(plan.price, interval, addons, rules) * 100)
+  // Prices are before GST: the Razorpay plan charges the price plus GST, which the GST invoice then itemises.
+  const amountPaise = chargePaise(subscriptionPrice(plan.price, interval, addons, rules))
   const known = await db.razorpayPlan.findUnique({
     where: { planId_billingInterval_amountPaise: { planId: plan.id, billingInterval: interval, amountPaise } },
   })
