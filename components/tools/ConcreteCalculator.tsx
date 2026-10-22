@@ -42,7 +42,7 @@ export default function ConcreteCalculator() {
   })
 
   // Debounced URL sync — lets a contractor share a link that reproduces this exact calculation.
-  const syncTimer = useRef<ReturnType<typeof setTimeout>>()
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useEffect(() => {
     if (syncTimer.current) clearTimeout(syncTimer.current)
     syncTimer.current = setTimeout(() => {

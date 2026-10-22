@@ -92,7 +92,7 @@ export default function CostCalculator() {
   useEffect(() => setMounted(true), [])
 
   // Debounced URL sync — lets a contractor share a link that reproduces this exact estimate.
-  const syncTimer = useRef<ReturnType<typeof setTimeout>>()
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useEffect(() => {
     if (syncTimer.current) clearTimeout(syncTimer.current)
     syncTimer.current = setTimeout(() => {

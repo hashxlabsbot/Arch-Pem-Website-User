@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useEffect, Suspense } from 'react'
 import { signIn, getProviders } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -325,9 +326,9 @@ function LoginForm() {
       </div>
 
       <p style={{ textAlign: 'center', marginTop: '14px' }}>
-        <a href="/" style={{ fontSize: '0.75rem', color: '#cbd5e1', textDecoration: 'none', fontWeight: 500 }}>
+        <Link href="/" style={{ fontSize: '0.75rem', color: '#cbd5e1', textDecoration: 'none', fontWeight: 500 }}>
           ← Back to website
-        </a>
+        </Link>
       </p>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

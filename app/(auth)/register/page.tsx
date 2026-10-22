@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useRef, useState, Suspense } from 'react'
 import { signIn, getProviders } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -494,7 +495,7 @@ function RegisterForm() {
         <a href="/login" style={{ color: '#6366f1', fontWeight: 800, textDecoration: 'none' }}>Sign in →</a>
       </p>
       <p style={{ textAlign: 'center', marginTop: '10px' }}>
-        <a href="/" style={{ fontSize: '0.74rem', color: '#cbd5e1', textDecoration: 'none' }}>← Back to website</a>
+        <Link href="/" style={{ fontSize: '0.74rem', color: '#cbd5e1', textDecoration: 'none' }}>← Back to website</Link>
       </p>
 
       {/* ── Legal modal ── */}

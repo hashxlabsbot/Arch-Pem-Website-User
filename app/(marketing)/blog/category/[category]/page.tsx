@@ -13,7 +13,8 @@ export async function generateStaticParams() {
   return (await getCategories()).map((c) => ({ category: c.slug }))
 }
 
-export async function generateMetadata({ params }: { params: { category: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ category: string }> }): Promise<Metadata> {
+  const params = await props.params
   const cat = (await getCategories()).find((c) => c.slug === params.category)
   const name = cat?.name ?? params.category
   const title = `${name} — ARC PEM Blog`
@@ -27,7 +28,8 @@ export async function generateMetadata({ params }: { params: { category: string 
   }
 }
 
-export default async function BlogCategoryPage({ params }: { params: { category: string } }) {
+export default async function BlogCategoryPage(props: { params: Promise<{ category: string }> }) {
+  const params = await props.params
   const base = company.siteUrl.replace(/\/$/, '')
   const categories = await getCategories()
   const cat = categories.find((c) => c.slug === params.category)

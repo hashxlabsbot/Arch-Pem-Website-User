@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import LogoMark from '@/components/LogoMark'
 import { company } from '@/lib/company'
 import { ClipboardIcon, ReceiptIcon, FileIcon, CompassIcon } from '@/components/icons'
@@ -57,9 +58,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         }}>
 
           {/* Logo */}
-          <a href="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none', marginBottom: '28px' }}>
+          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none', marginBottom: '28px' }}>
             <LogoMark size={18} onDark />
-          </a>
+          </Link>
 
           {/* Headline */}
           <div style={{ marginBottom: '20px' }}>
@@ -189,9 +190,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           width: '100%', maxWidth: '420px',
           marginBottom: '20px', position: 'relative', zIndex: 1,
         }}>
-          <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
             <LogoMark size={18} />
-          </a>
+          </Link>
         </div>
 
         {/* Form card */}

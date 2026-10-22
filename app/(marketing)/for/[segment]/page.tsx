@@ -17,7 +17,8 @@ export function generateStaticParams() {
 
 const find = (slug: string) => SEGMENTS.find((s) => s.slug === slug)
 
-export function generateMetadata({ params }: { params: { segment: string } }): Metadata {
+export async function generateMetadata(props: { params: Promise<{ segment: string }> }): Promise<Metadata> {
+  const params = await props.params
   const s = find(params.segment)
   if (!s) return {}
   const url = `/for/${s.slug}`
@@ -30,7 +31,8 @@ export function generateMetadata({ params }: { params: { segment: string } }): M
   }
 }
 
-export default function SegmentPage({ params }: { params: { segment: string } }) {
+export default async function SegmentPage(props: { params: Promise<{ segment: string }> }) {
+  const params = await props.params
   const s = find(params.segment)
   if (!s) notFound()
   const base = company.siteUrl.replace(/\/$/, '')

@@ -7,7 +7,8 @@ import { annualPrice, type BillingInterval } from '@/lib/pricing'
 import { sortByTier } from '@/lib/plan-order'
 import { getBillingRules } from '@/lib/billing-rules'
 
-export default async function SubscriptionPage({ searchParams }: { searchParams: { billing?: string } }) {
+export default async function SubscriptionPage(props: { searchParams: Promise<{ billing?: string }> }) {
+  const searchParams = await props.searchParams
   const session = await getActiveSession()
   if (!session) return null
 

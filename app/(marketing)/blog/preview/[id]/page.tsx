@@ -11,13 +11,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 }
 
-export default async function BlogPreviewPage({
-  params,
-  searchParams,
-}: {
-  params: { id: string }
-  searchParams: { token?: string }
-}) {
+export default async function BlogPreviewPage(
+  props: {
+    params: Promise<{ id: string }>
+    searchParams: Promise<{ token?: string }>
+  }
+) {
+  const searchParams = await props.searchParams
+  const params = await props.params
   if (!verifyPreviewToken(params.id, searchParams.token)) notFound()
 
   const post = await getPostByIdForPreview(params.id)

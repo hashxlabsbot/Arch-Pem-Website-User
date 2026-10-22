@@ -17,7 +17,8 @@ export function generateStaticParams() {
 
 const find = (slug: string) => COMPARISONS.find((c) => c.slug === slug)
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const params = await props.params
   const c = find(params.slug)
   if (!c) return {}
   const url = `/compare/${c.slug}`
@@ -30,7 +31,8 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   }
 }
 
-export default function ComparePage({ params }: { params: { slug: string } }) {
+export default async function ComparePage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params
   const c = find(params.slug)
   if (!c) notFound()
   const base = company.siteUrl.replace(/\/$/, '')

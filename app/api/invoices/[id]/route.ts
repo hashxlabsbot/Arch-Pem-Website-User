@@ -5,7 +5,8 @@ import { db } from '@/lib/db'
 export const dynamic = 'force-dynamic'
 
 /** Downloads one of the signed-in customer's GST invoices as a PDF. Someone else's invoice is simply not found. */
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params
   const session = await getActiveSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 

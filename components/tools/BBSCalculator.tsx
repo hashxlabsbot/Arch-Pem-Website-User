@@ -308,7 +308,7 @@ export default function BBSCalculator() {
   }, [])
 
   // Debounced URL sync — lets an engineer share a link that reproduces this exact schedule.
-  const syncTimer = useRef<ReturnType<typeof setTimeout>>()
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useEffect(() => {
     if (syncTimer.current) clearTimeout(syncTimer.current)
     syncTimer.current = setTimeout(() => {

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { useState } from 'react'
@@ -53,7 +54,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
 
         {/* Logo */}
         <div className="px-5 py-5 flex-shrink-0">
-          <a href="/" className="flex items-center gap-3 no-underline group">
+          <Link href="/" className="flex items-center gap-3 no-underline group">
             <img
               src="/arc-icon.png"
               alt="ARC PEM"
@@ -73,7 +74,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
                 Project Expense Manager
               </span>
             </div>
-          </a>
+          </Link>
         </div>
 
         {/* Divider */}

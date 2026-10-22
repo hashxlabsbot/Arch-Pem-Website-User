@@ -30,7 +30,8 @@ export function generateStaticParams() {
   return GLOSSARY.map((t) => ({ term: t.slug }))
 }
 
-export function generateMetadata({ params }: { params: { term: string } }): Metadata {
+export async function generateMetadata(props: { params: Promise<{ term: string }> }): Promise<Metadata> {
+  const params = await props.params
   const t = glossaryTerm(params.term)
   if (!t) return {}
   const url = `/glossary/${t.slug}`
@@ -43,7 +44,8 @@ export function generateMetadata({ params }: { params: { term: string } }): Meta
   }
 }
 
-export default function GlossaryTermPage({ params }: { params: { term: string } }) {
+export default async function GlossaryTermPage(props: { params: Promise<{ term: string }> }) {
+  const params = await props.params
   const t = glossaryTerm(params.term)
   if (!t) notFound()
   const base = company.siteUrl.replace(/\/$/, '')
