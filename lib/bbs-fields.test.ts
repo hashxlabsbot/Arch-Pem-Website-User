@@ -118,8 +118,7 @@ describe('hydrateProjectMember — never rewrites a saved schedule', () => {
 
   it('keeps the stored rows when the fields are missing or corrupt', () => {
     const pm = legacyMember('beam', LEGACY_BEAM_FIELDS)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const broken: ProjectMember = { ...pm, fields: undefined as any }
+    const broken: ProjectMember = { ...pm, fields: undefined as unknown as ProjectMember['fields'] }
     const after = hydrateProjectMember(broken)
     expect(after.result.totalKg).toBeCloseTo(pm.result.totalKg, 6)
     expect(after.schemaVersion).toBeUndefined()

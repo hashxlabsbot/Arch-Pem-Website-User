@@ -289,7 +289,7 @@ export default function SettingsPage() {
             />
             {confirmPw && confirmPw !== newPw && (
               <span style={{ fontSize: '0.72rem', color: '#ef4444', marginTop: '5px', display: 'block' }}>
-                Passwords don't match
+                Passwords don&apos;t match
               </span>
             )}
           </div>

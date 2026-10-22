@@ -136,7 +136,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
               {/* Notification list */}
               {visible.length === 0 ? (
                 <div style={{ padding: '28px 18px', textAlign: 'center', color: '#94a3b8', fontSize: '0.84rem' }}>
-                  You're all caught up!
+                  You&apos;re all caught up!
                 </div>
               ) : (
                 <div>

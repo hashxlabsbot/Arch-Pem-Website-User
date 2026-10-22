@@ -125,7 +125,7 @@ export default function SupportPage() {
               Support Center
             </h1>
             <p style={{ color: '#94a3b8', fontSize: '0.84rem', margin: 0, marginTop: '2px' }}>
-              We're here to help — reach us any way you prefer
+              We&apos;re here to help — reach us any way you prefer
             </p>
           </div>
         </div>

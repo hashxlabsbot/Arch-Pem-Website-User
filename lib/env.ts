@@ -55,6 +55,46 @@ if (typeof window === 'undefined') {
   }
 }
 
+/**
+ * What a live arcpem.com needs to take payments, sign owners in to the ARC PEM app, keep the app in sync and send
+ * email. Without any one of these the site still renders, but quietly drops payments, sign-ins, syncs or emails.
+ */
+const LAUNCH_REQUIRED: EnvKey[] = [
+  'RAZORPAY_KEY_ID',
+  'RAZORPAY_KEY_SECRET',
+  'RAZORPAY_WEBHOOK_SECRET',
+  'SMTP_HOST',
+  'WEB_APP_URL',
+  'WEB_APP_WEBHOOK_SECRET',
+  'OIDC_CLIENT_ID',
+  'OIDC_CLIENT_SECRET',
+  'OIDC_PRIVATE_KEY',
+  'CRON_SECRET',
+]
+
+/** Problems with the production configuration, one readable line each (empty when it is complete). */
+export function launchConfigProblems(source: Record<string, string | undefined> = process.env): string[] {
+  const has = (k: string) => Boolean(source[k]?.trim())
+  const problems = LAUNCH_REQUIRED.filter((k) => !has(k)).map((k) => `${k} is not set`)
+  const secret = source.NEXTAUTH_SECRET?.trim() ?? ''
+  if (secret && (secret.length < 32 || /replace|change-?me|secret$/i.test(secret)))
+    problems.push('NEXTAUTH_SECRET must be a random value of at least 32 characters (openssl rand -base64 32)')
+  if (has('WEB_APP_WEBHOOK_SECRET') && !source.WEB_APP_WEBHOOK_SECRET!.split(',').some((s) => s.trim().length >= 32))
+    problems.push('WEB_APP_WEBHOOK_SECRET must be at least 32 characters (openssl rand -hex 32)')
+  if (has('NEXTAUTH_URL') && !source.NEXTAUTH_URL!.startsWith('https://'))
+    problems.push('NEXTAUTH_URL must be the https:// address of the site')
+  return problems
+}
+
+// Checked when the production server starts, not during `next build` (which runs without production secrets), so a
+// deploy missing one fails at once and says which.
+if (typeof window === 'undefined' && isProd && process.env.NEXT_PHASE !== 'phase-production-build') {
+  const problems = launchConfigProblems()
+  if (problems.length > 0) {
+    throw new Error(`[env] Production configuration is incomplete:\n  - ${problems.join('\n  - ')}\nSee docs/LAUNCH.md in ARCPEM-Web.`)
+  }
+}
+
 function get(key: EnvKey): string | undefined {
   const v = process.env[key]
   return v && v.trim() !== '' ? v : undefined
