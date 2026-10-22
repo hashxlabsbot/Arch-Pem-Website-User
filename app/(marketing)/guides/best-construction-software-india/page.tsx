@@ -14,14 +14,14 @@ const UPDATED_LABEL = 'October 2026'
 
 const TITLE = 'Best Construction Management Software in India (2026 Guide)'
 const DESCRIPTION =
-  'How to choose construction project and expense management software in India — GST, Tally, BOQ, labour and team access compared across ARC PEM, cloud suites, accounting software and Excel.'
+  'How to choose construction software in India: GST, Tally, BOQ, labour and team access compared across ARC PEM, cloud suites, accounting tools and Excel.'
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: PATH },
-  openGraph: { type: 'article', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: PATH, images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
+  openGraph: { type: 'article', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: PATH },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
 }
 
 // Comparison cells describe each category's typical shape, not every vendor

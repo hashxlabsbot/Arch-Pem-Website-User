@@ -18,7 +18,7 @@ export const WEB_APP_URL = 'https://app.arcpem.com'
  * Feeds the sitemap's lastModified so crawlers see an honest freshness date
  * instead of "changed today" on every request.
  */
-export const CONTENT_UPDATED = '2026-10-16'
+export const CONTENT_UPDATED = '2026-10-22'
 
 export const entity = {
   name: company.brand,

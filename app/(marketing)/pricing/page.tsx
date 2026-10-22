@@ -12,7 +12,7 @@ export const revalidate = 3600
 
 const TITLE = 'Pricing — Monthly & Annual Plans'
 const DESCRIPTION =
-  'ARC PEM pricing in India: one subscription per firm (Solo, Studio, Enterprise) by team seats and active projects. Pay monthly or annually by card, UPI AutoPay or e-mandate; auto-renews, cancel anytime.'
+  'ARC PEM pricing: one subscription per firm (Starter, Studio, Business) by team seats and projects. Pay monthly or annually; cancel anytime.'
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -22,13 +22,11 @@ export const metadata: Metadata = {
     title: `${TITLE} · ARC PEM`,
     description: DESCRIPTION,
     url: '/pricing',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${TITLE} · ARC PEM`,
     description: DESCRIPTION,
-    images: ['/og-image.jpg'],
   },
 }
 

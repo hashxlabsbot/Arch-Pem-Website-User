@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import PageSchema from '@/components/seo/PageSchema'
 
 const TITLE = 'About Us — Customer Success Stories'
 const DESCRIPTION =
@@ -15,6 +16,8 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
+    <>
+    <PageSchema type="AboutPage" path="/about" name={TITLE} description={DESCRIPTION} trail={[{ name: 'About', path: '/about' }]} />
     <section className="section bg-gray" id="testimonials" style={{ paddingTop: '120px' }}>
       <div className="container">
         <div className="img-hero fade-up">
@@ -55,5 +58,6 @@ export default function AboutPage() {
         </div>
       </div>
     </section>
+    </>
   )
 }

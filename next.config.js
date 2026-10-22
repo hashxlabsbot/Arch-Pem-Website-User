@@ -39,6 +39,10 @@ const config = {
     return [
       { source: '/web', destination: '/', permanent: true },
       { source: '/compare/arc-pem-desktop-vs-web', destination: '/pricing', permanent: true },
+      // Links inside published blog posts that point at URLs that never existed (or were renamed). Kept so visitors and
+      // crawlers land on the right page; the post text should still be corrected in the admin editor.
+      { source: '/blog/bar-bending-schedule-bbs-explained', destination: '/blog/bar-bending-schedule-mechanism-explained', permanent: true },
+      { source: '/tools/gst-contractor-bill-generator', destination: '/tools/contractor-bill-generator', permanent: true },
     ]
   },
   async headers() {

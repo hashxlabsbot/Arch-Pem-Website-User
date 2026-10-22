@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Mail, Phone, MapPin, Building2, Clock } from 'lucide-react'
 import { company, formatAddress, hasAddress } from '@/lib/company'
+import PageSchema from '@/components/seo/PageSchema'
 
 const DESCRIPTION =
   'Talk to the ARC PEM team at Hash X Labs, Faridabad — sales, demos, support and billing for ARC PEM. Mon–Sat, 10:00–18:00 IST.'
@@ -32,6 +33,8 @@ export default function ContactPage() {
   ]
 
   return (
+    <>
+    <PageSchema type="ContactPage" path="/contact" name="Contact Us" description={DESCRIPTION} trail={[{ name: 'Contact', path: '/contact' }]} />
     <section className="section" style={{ paddingTop: '120px', paddingBottom: '80px' }}>
       <div className="container" style={{ maxWidth: '860px' }}>
         <span className="badge badge-indigo">Contact</span>
@@ -106,5 +109,6 @@ export default function ContactPage() {
         </p>
       </div>
     </section>
+    </>
   )
 }

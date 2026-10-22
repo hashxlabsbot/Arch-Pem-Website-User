@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: { category: string 
     description,
     alternates: { canonical: `/blog/category/${params.category}` },
     openGraph: { title, description, url: `/blog/category/${params.category}` },
-    twitter: { title, description },
+    twitter: { card: 'summary_large_image', title, description },
   }
 }
 

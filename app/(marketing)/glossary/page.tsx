@@ -9,14 +9,14 @@ import '../tools/tools.css'
 
 const TITLE = 'Construction Finance Glossary — BOQ, RA Bill, GSTR-2B & More'
 const DESCRIPTION =
-  'Plain-English definitions of the construction and GST terms Indian architects, contractors and builders use every day: BOQ, bar bending schedule, RA bill, measurement book, retention, GSTR-2B, ITC and more.'
+  'Plain-English definitions of the construction and GST terms Indian builders use daily: BOQ, RA bill, retention, GSTR-2B, ITC, work order and more.'
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: '/glossary' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/glossary', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/glossary' },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
 }
 
 export default function GlossaryPage() {

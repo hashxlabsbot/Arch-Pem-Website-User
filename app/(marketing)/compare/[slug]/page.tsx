@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { fit } from '@/lib/seo'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import JsonLd from '@/components/seo/JsonLd'
@@ -22,10 +23,10 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const url = `/compare/${c.slug}`
   return {
     title: c.title,
-    description: c.description,
+    description: fit(c.description, 158),
     alternates: { canonical: url },
-    openGraph: { type: 'article', title: `${c.title} · ARC PEM`, description: c.description, url, images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-    twitter: { card: 'summary_large_image', title: `${c.title} · ARC PEM`, description: c.description, images: ['/og-image.jpg'] },
+    openGraph: { type: 'article', title: `${c.title} · ARC PEM`, description: c.description, url },
+    twitter: { card: 'summary_large_image', title: `${c.title} · ARC PEM`, description: c.description },
   }
 }
 

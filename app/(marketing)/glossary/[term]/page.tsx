@@ -1,15 +1,30 @@
 import type { Metadata } from 'next'
+import { fit } from '@/lib/seo'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import JsonLd from '@/components/seo/JsonLd'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
 import { GLOSSARY, glossaryTerm } from '@/lib/glossary'
+import { SEGMENTS, COMPARISONS } from '@/lib/aeo-pages'
 import { CONTENT_UPDATED, ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
 import { LIVE_TOOLS } from '@/lib/tools'
 import '../../tools/tools.css'
 
 export const dynamicParams = false
+
+// Which audience pages a term sends readers to: GST terms to the firms that file through a CA and use Tally, budgeting
+// terms to architects and interiors, and everything else to the contractors and builders who run sites.
+const GST_TERMS = new Set(['gst-purchase-register', 'gstr-2b', 'input-tax-credit', 'vendor-reconciliation'])
+const BUDGET_TERMS = new Set(['bill-of-quantities', 'cost-per-square-foot', 'rate-analysis', 'schedule-of-rates', 'provisional-sum', 'contingency', 'budget-vs-actual', 'cost-overrun'])
+function audienceFor(slug: string) {
+  const segs = BUDGET_TERMS.has(slug) ? ['architects', 'interior-designers'] : ['contractors', 'builders']
+  const cmp = GST_TERMS.has(slug) ? 'arc-pem-and-tally' : 'arc-pem-vs-excel'
+  return {
+    segments: segs.map((x) => SEGMENTS.find((s) => s.slug === x)).filter((x): x is NonNullable<typeof x> => Boolean(x)),
+    comparison: COMPARISONS.find((c) => c.slug === cmp),
+  }
+}
 
 export function generateStaticParams() {
   return GLOSSARY.map((t) => ({ term: t.slug }))
@@ -21,10 +36,10 @@ export function generateMetadata({ params }: { params: { term: string } }): Meta
   const url = `/glossary/${t.slug}`
   return {
     title: t.question,
-    description: t.definition,
+    description: fit(t.definition, 158),
     alternates: { canonical: url },
-    openGraph: { type: 'article', title: `${t.question} · ARC PEM`, description: t.definition, url, images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-    twitter: { card: 'summary_large_image', title: `${t.question} · ARC PEM`, description: t.definition, images: ['/og-image.jpg'] },
+    openGraph: { type: 'article', title: `${t.question} · ARC PEM`, description: t.definition, url },
+    twitter: { card: 'summary_large_image', title: `${t.question} · ARC PEM`, description: t.definition },
   }
 }
 
@@ -34,6 +49,7 @@ export default function GlossaryTermPage({ params }: { params: { term: string } 
   const base = company.siteUrl.replace(/\/$/, '')
   const url = `${base}/glossary/${t.slug}`
   const tool = t.tool ? LIVE_TOOLS.find((x) => x.slug === t.tool) : undefined
+  const audience = audienceFor(t.slug)
   const related = t.related.map(glossaryTerm).filter((x): x is NonNullable<typeof x> => Boolean(x))
 
   return (
@@ -134,6 +150,17 @@ export default function GlossaryTermPage({ params }: { params: { term: string } 
                 <li key={r.slug}><Link href={`/glossary/${r.slug}`}>{r.term}</Link></li>
               ))}
               <li><Link href="/glossary">All glossary terms</Link></li>
+            </ul>
+
+            <h2>Where this fits in your workflow</h2>
+            <ul>
+              {audience.segments.map((s) => (
+                <li key={s.slug}><Link href={`/for/${s.slug}`}>ARC PEM for {s.label.toLowerCase()}</Link> — {s.title}</li>
+              ))}
+              {audience.comparison && (
+                <li><Link href={`/compare/${audience.comparison.slug}`}>{audience.comparison.label}</Link> — {audience.comparison.title}</li>
+              )}
+              <li><Link href="/guides/best-construction-software-india">Buyer’s guide: best construction software in India</Link></li>
             </ul>
           </div>
         </div>

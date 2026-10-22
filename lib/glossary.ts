@@ -270,6 +270,238 @@ export const GLOSSARY: GlossaryTerm[] = [
       { q: 'What does M20 mean in concrete?', a: 'M20 is a concrete grade whose characteristic compressive strength after 28 days is 20 N/mm². The M stands for mix.' },
     ],
   },
+  {
+    slug: 'work-order',
+    term: 'Work Order',
+    question: 'What is a work order in construction?',
+    definition:
+      'A work order is a written instruction from a client or main contractor to a contractor or sub-contractor to carry out specified work at agreed rates, within a stated time and on stated terms.',
+    details: [
+      'A work order usually names the scope of work, the rates or lump sum, the payment terms, the start and completion dates, the retention and the defect liability period. Once accepted, it is the document every later bill is checked against.',
+      'Small and mid-size firms often issue work orders to labour contractors, carpenters, electricians and plumbers for a defined part of a project. Without one, disputes about scope and rate are common at bill time.',
+      'A work order differs from a purchase order: a purchase order buys materials from a vendor, while a work order engages labour and workmanship.',
+    ],
+    inArcPem:
+      'ARC PEM’s contractor bill management records each contractor’s bills against the project, with payment approvals before money goes out, so every payment can be traced back to the agreed work.',
+    related: ['running-account-bill', 'retention-money', 'measurement-book'],
+    faqs: [
+      { q: 'What is the difference between a work order and a purchase order?', a: 'A purchase order is for buying materials or goods from a vendor. A work order engages a contractor for labour and workmanship, usually at agreed rates for a defined scope.' },
+      { q: 'Should small contractors issue written work orders?', a: 'Yes. A short written work order stating scope, rate, payment terms and completion date avoids most disputes when the contractor’s bill arrives.' },
+    ],
+  },
+  {
+    slug: 'mobilisation-advance',
+    term: 'Mobilisation Advance',
+    question: 'What is a mobilisation advance?',
+    definition:
+      'A mobilisation advance is an upfront payment from the client to the contractor, made at the start of a contract so the contractor can set up the site, bring in labour and equipment and buy initial materials, and recovered later from the contractor’s running bills.',
+    details: [
+      'The contract fixes the size of the advance, whether it carries interest and how it is recovered, usually in instalments deducted from successive RA bills until it is fully recovered.',
+      'Contracts often ask for a bank guarantee against the advance, so the client is protected if the contractor abandons the work.',
+      'For the client’s accounts, an advance that has been paid but not yet recovered is an asset on the project, not an expense. Tracking the unrecovered balance bill by bill keeps the final account correct.',
+    ],
+    inArcPem:
+      'Record an advance as a payment against the contractor on the project, then see the balance still to adjust in pending payments and the contractor’s bill history.',
+    related: ['running-account-bill', 'work-order', 'retention-money'],
+    faqs: [
+      { q: 'How is a mobilisation advance recovered?', a: 'As the contract specifies, typically in instalments deducted from each RA bill until the full advance has been recovered.' },
+      { q: 'Is a mobilisation advance a loan?', a: 'It is an advance against future work, recovered from bills. Some contracts charge interest on the unrecovered balance, as the contract states.' },
+    ],
+  },
+  {
+    slug: 'schedule-of-rates',
+    term: 'Schedule of Rates (SOR / DSR)',
+    question: 'What is a Schedule of Rates (SOR) and DSR in construction?',
+    definition:
+      'A Schedule of Rates (SOR) is a published list of standard unit rates for items of construction work, used to prepare estimates and BOQs; the CPWD Delhi Schedule of Rates (DSR) is the best-known one in India, and state PWDs publish their own.',
+    details: [
+      'An SOR gives a rate per unit for each item, for example per cubic metre of brickwork or per square metre of plaster, built up from material, labour and machinery costs for a base period or location.',
+      'Government departments base tenders and estimates on the current SOR, often with a percentage above or below it quoted by each bidder. Private firms use the SOR as a benchmark, then adjust for local market rates.',
+      'Because material and labour prices move, an SOR is only a starting point. Estimators adjust rates for location, quantity and the date of the work.',
+    ],
+    inArcPem:
+      'ARC PEM lets you build BOQs from reusable templates with your own rates, so the rates you use for each firm and city are saved and reused, then compared with actual bills as budget vs actual.',
+    tool: 'construction-cost-calculator',
+    related: ['bill-of-quantities', 'rate-analysis', 'cost-per-square-foot'],
+    faqs: [
+      { q: 'What does DSR stand for in construction?', a: 'DSR stands for Delhi Schedule of Rates, the standard rate list published by CPWD (Central Public Works Department) and widely used as a reference across India.' },
+      { q: 'Are SOR rates the same as market rates?', a: 'No. An SOR is a published reference built from costs for a base period. Actual market rates differ by location and date, so estimators adjust them.' },
+    ],
+  },
+  {
+    slug: 'rate-analysis',
+    term: 'Rate Analysis',
+    question: 'What is rate analysis in construction estimating?',
+    definition:
+      'Rate analysis is the build-up of the unit rate for one item of work from its parts, material, labour and machinery for a unit quantity, plus an allowance for the contractor’s overheads and profit.',
+    details: [
+      'To analyse the rate of, say, one cubic metre of brickwork, an estimator lists the bricks, cement, sand, mason and helper time needed per cubic metre, prices each one, adds wastage, then adds overheads and profit.',
+      'Rate analysis shows why one contractor’s rate for an item differs from another’s, and lets you re-price an item when one input, such as cement, changes.',
+      'Government departments publish standard analyses of rates; private firms keep their own and update them as material and wage rates change.',
+    ],
+    inArcPem:
+      'Rates you settle on can be stored in reusable BOQ templates, and the vendor bills and labour wages you record show how actual costs compare with them.',
+    related: ['schedule-of-rates', 'bill-of-quantities', 'budget-vs-actual'],
+    faqs: [
+      { q: 'What is included in a rate analysis?', a: 'Material, labour and machinery for a unit quantity of work, wastage, and an allowance for the contractor’s overheads and profit.' },
+      { q: 'Why do contractors’ rates for the same item differ?', a: 'Because material sourcing, wage rates, productivity, overheads and profit expectations differ. A rate analysis makes those differences visible.' },
+    ],
+  },
+  {
+    slug: 'earnest-money-deposit',
+    term: 'Earnest Money Deposit (EMD)',
+    question: 'What is an Earnest Money Deposit (EMD) in a tender?',
+    definition:
+      'An Earnest Money Deposit (EMD) is a sum a bidder deposits with a tender to show they are serious, which is returned to unsuccessful bidders and adjusted against the security deposit for the winner, but forfeited if the winner backs out.',
+    details: [
+      'The tender document states the amount, often a small percentage of the estimated cost in government tenders, and the form it may take, such as a demand draft, bank guarantee or online payment.',
+      'EMD is different from the security deposit or performance guarantee, which is taken from the successful bidder to secure performance of the contract.',
+      'For a contractor bidding on several tenders, EMD ties up cash until it is refunded. Tracking each deposit and its refund date prevents money being forgotten.',
+    ],
+    inArcPem:
+      'Record a deposit as a payment against the project and track it in pending payments until it is returned, along with cheques issued in the cheque register.',
+    related: ['work-order', 'retention-money', 'defect-liability-period'],
+    faqs: [
+      { q: 'Is earnest money refundable?', a: 'Yes for unsuccessful bidders. For the winning bidder it is usually adjusted against the security deposit, and it can be forfeited if the winner withdraws or fails to sign the contract.' },
+      { q: 'What is the difference between EMD and security deposit?', a: 'EMD accompanies the bid. A security deposit or performance guarantee is taken from the successful bidder to secure performance of the contract.' },
+    ],
+  },
+  {
+    slug: 'defect-liability-period',
+    term: 'Defect Liability Period (DLP)',
+    question: 'What is the defect liability period (DLP)?',
+    definition:
+      'The defect liability period (DLP) is the time after a project is completed, frequently 12 months and fixed by the contract, during which the contractor must repair any defects that appear at their own cost.',
+    details: [
+      'DLP begins on the date the work is certified complete. If the client reports defects, the contractor must fix them; if they do not, the client can have the work done by others and recover the cost from the retention or guarantee.',
+      'Retention money, or a bank guarantee in its place, is commonly released at the end of the DLP once defects have been put right.',
+      'It is also called the defects notification period or, loosely, the warranty period, though a warranty on materials or equipment is a separate matter.',
+    ],
+    inArcPem:
+      'Keep the completion certificate and defect notices with the project’s documents, which are versioned and reviewed, and watch the retention still held in pending payments.',
+    related: ['retention-money', 'running-account-bill', 'final-bill'],
+    faqs: [
+      { q: 'How long is a defect liability period?', a: 'It is set by the contract, commonly 12 months from certified completion, though it varies with the contract and type of work.' },
+      { q: 'What happens to retention at the end of the DLP?', a: 'Once defects reported during the period have been fixed, the remaining retention money or bank guarantee is released, as the contract provides.' },
+    ],
+  },
+  {
+    slug: 'price-escalation-clause',
+    term: 'Price Escalation Clause',
+    question: 'What is a price escalation clause?',
+    definition:
+      'A price escalation clause is a contract term that adjusts the contract price when the cost of materials, labour or fuel rises or falls beyond an agreed limit during the contract period, usually by reference to published price indices.',
+    details: [
+      'Without one, a fixed-price contractor carries the risk of rising costs, which matters on long projects. With one, the contract states which inputs are covered, the base date, how the change is measured and when it applies.',
+      'Many contracts exclude the first stretch of the contract period or limit escalation to a share of the contract value. The clause as written is what counts, so read it before bidding.',
+      'Keeping a record of the rates paid month by month gives the evidence needed to support an escalation claim.',
+    ],
+    inArcPem:
+      'Every vendor bill and wage entry keeps its date and rate, with a change history for each ledger entry, which gives you the record to support a claim.',
+    related: ['work-order', 'budget-vs-actual', 'contingency'],
+    faqs: [
+      { q: 'Does every construction contract have price escalation?', a: 'No. Many private contracts are fixed price and leave cost risk with the contractor. Long-duration and government contracts more often include an escalation clause.' },
+      { q: 'How is escalation calculated?', a: 'As the clause states, typically by comparing a published price index for the covered inputs at the base date and at the date of the work.' },
+    ],
+  },
+  {
+    slug: 'provisional-sum',
+    term: 'Provisional Sum',
+    question: 'What is a provisional sum in a BOQ?',
+    definition:
+      'A provisional sum is an amount included in a BOQ or contract for work or items whose details are not yet known at the time of tender, which is later adjusted up or down to the actual cost.',
+    details: [
+      'Typical provisional sums cover items that are chosen late, such as tiles, sanitary fittings or lighting, or work that depends on site conditions, such as extra excavation.',
+      'The final account replaces each provisional sum with what was actually spent. Bidders should treat them as an allowance, not a fixed price.',
+      'Clients should keep provisional sums realistic. Too low, and the project looks cheaper than it is; the gap appears later as an overrun.',
+    ],
+    inArcPem:
+      'Budget a provisional item as its own BOQ line, then compare the vendor bills against it with budget vs actual and overrun alerts.',
+    related: ['bill-of-quantities', 'contingency', 'budget-vs-actual'],
+    faqs: [
+      { q: 'What is the difference between a provisional sum and contingency?', a: 'A provisional sum is allowed for a known item whose details are undecided. Contingency is a general reserve for unforeseen costs.' },
+      { q: 'Can a provisional sum go up?', a: 'Yes. It is replaced by the actual cost in the final account, which may be higher or lower.' },
+    ],
+  },
+  {
+    slug: 'final-bill',
+    term: 'Final Bill',
+    question: 'What is a final bill in a construction contract?',
+    definition:
+      'A final bill is the last bill a contractor submits after the work is completed, which re-measures the total work done, adjusts everything paid through earlier RA bills and advances, and shows the balance payable or recoverable.',
+    details: [
+      'It is based on final measurements of all work, including variations and extra items agreed during the project, with deductions for earlier payments, advances, retention, and any penalties.',
+      'Part of the retention is commonly held back until the defect liability period ends, so the final bill may not close the contract completely.',
+      'A clean set of RA bills, measurement book entries and approvals makes the final bill quick to prepare and easy to agree.',
+    ],
+    inArcPem:
+      'Contractor bills are recorded against the project as they are received, so when the work is done you already hold the history of payments and balances needed to settle the account.',
+    related: ['running-account-bill', 'measurement-book', 'retention-money', 'defect-liability-period'],
+    faqs: [
+      { q: 'What is the difference between an RA bill and a final bill?', a: 'An RA bill pays for work done so far, as the work goes on. The final bill settles the whole contract after completion, adjusting everything already paid.' },
+      { q: 'Is retention paid with the final bill?', a: 'Often only partly. The contract may hold the rest until the defect liability period is over.' },
+    ],
+  },
+  {
+    slug: 'cost-overrun',
+    term: 'Cost Overrun',
+    question: 'What is a cost overrun in construction?',
+    definition:
+      'A cost overrun is the amount by which a project’s actual cost exceeds its approved budget, measured as actual cost minus budget, and often shown as a percentage of the budget.',
+    details: [
+      'Overrun % = (actual cost − budget) ÷ budget × 100. A project budgeted at ₹40,00,000 that has cost ₹42,40,000 is ₹2,40,000 over, a 6% overrun.',
+      'Common causes are design changes after work starts, under-measured quantities in the BOQ, rate increases, rework and delays, and bills that are recorded late so that spend is not seen until it is too late to act.',
+      'The cheapest overrun to manage is the one you see early. That means comparing spend with budget as bills arrive, not at month-end.',
+    ],
+    example:
+      'Illustrative: budget ₹40,00,000; spent to date ₹42,40,000. Overrun = ₹2,40,000, which is 6% of budget.',
+    inArcPem:
+      'Budget vs actual updates as each bill is entered, and ARC PEM raises overrun alerts and shows them in notifications, so a project that crosses its budget is flagged that day.',
+    tool: 'construction-cost-calculator',
+    related: ['budget-vs-actual', 'contingency', 'bill-of-quantities'],
+    faqs: [
+      { q: 'How do you calculate a cost overrun percentage?', a: 'Subtract the budget from the actual cost and divide by the budget: (actual − budget) ÷ budget × 100.' },
+      { q: 'How can builders prevent cost overruns?', a: 'Build the budget from a detailed BOQ, record bills as they arrive, compare actual with budget regularly, and keep a contingency for the unforeseen.' },
+    ],
+  },
+  {
+    slug: 'vendor-reconciliation',
+    term: 'Vendor Reconciliation',
+    question: 'What is vendor reconciliation and why does it matter?',
+    definition:
+      'Vendor reconciliation is matching your own record of a vendor’s bills and payments with the vendor’s statement of account, so that both sides agree on what has been billed, paid and is still due.',
+    details: [
+      'Differences arise from bills not yet entered, payments made but not credited, returned goods, rate differences and bills recorded in the wrong month. Left alone they pile up until nobody is sure what is owed.',
+      'For GST, it also means matching vendor invoices with what the vendor has filed, which appears in your GSTR-2B, so that input tax credit is claimed only on bills that appear.',
+      'Doing it monthly, with a party statement from each major vendor, keeps disputes small.',
+    ],
+    inArcPem:
+      'ARC PEM keeps a vendor ledger with GST, a pending payments dashboard, GSTR-2B reconciliation, and lets you share a party statement on WhatsApp with the vendor to confirm balances.',
+    related: ['gst-purchase-register', 'gstr-2b', 'input-tax-credit'],
+    faqs: [
+      { q: 'How often should vendor accounts be reconciled?', a: 'Monthly is a good habit, and before any big payment, so differences are found while the details are fresh.' },
+      { q: 'What is the difference between vendor reconciliation and GSTR-2B reconciliation?', a: 'Vendor reconciliation compares your ledger with the vendor’s statement of account. GSTR-2B reconciliation compares your purchase bills with what your vendors have filed for GST.' },
+    ],
+  },
+  {
+    slug: 'site-imprest',
+    term: 'Site Imprest (Petty Cash)',
+    question: 'What is a site imprest or petty cash fund in construction?',
+    definition:
+      'A site imprest is a fixed cash float given to the site engineer or supervisor to pay small, day-to-day site expenses, which is topped up to its original amount against vouchers when it runs low.',
+    details: [
+      'Typical imprest spends are tea and refreshments, local transport, small hardware, repairs, loading and unloading, and minor labour. Large items go through vendor bills and proper approvals.',
+      'The imprest holder submits vouchers or bills for what was spent. The balance of cash plus vouchers should always equal the original float, which makes it easy to spot shortages.',
+      'Cash spent on sites is where small leaks hide. Entering site expenses against the project the day they happen keeps them visible.',
+    ],
+    inArcPem:
+      'Site engineers and supervisors can enter site expenses against the project from a phone, and payment approvals and a change history for each entry keep the cash trail visible to the office.',
+    related: ['budget-vs-actual', 'cost-overrun', 'muster-roll'],
+    faqs: [
+      { q: 'How much petty cash should a site hold?', a: 'Enough for a week or two of small expenses, set by the firm. Keep it small enough that a loss is not serious, and top it up against vouchers.' },
+      { q: 'How is site petty cash accounted for?', a: 'The imprest holder submits vouchers for each spend; cash in hand plus vouchers should add up to the original float, and the expenses are booked to the project.' },
+    ],
+  },
 ]
 
 export const glossaryTerm = (slug: string) => GLOSSARY.find((t) => t.slug === slug)

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import PageSchema from '@/components/seo/PageSchema'
 import {
   DocumentIcon, DashboardIcon, CalculatorIcon,
   ReceiptIcon, CompareIcon, BellIcon, ChatIcon, GlobeIcon,
@@ -34,6 +35,8 @@ const RESOURCES = [
 
 export default function ResourcesPage() {
   return (
+    <>
+    <PageSchema type="CollectionPage" path="/resources" name={TITLE} description={DESCRIPTION} trail={[{ name: 'Resources', path: '/resources' }]} />
     <section className="section" id="about" style={{ paddingTop: '120px' }}>
       <div className="container">
         <div className="img-hero fade-up">
@@ -61,5 +64,6 @@ export default function ResourcesPage() {
         </div>
       </div>
     </section>
+    </>
   )
 }

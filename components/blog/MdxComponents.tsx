@@ -14,6 +14,9 @@ function parseImage(src?: string): { url: string; size: string } {
 
 /** Custom renderers passed to <MDXRemote components={...}> — only overrides where the default HTML needs a wrapper or site-specific behaviour. */
 export const mdxComponents: MDXComponents = {
+  // The article title is the page's one <h1>. A stray `# Heading` in a post body would give the page two, so it is
+  // rendered as an <h2>.
+  h1: (props) => <h2 {...props} />,
   table: (props) => (
     <div className="tool-table-wrap">
       <table className="tool-table" {...props} />

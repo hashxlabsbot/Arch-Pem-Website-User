@@ -10,7 +10,7 @@ export const revalidate = 3600
 
 const TITLE = 'ARC PEM — Construction Expense Management Software · India'
 const DESCRIPTION =
-  'Cloud construction expense management for Indian architects, contractors and builders: BOQ & budgets, vendor bills, labour, payment approvals, GST, GSTR-2B and Tally export on one live ledger for the whole firm. Monthly or annual plans.'
+  'Cloud construction expense software for Indian architects, contractors and builders: BOQ budgets, vendor bills, labour, GST and Tally export in one ledger.'
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
