@@ -8,7 +8,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!session) redirect('/login')
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "var(--font-body), 'Inter', system-ui, sans-serif" }}>
       {/* Re-seeds the session this layout already fetched for the auth check above,
           so dashboard's useSession() consumers (Sidebar, Header) hydrate instantly
           instead of flashing unauthenticated — the root layout no longer does this

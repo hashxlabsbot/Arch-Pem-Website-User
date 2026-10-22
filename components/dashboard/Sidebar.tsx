@@ -65,7 +65,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
             <div className="flex flex-col leading-none">
               <span
                 className="text-white font-extrabold tracking-tight"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.02rem' }}
+                style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans', sans-serif", fontSize: '1.02rem' }}
               >
                 ARC PEM
               </span>

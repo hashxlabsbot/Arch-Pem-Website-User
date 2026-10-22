@@ -20,7 +20,7 @@
 a.cta-btn-primary { text-decoration: none; }
 .cta-btn-ghost {
   display: inline-flex; align-items: center; padding: 15px 26px; border-radius: 14px; cursor: pointer;
-  font-family: 'Plus Jakarta Sans', sans-serif; font-size: .94rem; font-weight: 700;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif; font-size: .94rem; font-weight: 700;
   color: #e0e7ff; background: rgba(255,255,255,.06); border: 1px solid rgba(199,210,254,.28);
   transition: background .2s, border-color .2s, transform .2s;
 }
@@ -58,7 +58,7 @@ a.cta-btn-primary { text-decoration: none; }
 .home-marquee { padding: 34px 0 10px; }
 .home-marquee-label { text-align: center; font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 18px; }
 .home-marquee .t-chip {
-  display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; font-family: 'Plus Jakarta Sans', sans-serif;
+  display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-weight: 800; font-size: 1.05rem; color: #94a3b8; letter-spacing: -.01em;
 }
 .home-marquee .t-chip i { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-style: normal; font-size: .8rem; color: #fff; background: linear-gradient(135deg, #c7d2fe, #a5b4fc); }
@@ -95,7 +95,7 @@ a.cta-btn-primary { text-decoration: none; }
 .home-stats { padding: 30px 0 90px; }
 .home-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1060px; margin: 0 auto; }
 .home-stat { text-align: center; padding: 26px 14px; border-radius: 20px; background: #fafbff; border: 1px solid #eef0fb; }
-.home-stat-v { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 2.2rem; letter-spacing: -.03em; background: linear-gradient(100deg, #7c3aed, #6366f1 45%, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.home-stat-v { font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 2.2rem; letter-spacing: -.03em; background: linear-gradient(100deg, #7c3aed, #6366f1 45%, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .home-stat-l { color: var(--gray-500); font-size: .9rem; margin-top: 4px; }
 
 @media (max-width: 900px) {

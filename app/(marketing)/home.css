@@ -141,7 +141,7 @@
 .w-stats { padding: 26px 0 64px; background: #fbfbff; }
 .w-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .w-stat { padding: 22px; border-radius: 18px; background: #fff; border: 1px solid var(--w-line); text-align: left; }
-.w-stat-v { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 2.1rem; letter-spacing: -.03em; background: var(--w-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.w-stat-v { font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 2.1rem; letter-spacing: -.03em; background: var(--w-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .w-stat-l { color: var(--w-muted); font-size: .9rem; margin-top: 4px; line-height: 1.45; }
 
 /* ── Sections ── */
@@ -182,7 +182,7 @@
 .w-step { position: relative; text-align: center; padding: 0 12px; }
 .w-step-n {
   width: 64px; height: 64px; margin: 0 auto 22px; border-radius: 20px; display: grid; place-items: center;
-  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 800; color: #fff; background: var(--w-grad);
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 800; color: #fff; background: var(--w-grad);
   box-shadow: 0 14px 30px -12px rgba(99, 102, 241, .6), 0 0 0 8px #f3f4ff;
 }
 .w-step h3 { font-size: 1.15rem; margin-bottom: 8px; color: var(--w-ink); }
@@ -205,7 +205,7 @@
 .w-role-card::before { content: ''; position: absolute; inset: 0 0 auto; height: 4px; background: var(--w-grad); }
 .w-role-top { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
 .w-role-avatar { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 1.3rem; background: var(--w-grad); }
-.w-role-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--w-ink); }
+.w-role-name { font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--w-ink); }
 .w-role-who { color: var(--w-muted); font-size: .9rem; }
 .w-role-list { list-style: none; padding: 0; display: grid; gap: 12px; }
 .w-role-list li { display: flex; align-items: center; gap: 10px; color: var(--w-body); font-weight: 500; }
@@ -244,7 +244,7 @@
 .w-plan.pop { border: 1.5px solid transparent; background: linear-gradient(#fff, #fff) padding-box, var(--w-grad) border-box; box-shadow: 0 30px 70px -30px rgba(99, 102, 241, .55); transform: translateY(-8px); }
 .w-plan-badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); padding: 5px 14px; border-radius: 999px; background: var(--w-grad); color: #fff; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
 .w-plan-name { font-weight: 800; color: var(--w-indigo-d); letter-spacing: .02em; }
-.w-plan-price { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 2.4rem; letter-spacing: -.03em; color: var(--w-ink); margin-top: 12px; }
+.w-plan-price { font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 2.4rem; letter-spacing: -.03em; color: var(--w-ink); margin-top: 12px; }
 .w-plan-price span { font-size: 1.2rem; vertical-align: top; margin-right: 2px; color: var(--w-muted); }
 .w-plan-price small { font-size: .9rem; color: var(--w-muted); font-weight: 600; margin-left: 4px; }
 .w-plan-month { color: var(--w-muted); font-size: .84rem; }
@@ -318,7 +318,7 @@
 .sc-acc-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,.05) 30%, rgba(15,23,42,.82) 100%); }
 .sc-acc-item.on .sc-acc-shade { background: linear-gradient(180deg, rgba(30,27,75,0) 25%, rgba(30,27,75,.88) 100%); }
 .sc-acc-copy { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 22px 24px; color: #fff; }
-.sc-acc-label { display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.05rem; letter-spacing: -.01em; white-space: nowrap; }
+.sc-acc-label { display: block; font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.05rem; letter-spacing: -.01em; white-space: nowrap; }
 .sc-acc-item:not(.on) .sc-acc-label { writing-mode: vertical-rl; transform: rotate(180deg); position: absolute; bottom: 22px; left: 50%; margin-left: -.6em; }
 .sc-acc-more p { margin: 8px 0 12px; max-width: 420px; color: rgba(255,255,255,.85); font-size: .95rem; line-height: 1.55; }
 .sc-acc-more a { display: inline-flex; align-items: center; gap: 6px; color: #fff; font-weight: 700; font-size: .88rem; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(8px); }
@@ -343,7 +343,7 @@
   box-shadow: 0 24px 50px -24px rgba(0,0,0,.6); top: 0; right: 40px;
 }
 .sc-glass small { color: rgba(255,255,255,.7); font-size: .78rem; }
-.sc-glass b { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; letter-spacing: -.02em; }
+.sc-glass b { font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; letter-spacing: -.02em; }
 .sc-glass-2 { top: 110px; right: 150px; }
 .sc-glass-3 { top: 220px; right: 10px; }
 .sc-pill { justify-self: start; font-size: .72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; }

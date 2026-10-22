@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import SessionProvider from '@/components/SessionProvider'
 import CookieBanner from '@/components/CookieBanner'
@@ -9,6 +10,11 @@ import { env } from '@/lib/env'
 import './landing.css'
 import './site-v2.css'
 import './globals.css'
+
+// Self-hosted by next/font at build time: no render-blocking request to Google Fonts, no layout shift from a late
+// font swap, and the CSS keeps using these through var(--font-display) / var(--font-body).
+const display = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['500', '600', '700', '800'], display: 'swap', variable: '--font-display' })
+const body = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', variable: '--font-body' })
 
 const TITLE = 'ARC PEM — Construction Expense Management Software'
 const DESCRIPTION =
@@ -63,14 +69,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   // The publisher's own company site is the same organisation, which helps search engines join the two up.
   const sameAs = [...Object.values(company.socials), company.parentSite].filter(Boolean)
   return (
-    <html lang="en-IN">
+    <html lang="en-IN" className={`${display.variable} ${body.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         <JsonLd
           data={{
             '@context': 'https://schema.org',

@@ -49,7 +49,7 @@
   --radius-xl: 24px;
 
   /* Typography */
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans: var(--font-body), 'Inter', system-ui, sans-serif;
 }
 
 /* ── Dashboard base styles (landing.css controls everything else) ── */

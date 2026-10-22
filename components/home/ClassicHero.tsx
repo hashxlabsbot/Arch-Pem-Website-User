@@ -159,8 +159,8 @@ export default function ClassicHero() {
                   <div className="win-side">
                     <div className="ws-logo" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px', padding: '6px 10px', marginBottom: '12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <svg width="26" height="26" viewBox="0 0 44 44" fill="none"><rect width="44" height="44" rx="11" fill="#3b82f6" /><path d="M11 34 L11 21 Q11 8 22 8 Q33 8 33 21 L33 34" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" /><line x1="7" y1="34" x2="37" y2="34" stroke="white" strokeWidth="4" strokeLinecap="round" /></svg>
-                        <span style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '0.82rem', color: 'white' }}>ARC PEM</span>
+                        <img src="/arc-icon.png" width={26} height={26} alt="" aria-hidden="true" style={{ display: 'block', borderRadius: 6 }} />
+                        <span style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '0.82rem', color: 'white' }}>ARC PEM</span>
                       </div>
                       <span style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.4)', fontWeight: 500, marginLeft: '2px' }}>Project Expense Manager</span>
                     </div>
@@ -254,14 +254,14 @@ export default function ClassicHero() {
                     <div id="pane-projects" className={`app-pane${activePane === 'pane-projects' ? ' active' : ''}`} style={{ display: activePane === 'pane-projects' ? 'flex' : 'none', padding: 0, background: '#f8fafc' }}>
                       <div style={{ background: 'linear-gradient(135deg,#2563eb,#3b82f6)', padding: '12px 16px 14px', flexShrink: 0 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                          <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '.88rem', color: 'white' }}>Projects</div><div style={{ fontSize: '.6rem', color: 'rgba(255,255,255,.6)', marginTop: '1px' }}>Active 3 · On Hold 0 · Completed 0</div></div>
+                          <div><div style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '.88rem', color: 'white' }}>Projects</div><div style={{ fontSize: '.6rem', color: 'rgba(255,255,255,.6)', marginTop: '1px' }}>Active 3 · On Hold 0 · Completed 0</div></div>
                           <button className="wt-btn" style={{ background: 'rgba(255,255,255,.15)', color: 'white', border: '1px solid rgba(255,255,255,.25)', fontSize: '.65rem' }}>+ New Project</button>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '8px' }}>
                           {[['Projects','3 Active','white'],['Total Expenses','₹7,66,294','#a5f3d0'],['Latest Entry','13-Jun-2026','#fde68a']].map(([lbl,val,color])=>(
                             <div key={lbl} style={{ background: 'rgba(255,255,255,.1)', borderRadius: '8px', padding: '7px 9px', backdropFilter: 'blur(8px)' }}>
                               <div style={{ fontSize: '.55rem', color: 'rgba(255,255,255,.6)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.05em' }}>{lbl}</div>
-                              <div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '.85rem', color, marginTop: '2px' }}>{val}</div>
+                              <div style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '.85rem', color, marginTop: '2px' }}>{val}</div>
                             </div>
                           ))}
                         </div>
@@ -280,14 +280,14 @@ export default function ClassicHero() {
                                 </div>
                                 <div>
                                   <div style={{ fontSize: '.5rem', fontWeight: 700, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '.06em' }}>{p.id}</div>
-                                  <div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 700, fontSize: '.78rem', color: '#0f172a' }}>{p.name}</div>
+                                  <div style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif", fontWeight: 700, fontSize: '.78rem', color: '#0f172a' }}>{p.name}</div>
                                   <div style={{ fontSize: '.6rem', color: '#64748b', marginTop: '1px' }}>{p.client}</div>
                                 </div>
                               </div>
                               <span className="wt-tag tag-a" style={{ fontSize: '.56rem' }}>Active</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <div><div style={{ fontSize: '.55rem', color: '#64748b', fontWeight: 600, marginBottom: '2px' }}>Total Expenses</div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '.82rem', color: '#2563eb' }}>{p.amt}</div></div>
+                              <div><div style={{ fontSize: '.55rem', color: '#64748b', fontWeight: 600, marginBottom: '2px' }}>Total Expenses</div><div style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: '.82rem', color: '#2563eb' }}>{p.amt}</div></div>
                             </div>
                             <div style={{ marginTop: '8px', height: '4px', background: '#e2e8f0', borderRadius: '100px', overflow: 'hidden' }}>
                               <div style={{ width: `${p.pct}%`, height: '100%', background: 'linear-gradient(to right,#3b82f6,#93c5fd)', borderRadius: '100px' }} />
@@ -340,7 +340,7 @@ export default function ClassicHero() {
                     {/* GST Pane */}
                     <div id="pane-gst" className={`app-pane${activePane === 'pane-gst' ? ' active' : ''}`} style={{ display: activePane === 'pane-gst' ? 'flex' : 'none', flexDirection: 'column', overflow: 'hidden', background: '#f8fafc' }}>
                       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '9px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-                        <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '0.82rem', fontWeight: 800, color: '#0f172a' }}>GST Purchase Sheet</div><div style={{ fontSize: '0.58rem', color: '#64748b' }}>Monthly · share with CA for filing</div></div>
+                        <div><div style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif", fontSize: '0.82rem', fontWeight: 800, color: '#0f172a' }}>GST Purchase Sheet</div><div style={{ fontSize: '0.58rem', color: '#64748b' }}>Monthly · share with CA for filing</div></div>
                         <div style={{ display: 'flex', gap: '4px' }}>
                           {reportBtns.map(b => (
                             <button key={b.key} className="rep-btn" style={{ padding: '4px 7px', fontSize: '0.58rem', display: 'flex', alignItems: 'center', gap: '3px' }}>
@@ -354,7 +354,7 @@ export default function ClassicHero() {
                           {[['Total Taxable','Rs.5,84,820','#0f172a'],['Total GST','Rs.1,05,268','#2563eb'],['Net Amount','Rs.6,90,088','#16a34a']].map(([lbl,val,color])=>(
                             <div key={lbl} style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '8px 10px' }}>
                               <div style={{ fontSize: '0.52rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', lineHeight: '1.3' }}>{lbl}</div>
-                              <div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '0.72rem', fontWeight: 800, color, marginTop: '3px' }}>{val}</div>
+                              <div style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif", fontSize: '0.72rem', fontWeight: 800, color, marginTop: '3px' }}>{val}</div>
                             </div>
                           ))}
                         </div>
@@ -367,7 +367,7 @@ export default function ClassicHero() {
                     {/* Pending Pane */}
                     <div id="pane-pending" className={`app-pane${activePane === 'pane-pending' ? ' active' : ''}`} style={{ display: activePane === 'pane-pending' ? 'flex' : 'none', flexDirection: 'column', padding: '16px', overflow: 'auto', background: '#f8fafc' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexShrink: 0 }}>
-                        <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '0.85rem', fontWeight: 800, color: '#0f172a' }}>Pending Payments</div><div style={{ fontSize: '0.6rem', color: '#64748b' }}>All unpaid bills · oldest first</div></div>
+                        <div><div style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif", fontSize: '0.85rem', fontWeight: 800, color: '#0f172a' }}>Pending Payments</div><div style={{ fontSize: '0.6rem', color: '#64748b' }}>All unpaid bills · oldest first</div></div>
                         <button className="rep-btn" style={{ flexShrink: 0, fontSize: '0.6rem', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '3px' }}>
                           <ExportIcon size={10} />Export
                         </button>
@@ -384,7 +384,7 @@ export default function ClassicHero() {
                     {/* Summary Sheet Pane */}
                     <div id="pane-summary" className={`app-pane${activePane === 'pane-summary' ? ' active' : ''}`} style={{ display: activePane === 'pane-summary' ? 'flex' : 'none', flexDirection: 'column', padding: '16px', overflow: 'auto', background: '#f8fafc' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                        <div><div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Summary Sheet</div><p style={{ fontSize: '0.68rem', color: '#64748b', margin: '2px 0 0' }}>Skyline Residency • Mr. Mehta • Pune, MH</p></div>
+                        <div><div style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif", fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Summary Sheet</div><p style={{ fontSize: '0.68rem', color: '#64748b', margin: '2px 0 0' }}>Skyline Residency • Mr. Mehta • Pune, MH</p></div>
                         <div style={{ display: 'flex', gap: '6px' }}>
                           {[
                             { key: 'excel', icon: <ExportIcon size={10} />,  label: 'Excel' },

@@ -4,7 +4,7 @@ import { ClipboardIcon, ReceiptIcon, FileIcon, CompassIcon } from '@/components/
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: "var(--font-body), 'Inter', system-ui, sans-serif" }}>
       <style>{`
         .auth-mobile-logo { display: none; }
         @media (max-width: 767px) {

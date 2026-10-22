@@ -14,14 +14,11 @@ const base = (size: number) => ({
   'aria-hidden': true,
 })
 
-/** ARC PEM app icon — same arch mark as the hero's app window. */
+/** The official ARC PEM app icon (same file as the favicon). */
 export function ArcAppIcon({ size = 28, className }: G) {
   return (
-    <svg width={size} height={size} viewBox="0 0 44 44" fill="none" className={className} aria-hidden="true">
-      <rect width="44" height="44" rx="11" fill="#3b82f6" />
-      <path d="M11 34 L11 21 Q11 8 22 8 Q33 8 33 21 L33 34" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <line x1="7" y1="34" x2="37" y2="34" stroke="white" strokeWidth="4" strokeLinecap="round" />
-    </svg>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/arc-icon.png" width={size} height={size} alt="" aria-hidden="true" className={className} style={{ display: 'block', flexShrink: 0, borderRadius: Math.round(size * 0.22) }} />
   )
 }
 
