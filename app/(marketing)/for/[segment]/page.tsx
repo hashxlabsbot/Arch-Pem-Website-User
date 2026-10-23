@@ -99,7 +99,7 @@ export default async function SegmentPage(props: { params: Promise<{ segment: st
             <ul>{s.features.map((f) => <li key={f}>{f}</li>)}</ul>
             <p>
               See every feature on the <Link href="/solutions">solutions page</Link>. Platform:{' '}
-              {entity.platform}. Sold as an annual licence — <Link href="/pricing">see pricing</Link>.
+              {entity.platform}. One subscription per firm, monthly or annual, with every feature on every plan — <Link href="/pricing">see pricing</Link>.
             </p>
 
             <h2>Customer results</h2>

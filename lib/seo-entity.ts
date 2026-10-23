@@ -18,12 +18,12 @@ export const WEB_APP_URL = 'https://app.arcpem.com'
  * Feeds the sitemap's lastModified so crawlers see an honest freshness date
  * instead of "changed today" on every request.
  */
-export const CONTENT_UPDATED = '2026-10-22'
+export const CONTENT_UPDATED = '2026-10-25'
 
 export const entity = {
   name: company.brand,
   category: 'Construction expense & project cost management software',
-  definition: `ARC PEM is cloud construction expense and project-cost management software for architects, interior firms, contractors and builders in India. The whole firm — office, accounts and site teams — works on one live ledger in the browser at ${WEB_APP_URL}: BOQ & budgets, vendor bills, labour wages, contractor bills, site expenses, payment approvals, GST purchase registers with GSTR-2B reconciliation, TDS, pending payments and Tally ERP / TallyPrime export, from any computer or phone.`,
+  definition: `ARC PEM is cloud construction expense and project-cost management software for architects, interior firms, contractors and builders in India. The whole firm — owner, accounts, project managers and site engineers — works on one live ledger in the browser at ${WEB_APP_URL}, where every rupee is tied to a project, a party and a bill: BOQ budgets, vendor bills, labour wages, contractor bills, site expenses, payment approvals, payment vouchers, GST purchase registers with GSTR-2B reconciliation, TDS, pending payments and Tally ERP / TallyPrime export, from any computer or phone.`,
   audience: ['Architecture firms', 'Interior & fit-out firms', 'Building contractors', 'Construction companies', 'Real-estate builders'],
   platform: 'Web application: any modern browser on Windows, macOS, Android or iOS; installable on phones and computers like an app',
   pricingModel:
@@ -34,29 +34,77 @@ export const entity = {
     stories: [
       { company: 'Arch Consultancy', segment: 'Interior & fit-out', result: 'Monthly GST reconciliation cut from 2 days to 2 hours (80% faster) after replacing 14 Excel sheets per project' },
       { company: 'Munesh Associates', segment: 'Residential', result: '₹35 lakh of pending dues recovered — a 35% drop in outstanding payments within 3 months across 12 active projects' },
-      { company: 'SS Constructions', segment: 'MEP & civil', result: 'Zero labour wage disputes after daily muster PDFs were imported and wages auto-calculated' },
+      { company: 'SS Constructions', segment: 'MEP & civil', result: 'Zero labour wage disputes after moving daily muster records into ARC PEM, with wages worked out automatically' },
     ],
   },
+  // Every item is live in the product (ARCPEM-Web docs/FEATURES.md, ✅ sections). Planned work (AI features) and
+  // built-but-not-switched-on items (automatic daily backups) are deliberately left out.
   featureGroups: [
     {
-      name: 'Project & budget',
-      items: ['Bill of Quantities (BOQ) with reusable templates', 'Project dashboard & status tracking', 'Budget vs actual with overrun alerts', 'Cost per sq ft calculation', 'Contingency & GST auto-compute', 'PDF & Excel export'],
+      name: 'Projects & budgets',
+      items: [
+        'Portfolio dashboard: spend, pending payments and trends across every project',
+        'BOQ budgets with categories, line items and reusable budget templates',
+        'Cost per sq ft, contingency and GST computed automatically',
+        'Budget vs actual by category, with alerts at 90% and 100% of budget',
+        'Project health score (0–100) with the reasons, and a completion forecast',
+        'Milestones with target dates and overdue alerts',
+      ],
     },
     {
-      name: 'Expenses & finance',
-      items: ['Vendor ledger with GST toggle', 'Daily labour headcount & wage tracking', 'Contractor bill management', 'Site expense tracking', 'GST purchase register', 'Pending payments dashboard', 'Tally ERP / TallyPrime CSV export'],
+      name: 'Expenses & ledgers',
+      items: [
+        'Vendor, contractor, labour and site-expense ledgers per project',
+        'Daily labour headcount and wages by trade',
+        'Contractor running bills, advances and TDS',
+        'Bills, challans and site photos attached to every entry',
+        'Duplicate-bill warnings across projects',
+        'Payments split into cash, cheque and pending, with UPI, NEFT, RTGS and IMPS',
+      ],
+    },
+    {
+      name: 'Payments & parties',
+      items: [
+        'Party directory with GSTIN, PAN and a statement of account for each party',
+        'Payment approvals: spends recorded below admin wait for sign-off',
+        'Payment vouchers as PDF, with the amount in words',
+        'WhatsApp payment confirmations and party statements',
+        'Cheque register: issued, cleared, bounced or cancelled',
+        'Pending payments report, oldest first, with days overdue',
+      ],
+    },
+    {
+      name: 'GST, TDS & accounts',
+      items: [
+        'GST purchase register by month, per project or for the whole firm',
+        'GSTR-2B reconciliation against the JSON from the GST portal',
+        'TDS register by financial year and quarter, with deposit due dates',
+        'Quarterly TDS return worksheet for your accountant (Form 26Q / Form 140)',
+        'Tally ERP / TallyPrime CSV export',
+        'Excel and PDF reports, or a whole project exported in one file',
+      ],
     },
     {
       name: 'Team & control',
-      items: ['Team members invited with roles (owner, admin, manager, project manager, site engineer, member)', 'Per-project access for each person', 'Payment approvals before money goes out', 'Change history for every ledger entry', 'Reminders & push notifications', 'Share party statements on WhatsApp'],
-    },
-    {
-      name: 'Compliance & records',
-      items: ['GSTR-2B reconciliation', 'TDS register', 'Cheque register', 'Project documents with versions and review', 'Excel import of existing expense sheets', 'Global search (Ctrl+K)'],
+      items: [
+        'Eight roles, from owner and admin to site engineer and supervisor',
+        'Per-project and per-area access for each person',
+        'Change history on every entry and a firm-wide activity log',
+        'Push notifications and scheduled reminders on phone and browser',
+        'Project documents and drawings with numbered versions and review',
+        'Global search (Ctrl+K) across projects, entries and parties',
+      ],
     },
     {
       name: 'Platform & security',
-      items: ['Runs in any browser; installable on phones and computers', 'Each firm’s data isolated in the database (row-level security)', 'Encrypted connections; private file storage', 'Automatic daily backups', 'Data stays readable and exportable if a plan lapses'],
+      items: [
+        'Runs in any browser; installs on phones like an app',
+        'Each firm’s data isolated in the database itself (row-level security)',
+        'Encrypted connections; private, virus-scanned file storage',
+        'Back up, download and restore the firm’s data at any time',
+        'Excel and CSV import with column matching and duplicate review',
+        'Data stays readable and exportable if a plan lapses; nothing is deleted',
+      ],
     },
   ],
   /** Topics the publisher is an authority on — feeds Organization.knowsAbout. */
@@ -69,6 +117,8 @@ export const entity = {
     'Tally ERP / TallyPrime integration',
     'Labour wage tracking',
     'Contractor billing',
+    'TDS on contractor payments',
+    'Construction payment approvals',
     'Bar bending schedule',
   ],
 } as const
@@ -211,7 +261,7 @@ export function homeFaqs(plans: PlansByProduct): Faq[] {
     },
     {
       q: 'Is our data safe in ARC PEM?',
-      a: 'Each firm’s data is isolated inside the database itself (row-level security), connections are encrypted, files are stored privately, every ledger change is recorded, and data is backed up daily. If a plan lapses, the data stays readable and exportable; nothing is deleted.',
+      a: 'Each firm’s data is isolated inside the database itself (row-level security), connections are encrypted, uploaded files are virus-scanned and stored privately, and every ledger change is recorded with who made it. The firm can take a full backup, download it and restore it at any time. If a plan lapses, the data stays readable and exportable; nothing is deleted.',
     },
     {
       q: 'Does ARC PEM work with Tally?',
@@ -227,7 +277,7 @@ export function homeFaqs(plans: PlansByProduct): Faq[] {
     },
     {
       q: 'How does ARC PEM handle GST?',
-      a: 'GST is computed on every bill as it is entered, a GST purchase register builds itself project by project, and purchases are reconciled against the GSTR-2B statement you download from the GST portal — ready for your CA or for Tally export.',
+      a: 'GST is computed on every bill as it is entered and a GST purchase register builds itself by month and project. Upload the GSTR-2B JSON from the GST portal and ARC PEM matches it against your GST bills, so missing or mismatched supplier filings are caught before credit is claimed in GSTR-3B. The register exports to Excel or to Tally for your CA.',
     },
     {
       q: 'Who is ARC PEM for?',
@@ -235,12 +285,32 @@ export function homeFaqs(plans: PlansByProduct): Faq[] {
     },
     {
       q: 'Can we bring our existing data into ARC PEM?',
-      a: 'Yes. Existing expense sheets can be imported from Excel, and firms moving from the earlier ARC PEM desktop app can import its backup so projects and ledgers come across. Our team helps with the move on a free demo call.',
+      a: 'Yes. Existing expense sheets can be imported from Excel or CSV: columns are matched automatically and you review a preview, including possible duplicates, before anything is saved. Business and Enterprise plans include onboarding and data migration by our team.',
+    },
+    {
+      q: 'Does ARC PEM handle TDS on contractor payments?',
+      a: 'Yes. TDS is recorded on each contractor or vendor entry with its section, nature of payment, deposit date and challan number. A TDS register groups it by financial year and quarter with deposit due dates, and a quarterly worksheet (Form 26Q, and Form 140 from 1 April 2026) is ready for your accountant to file from.',
+    },
+    {
+      q: 'How do payment approvals work in ARC PEM?',
+      a: 'A vendor or contractor payment recorded by anyone below Admin waits for an Admin or the Owner to approve it, and both sides are notified. Until it is approved the entry still counts in the ledger, but its payment voucher, WhatsApp confirmation and cheque-register entry are held back.',
+    },
+    {
+      q: 'Does ARC PEM work offline?',
+      a: 'No. ARC PEM is cloud software and needs an internet connection, which is what lets the site, office and accounts see the same numbers the moment a bill is entered. It works on ordinary mobile data and installs on a phone’s home screen like an app.',
+    },
+    {
+      q: 'What happens to our data if a payment fails or we stop paying?',
+      a: 'Nothing is deleted. If a paid plan’s renewal fails, the firm keeps full access for a 14-day grace period with a reminder banner. After that the workspace becomes read-only: everything can still be viewed and exported, and renewing restores full access at once.',
+    },
+    {
+      q: 'Do we get a GST invoice for our subscription?',
+      a: `Yes. Prices are shown before ${company.gstRatePct}% GST, which is added at checkout, and every charge comes with a GST tax invoice that is emailed and can be downloaded from your account. Add your billing name, address and GSTIN once before the first payment.`,
     },
     {
       q: 'Can I try ARC PEM before buying?',
       a: rules.trialDays > 0
-        ? `Yes. Every plan starts with a ${rules.trialDays}-day free trial: set up auto-pay and nothing is charged until the trial ends, and cancelling before then costs nothing. You can also book a free live demo at ${company.siteUrl}/contact.`
+        ? `Yes. A firm’s first subscription starts with a ${rules.trialDays}-day free trial on any plan: auto-pay is set up at the start, nothing is charged until the trial ends, and cancelling before then costs nothing. You can also book a free live demo at ${company.siteUrl}/contact.`
         : `Yes. Book a free live demo at ${company.siteUrl}/contact and the ${company.legalName} team walks you through ARC PEM on projects like yours. Monthly billing also lets you start small and cancel anytime.`,
     },
   ]

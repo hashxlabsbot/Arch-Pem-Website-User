@@ -21,10 +21,10 @@ import type { Faq, PublicPlan } from '@/lib/seo-entity'
 import './home-sections.css'
 
 const FEATURES = [
-  { icon: DashboardIcon, title: 'Live dashboards', text: 'Spend, pending payments and budget burn for every project, the moment a bill is entered on site.', tone: 'ind', span: 'w-span-2' },
+  { icon: DashboardIcon, title: 'Live dashboards', text: 'Spend, pending payments and budget burn for every project the moment a bill is entered on site, with a 0–100 health score and a completion forecast for each.', tone: 'ind', span: 'w-span-2' },
   { icon: UsersIcon, title: 'Roles & project access', text: 'Eight roles from Owner to Site engineer. Limit people to their projects and the areas they need.', tone: 'vio' },
-  { icon: CheckIcon, title: 'Payment approvals', text: 'Nothing goes out until an Admin or Owner approves it. Every decision is recorded.', tone: 'grn' },
-  { icon: ReceiptIcon, title: 'GST & GSTR-2B', text: 'GST purchase register and reconciliation against the GSTR-2B you download from the portal.', tone: 'sky' },
+  { icon: CheckIcon, title: 'Payment approvals', text: 'Nothing goes out until an Admin or Owner approves it. Then send the payment voucher and confirmation on WhatsApp.', tone: 'grn' },
+  { icon: ReceiptIcon, title: 'GST & GSTR-2B', text: 'A GST purchase register that builds itself, matched against your GSTR-2B so credit is claimed only on bills suppliers filed.', tone: 'sky' },
   { icon: DocumentIcon, title: 'Project documents', text: 'Drawings, BOQs and agreements with versions and review, in one place per project.', tone: 'ind' },
   { icon: WalletIcon, title: 'Vendor, labour & contractor ledgers', text: 'Bills, advances, settlements and TDS for every party, with statements to share.', tone: 'amb', span: 'w-span-2' },
   { icon: PhoneIcon, title: 'Built for site teams', text: 'Install it on any phone, add bills with photos, get push reminders for what’s due.', tone: 'vio' },
@@ -36,7 +36,7 @@ const steps = (trialDays: number) => [
   trialDays > 0
     ? { n: 1, title: 'Start your free trial', text: `${trialDays} days free on Starter, Studio or Business. Set up auto-pay by card, UPI or e-mandate; nothing is charged until the trial ends.` }
     : { n: 1, title: 'Choose a plan', text: 'Starter, Studio or Business, monthly or annual. Pay by card, UPI AutoPay or e-mandate; it renews itself.' },
-  { n: 2, title: 'Sign in with your ARC PEM account', text: 'Your firm’s workspace is ready at once. Bring existing projects across from Excel or the earlier desktop app.' },
+  { n: 2, title: 'Sign in with your ARC PEM account', text: 'Your firm’s workspace is ready at once. Import existing expense sheets from Excel or CSV, with a preview before anything is saved.' },
   { n: 3, title: 'Invite your team', text: 'Send invites from the Team page. Each person sets their own password and lands in the right role.' },
 ]
 
@@ -50,7 +50,7 @@ const ROLES: { key: string; label: string; who: string; can: string[] }[] = [
 
 const SECURITY = [
   { icon: LockIcon, title: 'Isolated in the database', text: 'Row-level security keeps every firm’s rows separate, even if a query forgets to.' },
-  { icon: SaveIcon, title: 'Daily backups', text: 'An automatic copy of your firm’s data every day, ready to restore or download.' },
+  { icon: SaveIcon, title: 'Back up anytime', text: 'Take a full copy of your firm’s data in one click, download it, and restore it whenever you need to.' },
   { icon: RefreshIcon, title: 'Every change recorded', text: 'An audit trail on the ledger, so mistakes are traceable and reversible.' },
   { icon: ClockIcon, title: 'Never held hostage', text: 'If a plan lapses your data stays readable and exportable. Nothing is deleted.' },
 ]

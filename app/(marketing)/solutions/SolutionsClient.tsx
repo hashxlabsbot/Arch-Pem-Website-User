@@ -9,6 +9,7 @@ import {
   DashboardIcon, RefreshIcon, ExportIcon, StoreIcon, HardHatIcon, UsersIcon,
   ReceiptIcon, ClockIcon, DownloadIcon, SearchIcon, LockIcon, SaveIcon,
   GlobeIcon, TruckIcon, MilestoneIcon, GaugeIcon, BellIcon, WarningIcon,
+  CheckIcon, DocumentIcon, WhatsappIcon,
 } from '@/components/icons'
 
 export default function SolutionsClient() {
@@ -49,9 +50,9 @@ export default function SolutionsClient() {
             <div className="feat-text">
               <span className="badge badge-amber">New — Project Control</span>
               <h3>Know a project is overrunning while you can still fix it</h3>
-              <p>ARC PEM connects your BOQ estimate to what you have actually spent. Every project shows budget vs. actual, what is left, and how far along it is — and the app tells you the moment a project crosses its budget or a milestone slips past its date.</p>
+              <p>ARC PEM connects your BOQ estimate to what you have actually spent. Every project shows budget vs. actual, what is left, and how far along it is — and the people who need to know get an alert at 90% and 100% of budget, or when a milestone slips past its date.</p>
               <ul className="feat-bullets">
-                {['Budget vs. actual per project, per category — updated as you log expenses','Milestone tracker with target dates, progress states, and overdue flagging','Cash, cheque, and pending payment split at a glance','Alerts and push reminders for budget overruns and overdue milestones'].map(b=>(
+                {['Budget vs. actual per project, per category — updated as you log expenses','A 0–100 project health score with the reasons, and a completion forecast','Milestone tracker with target dates, statuses and overdue flagging','Push alerts and reminders for budget, pending payments and milestones'].map(b=>(
                   <li key={b} className="feat-bullet"><span className="fb-check">✓</span> {b}</li>
                 ))}
               </ul>
@@ -61,9 +62,9 @@ export default function SolutionsClient() {
               <div className="fp-label">Project Overview — Skyline Residency</div>
               <div className="pc-stats">
                 {[
-                  { l: 'Estimated', v: '₹65,37,120', c: '' },
+                  { l: 'Estimated', v: '₹65,41,920', c: '' },
                   { l: 'Spent',     v: '₹41,20,400', c: 'spent' },
-                  { l: 'Remaining', v: '₹24,16,720', c: 'left' },
+                  { l: 'Remaining', v: '₹24,21,520', c: 'left' },
                   { l: 'Complete',  v: '63%',        c: '' },
                 ].map(s => (
                   <div key={s.l} className="pc-stat">
@@ -73,7 +74,7 @@ export default function SolutionsClient() {
                 ))}
               </div>
               <div className="pc-prog"><div className="pc-prog-fill" style={{ width: '63%' }} /></div>
-              <div className="pc-prog-meta"><span>63% of budget used</span><span>₹24,16,720 left</span></div>
+              <div className="pc-prog-meta"><span>63% of budget used</span><span>₹24,21,520 left</span></div>
               <div className="pc-split">
                 {[
                   { l: 'Cash',    v: '₹18,40,000', c: '' },
@@ -103,13 +104,14 @@ export default function SolutionsClient() {
             </div>
           </div>
 
-          <div className="sol-grid">
+          <div className="sol-grid sol-grid--4">
             {[
-              { id: 'project-mgmt', icon: <ClipboardIcon size={26} color="#4f46e5" />, cls: 'si-blue', title: 'Project & Budget Management', desc: 'Build precise cost estimates, track project status, and generate client-ready budget summaries with automatic GST and cost-per-sq.ft.', modal: 'modal-boq', cta: 'Explore BOQ Features', feats: [['b','Bill of Quantities (BOQ)'],['b','Project Dashboard & Status Tracking'],['b','BOQ Templates (Reusable)'],['b','Duplicate Projects'],['b','Cost Per Sq.Ft Calculator'],['b','Contingency & GST Auto-Compute'],['b','PDF & Excel Export']] },
-              { id: 'expense-mgmt', icon: <WalletIcon size={26} color="#0ea5e9" />, cls: 'si-sky', title: 'Expense & Finance Management', desc: 'Track every rupee across vendor bills, labour wages, contractor invoices, and site expenses. Auto-compute GST and export directly to Tally.', modal: 'modal-expense', cta: 'Explore Finance Tools', feats: [['s','Vendor Ledger with GST Toggle'],['s','Labour Tracking (Daily Headcount)'],['s','Contractor Bill Management'],['s','Site Expense Tracking'],['s','GST Purchase Register'],['s','Pending Payments Dashboard'],['s','Tally ERP / Prime CSV Export']] },
-              { id: 'power-feat', icon: <BoltIcon size={26} color="#10b981" />, cls: 'si-green', title: 'Power & Productivity Features', desc: 'Built for a firm that works together — team roles, payment approvals, global search, change history and bank-grade data isolation.', modal: 'modal-power', cta: 'Explore Power Tools', feats: [['g','Global Search (Ctrl+K)'],['g','Team Roles & Project Access'],['g','Payment Approvals'],['g','Party Directory & Autocomplete'],['g','Change History on Every Entry'],['g','Automatic Daily Backups'],['g','GSTR-2B, TDS & Cheque Registers'],['g','Works on Any Phone or Computer']] },
+              { id: 'project-mgmt', icon: <ClipboardIcon size={26} color="#4f46e5" />, cls: 'si-blue', title: 'Projects & Budgets', desc: 'Turn a BOQ into the project budget, then watch every rupee against it with a health score, milestones and alerts.', modal: 'modal-boq', cta: 'Explore budgets', feats: [['b','BOQ with categories, units and rates'],['b','Reusable budget templates'],['b','Cost per sq ft, contingency & GST'],['b','Budget vs actual by category'],['b','Project health score & completion forecast'],['b','Milestones with overdue alerts'],['b','Portfolio dashboard across projects']] },
+              { id: 'expense-mgmt', icon: <WalletIcon size={26} color="#0ea5e9" />, cls: 'si-sky', title: 'Expenses & Ledgers', desc: 'Every vendor bill, labour wage, contractor bill and site expense in one ledger per project, with the bill attached.', modal: 'modal-expense', cta: 'Explore ledgers', feats: [['s','Vendor ledger with GST per bill'],['s','Daily labour headcount by trade'],['s','Contractor running bills, advances & TDS'],['s','Site expenses with photos & challans'],['s','Duplicate-bill warnings'],['s','Party directory & statements'],['s','Excel / CSV import with preview']] },
+              { id: 'compliance', icon: <ReceiptIcon size={26} color="#f59e0b" />, cls: 'si-amber', title: 'Payments, GST & TDS', desc: 'Approve payments, send vouchers on WhatsApp, and hand your CA a clean GST and TDS record every month.', modal: 'modal-compliance', cta: 'Explore payments & tax', feats: [['a','Payment approvals before money goes out'],['a','Payment vouchers (PDF)'],['a','WhatsApp confirmations & statements'],['a','Cheque register & pending payments'],['a','GST purchase register & GSTR-2B matching'],['a','TDS register & quarterly worksheet'],['a','Tally ERP / TallyPrime export']] },
+              { id: 'power-feat', icon: <BoltIcon size={26} color="#10b981" />, cls: 'si-green', title: 'Team, Control & Security', desc: 'Your whole firm on one live ledger, each person limited to the projects and areas their role allows.', modal: 'modal-power', cta: 'Explore team & security', feats: [['g','Eight roles, owner to site engineer'],['g','Per-project & per-area access'],['g','Change history & activity log'],['g','Documents & drawings with versions'],['g','Push notifications & reminders'],['g','Global search (Ctrl+K)'],['g','Data isolated per firm; backup anytime']] },
             ].map((s, i) => (
-              <div key={s.id} className={`sol-card fade-up${i===1?' d1':i===2?' d2':''}`} id={s.id}>
+              <div key={s.id} className={`sol-card fade-up${i%2===1?' d1':''}`} id={s.id}>
                 <div className={`sol-icon ${s.cls}`}>{s.icon}</div>
                 <h3>{s.title}</h3>
                 <p>{s.desc}</p>
@@ -162,10 +164,10 @@ export default function SolutionsClient() {
               <div className="gst-box">
                 {[['Sub-total','₹52,80,000'],['Contingency (5%)','₹2,64,000']].map(([k,v])=><div key={k} className="gst-row"><span className="k">{k}</span><span className="v">{v}</span></div>)}
                 <div className="gst-divider"/>
-                <div className="gst-row"><span className="k">GST (18%)</span><span className="v">₹9,93,120</span></div>
+                <div className="gst-row"><span className="k">GST (18%)</span><span className="v">₹9,97,920</span></div>
                 <div className="gst-divider"/>
-                <div className="gst-row tot"><span className="k">Grand Total</span><span className="v">₹65,37,120</span></div>
-                <div className="gst-row"><span className="k">Rate / sq.ft (3,200 sq.ft)</span><span className="v" style={{ color: 'var(--gray-500)' }}>₹2,043 / sq.ft</span></div>
+                <div className="gst-row tot"><span className="k">Grand Total</span><span className="v">₹65,41,920</span></div>
+                <div className="gst-row"><span className="k">Rate / sq.ft (3,200 sq.ft)</span><span className="v" style={{ color: 'var(--gray-500)' }}>₹2,044 / sq.ft</span></div>
               </div>
             </div>
           </div>
@@ -176,9 +178,9 @@ export default function SolutionsClient() {
               <div className="feat-photo"><Image src="/images/finance-analytics.jpg" alt="Project finance dashboard" fill sizes="(max-width: 768px) 100vw, 50vw" /></div>
               <span className="badge badge-teal">Expense &amp; Finance Management</span>
               <h3>Every bill. Every worker. Every rupee — tracked.</h3>
-              <p>Log vendor bills with per-entry GST, track daily labour headcount by role, manage contractor invoices, and capture site costs — all in one ledger per project.</p>
+              <p>Log vendor bills with GST, daily labour headcount by trade, contractor running bills with advances and TDS, and site costs — all in one ledger per project, with the bill attached.</p>
               <ul className="feat-bullets">
-                {['Per-bill GST toggle — auto-calculates CGST + SGST','Payment tracking: advance, cash, cheque, pending balance','Attach bill photos or scanned PDFs to each entry','4-second undo window on accidental deletes'].map(b=>(
+                {['GST rate and amount on every bill, with optional round-off','Payments split into cash, cheque and pending — UPI, NEFT, RTGS or IMPS','Bills, challans and site photos attached to each entry','Warnings on duplicate bills, and undo on deletes'].map(b=>(
                   <li key={b} className="feat-bullet"><span className="fb-check">✓</span> {b}</li>
                 ))}
               </ul>
@@ -215,7 +217,7 @@ export default function SolutionsClient() {
               <div className="feat-photo"><Image src="/images/construction-workers.jpg" alt="Construction workers on site" fill sizes="(max-width: 768px) 100vw, 50vw" /></div>
               <span className="badge badge-amber">Power Features</span>
               <h3>Enterprise security. Zero setup. Works on site.</h3>
-              <p>Every firm&apos;s data is isolated inside the database itself, encrypted in transit and backed up daily. Your whole team works on the same live numbers — each person seeing only what their role allows.</p>
+              <p>Every firm&apos;s data is isolated inside the database itself and encrypted in transit, uploads are virus-scanned, and a full backup can be taken and restored at any time. Your whole team works on the same live numbers — each person seeing only what their role allows.</p>
               <ul className="feat-bullets">
                 {['Global search with Ctrl+K — find any project, vendor, or bill instantly','Invite your team with roles and per-project access','Approvals before money goes out, and a history of every change','Nothing to install — runs in any browser, installs on phones'].map(b=>(
                   <li key={b} className="feat-bullet"><span className="fb-check">✓</span> {b}</li>
@@ -240,7 +242,7 @@ export default function SolutionsClient() {
                   { ico: <LockIcon size={18} color="#4f46e5" />,    name: 'Isolated',     sub: 'Row-level security' },
                   { ico: <GlobeIcon size={18} color="#4f46e5" />,   name: 'Any device',   sub: 'Browser & phone' },
                   { ico: <UsersIcon size={18} color="#4f46e5" />,   name: 'Team roles',   sub: 'Owner to site engineer' },
-                  { ico: <RefreshIcon size={18} color="#4f46e5" />, name: 'Daily backup', sub: 'Automatic' },
+                  { ico: <RefreshIcon size={18} color="#4f46e5" />, name: 'Backups',      sub: 'Take & restore anytime' },
                 ].map(({ ico, name, sub }) => (
                   <div key={name} className="sec-tile"><span className="st-icon">{ico}</span><div><div className="st-name">{name}</div><div className="st-sub">{sub}</div></div></div>
                 ))}
@@ -269,39 +271,47 @@ export default function SolutionsClient() {
         </div>
       </section>
 
-      {/* ── Feature Modals ── */}
+      {/* ── Feature Modals ── (every card is a live feature: ARCPEM-Web docs/FEATURES.md) */}
       {[
-        { id: 'modal-boq', cls: 'si-blue', icon: <ClipboardIcon size={26} color="#4f46e5" />, title: 'Project & Budget Management', sub: 'Precision BOQ engine built for Indian construction firms', cards: [
-          {i:<BuildingIcon size={20} color="#4f46e5" />,t:'Bill of Quantities (BOQ)',d:'Structured line items with units, rates, and colour-coded categories — Civil, MEP, Finishing, Landscaping. Live subtotal, contingency, and GST.'},
-          {i:<CompassIcon size={20} color="#4f46e5" />,t:'Cost-Per-Sq.Ft Calculator',d:'Automatically computes and displays cost per sq.ft as you enter BOQ items. Instant benchmark for client negotiations.'},
-          {i:<FolderIcon size={20} color="#4f46e5" />,t:'Reusable BOQ Templates',d:'Save any BOQ as a template. Apply it to future projects in one click — perfect for standard villa, office, or fit-out budgets.'},
-          {i:<DashboardIcon size={20} color="#4f46e5" />,t:'Project Dashboard',d:'Live status board showing budget vs. actual spend, % complete, and outstanding payments — all in real time.'},
-          {i:<RefreshIcon size={20} color="#4f46e5" />,t:'Duplicate Projects',d:'Copy an entire project structure — BOQ, categories, team — to kickstart similar projects without starting from zero.'},
-          {i:<ExportIcon size={20} color="#4f46e5" />,t:'PDF & Excel Export',d:'Generate a client-ready PDF BOQ or detailed Excel export. Professional formatting with your firm name and project details.'},
+        { id: 'modal-boq', cls: 'si-blue', icon: <ClipboardIcon size={26} color="#4f46e5" />, title: 'Projects & Budgets', sub: 'A BOQ that becomes the budget every bill is measured against', cards: [
+          {i:<BuildingIcon size={20} color="#4f46e5" />,t:'Bill of Quantities (BOQ)',d:'Line items with units, quantities and rates in colour-coded categories — materials, labour, equipment, fees and more. Subtotal, contingency and GST are worked out for you.'},
+          {i:<CompassIcon size={20} color="#4f46e5" />,t:'Cost per sq ft',d:'Cost per square foot is calculated from the budget and the project area, an instant benchmark for client conversations.'},
+          {i:<FolderIcon size={20} color="#4f46e5" />,t:'Reusable budget templates',d:'Save a budget structure once and start new projects from it — ideal for repeat villas, offices or fit-outs.'},
+          {i:<DashboardIcon size={20} color="#4f46e5" />,t:'Portfolio & project dashboards',d:'Spend, pending payments and settled share across every project, with monthly trends, category breakdowns and date filters for the month, quarter or financial year.'},
+          {i:<GaugeIcon size={20} color="#4f46e5" />,t:'Health score & forecast',d:'Each project gets a 0–100 health score — budget adherence, payment load and milestone timeliness — with the reasons shown, plus a completion forecast.'},
+          {i:<RefreshIcon size={20} color="#4f46e5" />,t:'Duplicate, archive, complete',d:'Copy a project to reuse its budget structure, put projects on hold, complete or archive them. Active projects are counted against your plan.'},
         ]},
-        { id: 'modal-expense', cls: 'si-sky', icon: <WalletIcon size={26} color="#0ea5e9" />, title: 'Expense & Finance Management', sub: 'Track every rupee across vendors, labour, contractors, and site', cards: [
-          {i:<StoreIcon size={20} color="#0ea5e9" />,t:'Vendor Ledger with GST',d:'Log vendor bills with GSTIN, invoice number, and GST rate. Toggle between GST-inclusive and exclusive views. Auto-fills CGST/SGST split.'},
-          {i:<HardHatIcon size={20} color="#0ea5e9" />,t:'Labour Tracking',d:'Daily headcount entry for every site. Weekly payment summaries, skill-wise breakdowns, and exportable attendance sheets.'},
-          {i:<UsersIcon size={20} color="#0ea5e9" />,t:'Contractor Bill Management',d:'Manage civil, MEP, and interior contractors with running bill tracking, retention amounts, and advance deduction calculations.'},
-          {i:<ReceiptIcon size={20} color="#0ea5e9" />,t:'GST Purchase Register',d:'Auto-generated monthly GST detail sheet — ready to share with your CA for GST filing. Exportable to Excel and PDF.'},
-          {i:<ClockIcon size={20} color="#0ea5e9" />,t:'Pending Payments Dashboard',d:'See all unpaid bills across every project in one view. Overdue alerts with days-past-due counter.'},
-          {i:<DownloadIcon size={20} color="#0ea5e9" />,t:'Tally ERP / Prime Export',d:'One-click CSV export formatted for Tally ERP 9 and Tally Prime. Eliminates manual double-entry and CA reconciliation time.'},
+        { id: 'modal-expense', cls: 'si-sky', icon: <WalletIcon size={26} color="#0ea5e9" />, title: 'Expenses & Ledgers', sub: 'Vendor, labour, contractor and site — every rupee tied to a project, a party and a bill', cards: [
+          {i:<StoreIcon size={20} color="#0ea5e9" />,t:'Vendor ledger',d:'Material and supplier bills with party, invoice number, item, quantity, rate, GST and round-off. Money maths is done on the server, so totals always agree.'},
+          {i:<HardHatIcon size={20} color="#0ea5e9" />,t:'Labour wages',d:'Daily headcount and rate per trade — mason, helper, coolie and more — with wages worked out per day and a labour ledger you can export.'},
+          {i:<UsersIcon size={20} color="#0ea5e9" />,t:'Contractor bills',d:'Running bills, advances and TDS for every contractor and sub-contractor, with the section, challan number and deposit date recorded.'},
+          {i:<FolderIcon size={20} color="#0ea5e9" />,t:'Bills attached to entries',d:'Attach the bill, challan, delivery note and site photos to each entry. Files are virus-scanned and stored privately.'},
+          {i:<WarningIcon size={20} color="#0ea5e9" />,t:'Duplicate-bill warnings',d:'The same bill number from the same party — on any project — or an identical same-day entry raises a warning before it is saved twice.'},
+          {i:<ExportIcon size={20} color="#0ea5e9" />,t:'Import from Excel or CSV',d:'Bring existing expense sheets across. Columns are matched automatically and you review a preview, including possible duplicates, before anything is saved.'},
         ]},
-        { id: 'modal-power', cls: 'si-green', icon: <BoltIcon size={26} color="#10b981" />, title: 'Power & Productivity Features', sub: 'Enterprise tools for the whole firm — secure, live and fast', cards: [
-          {i:<SearchIcon size={20} color="#10b981" />,t:'Global Search (Ctrl+K)',d:'Search across every project, vendor, bill, and entry in milliseconds. Fuzzy match finds records even with partial names.'},
-          {i:<UsersIcon size={20} color="#10b981" />,t:'Team Roles & Access',d:'Invite partners, accounts and site staff. Eight roles from Owner to Site engineer, each limited to the projects they work on.'},
-          {i:<LockIcon size={20} color="#10b981" />,t:'Payment Approvals',d:'Nothing goes out until an Admin or Owner approves it, and every decision is recorded with who made it and when.'},
-          {i:<ClipboardIcon size={20} color="#10b981" />,t:'Change History',d:'Who changed which entry, when, and what it was before. Mistakes are traceable and reversible; nothing silently disappears.'},
-          {i:<SaveIcon size={20} color="#10b981" />,t:'Daily Backups & Export',d:'An automatic copy of your firm’s data every day, ready to restore or download. Export everything to Excel or PDF at any time.'},
-          {i:<RefreshIcon size={20} color="#10b981" />,t:'Always Up to Date',d:'New features and fixes arrive automatically for everyone in the firm. There is nothing to install, update or maintain.'},
+        { id: 'modal-compliance', cls: 'si-amber', icon: <ReceiptIcon size={26} color="#f59e0b" />, title: 'Payments, GST & TDS', sub: 'Approve, pay, confirm — and hand your CA clean registers', cards: [
+          {i:<CheckIcon size={20} color="#f59e0b" />,t:'Payment approvals',d:'A vendor or contractor payment recorded below Admin waits for an Admin or the Owner. Both sides are notified, and every decision is recorded.'},
+          {i:<DocumentIcon size={20} color="#f59e0b" />,t:'Payment vouchers',d:'A numbered PDF voucher for every approved payment: who was paid and for what, GST, TDS held back, mode and the amount in words, with your firm’s name and logo.'},
+          {i:<WhatsappIcon size={20} color="#f59e0b" />,t:'WhatsApp confirmations',d:'Send a payment confirmation or a party’s statement of account on WhatsApp in one tap, so vendors stop calling to ask what was paid.'},
+          {i:<ClockIcon size={20} color="#f59e0b" />,t:'Cheques & pending payments',d:'A cheque register built from your payments — mark each cleared, bounced or cancelled — and a pending-payments report, oldest first, with days overdue.'},
+          {i:<ReceiptIcon size={20} color="#f59e0b" />,t:'GST register & GSTR-2B',d:'A GST purchase register by month and project. Upload the GSTR-2B JSON from the portal and it is matched against your bills, so missing supplier filings are caught before you claim credit.'},
+          {i:<DownloadIcon size={20} color="#f59e0b" />,t:'TDS & Tally',d:'A TDS register by financial year and quarter with due dates, a quarterly return worksheet (Form 26Q / Form 140) for your accountant, and Tally ERP / TallyPrime CSV export.'},
+        ]},
+        { id: 'modal-power', cls: 'si-green', icon: <BoltIcon size={26} color="#10b981" />, title: 'Team, Control & Security', sub: 'The whole firm on one live ledger — and each person only where they belong', cards: [
+          {i:<UsersIcon size={20} color="#10b981" />,t:'Roles & access',d:'Eight roles from Owner to Site engineer and Supervisor. Limit each person to their projects and to areas such as GST, TDS, exports or documents.'},
+          {i:<ClipboardIcon size={20} color="#10b981" />,t:'Change history & activity log',d:'Who changed which entry, when, and what it was before — captured by the database itself — plus a firm-wide log of what people did.'},
+          {i:<FolderIcon size={20} color="#10b981" />,t:'Documents & drawings',d:'Drawings, BOQs and agreements per project, with numbered versions and a review state on each: draft, in review, approved or rejected.'},
+          {i:<BellIcon size={20} color="#10b981" />,t:'Notifications & reminders',d:'Push notifications on phone and browser for approvals, budget alerts and new expenses, and scheduled reminders in your firm’s own timezone.'},
+          {i:<SearchIcon size={20} color="#10b981" />,t:'Global search (Ctrl+K)',d:'Find any project, entry or party from anywhere in the app — limited to what each person is allowed to see.'},
+          {i:<LockIcon size={20} color="#10b981" />,t:'Security & backups',d:'Each firm’s data is isolated in the database (row-level security), connections are encrypted, and a full backup can be taken and restored at any time. If a plan lapses, nothing is deleted.'},
         ]},
         { id: 'modal-control', cls: 'si-amber', icon: <GaugeIcon size={26} color="#f59e0b" />, title: 'Project Control & Alerts', sub: 'Catch overruns and slipped milestones before they cost you', cards: [
-          {i:<GaugeIcon size={20} color="#f59e0b" />,t:'Budget vs. Actual',d:'Your BOQ estimate sits alongside real logged expenses. See amount spent, amount remaining, and percentage of budget used — for the whole project and broken down by category.'},
-          {i:<MilestoneIcon size={20} color="#f59e0b" />,t:'Milestone & Phase Tracker',d:'Define project phases with target dates. Move each through Pending, In Progress, and Completed. Anything past its target date is flagged automatically.'},
-          {i:<WarningIcon size={20} color="#f59e0b" />,t:'Budget Overrun Alerts',d:'Set an estimated budget per project. The moment total spend crosses it, ARC PEM raises an alert naming the project and the exact amount you have gone over by.'},
-          {i:<BellIcon size={20} color="#f59e0b" />,t:'Pending & Overdue Reminders',d:'On launch you are told how many payments are outstanding and their total value, plus any milestone past its date. A reminder fires on exit too, so it stays in your notification centre.'},
-          {i:<DashboardIcon size={20} color="#f59e0b" />,t:'Spend Trend & Breakdown',d:'Every project carries a monthly spend trend and a category breakdown chart, so you can see which months and which trades are consuming the budget.'},
-          {i:<ClockIcon size={20} color="#f59e0b" />,t:'Cash / Cheque / Pending Split',d:'Know exactly how much of a project has been settled in cash, how much by cheque, and how much is still outstanding — without opening a single ledger.'},
+          {i:<GaugeIcon size={20} color="#f59e0b" />,t:'Budget vs. actual',d:'Your budget sits alongside real logged expenses: spent, remaining and the share used — for the whole project and planned versus spent for each category.'},
+          {i:<MilestoneIcon size={20} color="#f59e0b" />,t:'Milestone tracker',d:'Milestones with target dates and statuses. Anything past its target date is flagged as overdue until someone updates it.'},
+          {i:<WarningIcon size={20} color="#f59e0b" />,t:'Budget alerts',d:'An alert when a project reaches 90% of its budget, and again at 100%, sent as a push notification to the people who need to know.'},
+          {i:<BellIcon size={20} color="#f59e0b" />,t:'Pending & overdue reminders',d:'Scheduled checks for outstanding payments and overdue milestones, delivered in the app and as push notifications in your firm’s timezone.'},
+          {i:<DashboardIcon size={20} color="#f59e0b" />,t:'Health score & forecast',d:'A 0–100 grade for every project with the reasons behind it, and a completion forecast from spend, milestones and dates.'},
+          {i:<ClockIcon size={20} color="#f59e0b" />,t:'Cash / cheque / pending split',d:'See how much of a project has been settled in cash, how much by cheque, and how much is still outstanding — without opening a ledger.'},
         ]},
       ].map(m => (
         <div key={m.id} id={m.id} className={`modal-overlay${openModal===m.id?' open':''}`} onClick={e=>{if(e.target===e.currentTarget)hideModal()}}>

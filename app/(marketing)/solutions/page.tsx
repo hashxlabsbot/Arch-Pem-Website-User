@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import SolutionsClient from './SolutionsClient'
 import PageSchema from '@/components/seo/PageSchema'
 
-const TITLE = 'BOQ, GST & Contractor Ledger Software for Architects & Builders'
+const TITLE = 'Construction Expense Software Features: BOQ, GST & TDS'
 const DESCRIPTION =
-  'BOQ budgets, vendor and labour tracking, GST registers and Tally export for Indian architecture and construction firms, live for the whole team.'
+  'BOQ budgets, vendor, labour and contractor ledgers, payment approvals, GST with GSTR-2B, TDS and Tally export for Indian construction firms, on any device.'
 
 export const metadata: Metadata = {
   title: TITLE,

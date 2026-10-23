@@ -7,7 +7,7 @@ import { useReveal } from './useReveal'
 const watches = [
   {
     icon: <WarningIcon size={18} />, tone: 'red', title: 'Budget overruns',
-    text: "Every vendor, labour and contractor bill counts against the project's BOQ budget. Cross it and you know that day — not at the final account.",
+    text: "Every vendor, labour and contractor bill counts against the project's BOQ budget. You're alerted at 90% and again at 100%, the day it happens, not at the final account.",
   },
   {
     icon: <ClockIcon size={18} />, tone: 'amber', title: 'Overdue milestones',
@@ -43,9 +43,9 @@ export default function EarlyWarning() {
           <span className="hs-eyebrow hs-eyebrow--amber"><i />Project control</span>
           <h2 id="ew-title">ARC PEM tells you before your accountant does</h2>
           <p className="ew-lead">
-            ARC PEM checks every project against its budget, its milestone dates and its unpaid bills. When
-            something slips, it says so the moment you open the app — and again when you close it, so the
-            alert waits in your notification centre.
+            ARC PEM watches every project&apos;s budget, milestone dates and unpaid bills. When something slips, the
+            people who need to know get a push notification on their phone or browser, and it waits in the in-app
+            notification centre until someone acts on it.
           </p>
           <ul className="ew-list">
             {watches.map((w) => (

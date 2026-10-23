@@ -5,11 +5,14 @@
  * load), JSON-LD that parses, image alt text, noindex, and that every internal link resolves.
  *
  *   npm run build && npm start        # in one terminal
- *   node scripts/seo-audit.mjs http://localhost:3000
+ *   node scripts/seo-audit.mjs http://localhost:3000 [concurrency]
+ *
+ * Use a low concurrency (e.g. 2) against `next dev`, which compiles each page on first request.
  *
  * Exits 1 if any error is found. Warnings (soft limits) don't fail the run.
  */
 const BASE = (process.argv[2] || 'http://localhost:3001').replace(/\/$/, '')
+const CONCURRENCY = Math.max(1, Number(process.argv[3]) || 6)
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 const errors = []
@@ -136,19 +139,19 @@ async function pool(items, n, fn) {
 }
 
 console.log(`Auditing ${urls.length} URLs from ${BASE}/sitemap.xml …`)
-await pool(urls, 6, audit)
+await pool(urls, CONCURRENCY, audit)
 
 for (const [t, ps] of titles) if (ps.length > 1) err(ps.join(', '), `duplicate title "${t}"`)
 for (const [d, ps] of descs) if (ps.length > 1) err(ps.join(', '), `duplicate description "${d.slice(0, 60)}…"`)
 
 const known = new Set(urls.map((u) => toLocal(u).replace(BASE, '') || '/'))
 const toCheck = [...internal].filter((h) => !known.has(h) && !/^\/(api|_next|dashboard|login|register|forgot-password|reset-password)/.test(h))
-await pool(toCheck, 6, async (h) => {
+await pool(toCheck, CONCURRENCY, async (h) => {
   const r = await get(`${BASE}${h}`)
   if (r.status >= 400) err(h, `internal link returns ${r.status}`)
 })
 
-await pool([...ogImages].slice(0, 80), 6, async (src) => {
+await pool([...ogImages].slice(0, 80), CONCURRENCY, async (src) => {
   const u = src.startsWith('http') ? toLocal(src) : `${BASE}${src}`
   const r = await get(u)
   const type = r.headers.get('content-type') || ''

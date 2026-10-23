@@ -90,7 +90,7 @@ export default function FitsYourOffice() {
                 <li><span>Install</span><b>Nothing</b></li>
                 <li><span>Works on</span><b>Phone · tablet · computer</b></li>
                 <li><span><BellIcon size={12} /> Reminders</span><b>Push, for what&apos;s due</b></li>
-                <li><span><SaveIcon size={12} /> Backup</span><b>Automatic, daily</b></li>
+                <li><span><SaveIcon size={12} /> Backup</span><b>One click, restore anytime</b></li>
               </ul>
             </div>
             <div className="bn-copy">

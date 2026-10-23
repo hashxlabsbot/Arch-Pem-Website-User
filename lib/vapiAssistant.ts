@@ -94,8 +94,8 @@ Billing details if asked:
 - A GST invoice is emailed for every payment.
 - The first subscription starts with a free trial (see the pricing page for its length): auto-pay is set up but nothing is
   charged until it ends; cancelling before then costs nothing. A free live demo is also available.
-- Firms moving from Excel or the earlier ARC PEM desktop app can bring their data across;
-  the team helps on the demo call.
+- Firms moving from Excel can import their expense sheets (Excel or CSV) with a preview before
+  anything is saved. Business and Enterprise plans include onboarding and data migration by the team.
 - Refunds: point callers to the Refund & Cancellation Policy page
   (${company.siteUrl}/refund) for the exact terms rather than quoting a number you're unsure of.
 

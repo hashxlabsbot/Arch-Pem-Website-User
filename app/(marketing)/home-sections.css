@@ -2,8 +2,8 @@
    Home page — "Why ARC PEM" story sections (components/home)
    .wa  Why ARC PEM: scattered sources → ARC PEM → results (beams)
    .pf  Proof band: owner-confirmed customer results
-   .ew  Early warning: desktop alerts on a sample project
-   .bn  Bento: how it fits the office (Tally, offline, muster, BOQ, LAN)
+   .ew  Early warning: push alerts on a sample project
+   .bn  Bento: how it fits the office (Tally, phone, muster, BOQ, one ledger)
    Reuses landing.css tokens. Illustrations are hidden only after JS has
    mounted ([data-reveal="armed"]), so content shows without JS.
    ═══════════════════════════════════════════════════════════════ */
@@ -488,7 +488,7 @@
 .bn-file-ok { color: #16a34a; }
 .bn-grid[data-reveal='armed'] .bn-file { opacity: 0; transform: translateX(-12px); }
 
-/* Offline */
+/* On site, on the phone */
 .bn-off { flex-direction: row; align-items: center; gap: 22px; }
 .bn-off-ring { position: relative; display: grid; place-items: center; flex-shrink: 0; width: 62px; height: 62px; border-radius: 50%; color: #a5b4fc; background: rgba(99, 102, 241, 0.16); border: 1px solid rgba(129, 140, 248, 0.4); }
 .bn-off-ring span { position: absolute; inset: -9px; border-radius: 50%; border: 1px solid rgba(129, 140, 248, 0.18); }
@@ -521,7 +521,7 @@
 .bn-sqft { color: var(--indigo); }
 .bn-sqft small { margin-left: 3px; font-family: var(--font-body), 'Inter', sans-serif; font-size: 0.66rem; font-weight: 600; color: var(--gray-500); }
 
-/* Office network */
+/* One ledger, whole firm */
 .bn-lan { position: relative; justify-content: flex-start; min-height: 172px; }
 .bn-lan-pcs { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; }
 .bn-lan-pcs span { display: flex; flex-direction: column-reverse; align-items: center; gap: 6px; font-size: 0.66rem; font-weight: 600; color: var(--gray-500); }

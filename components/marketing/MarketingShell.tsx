@@ -359,8 +359,8 @@ export default function MarketingShell({ children }: { children: React.ReactNode
                   <span className="cta-avatar cta-avatar-more">+30</span>
                 </div>
                 <div className="cta-social-meta">
-                  <div className="cta-stars">★★★★★</div>
-                  <span className="cta-social-label">Rated 4.9 / 5 · 30+ teams</span>
+                  <div className="cta-proof">30+ firms</div>
+                  <span className="cta-social-label">₹120 Cr+ of project value tracked</span>
                 </div>
               </div>
             </div>

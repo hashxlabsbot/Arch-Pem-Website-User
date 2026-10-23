@@ -83,7 +83,7 @@ const comparisonRows = (rules: BillingRules): Row[] => [
   { feature: 'Pending payments & reminders', icon: Clock, cells: all(true) },
   { feature: 'Branded PDF reports', icon: Palette, cells: all(true), note: 'Your logo and firm name on every export' },
   { feature: 'Works on phone, tablet & computer', icon: Smartphone, cells: all(true) },
-  { feature: 'Change history & daily backups', icon: History, cells: all(true) },
+  { feature: 'Change history & backups', icon: History, cells: all(true) },
   { feature: 'Guided onboarding & data migration', icon: Repeat, cells: (plans) => plans.map((p) => p.tier === 'BUSINESS' || p.tier === 'ENTERPRISE') },
   { feature: 'Support', icon: ShieldCheck, cells: (plans) => plans.map((p) => SUPPORT[p.tier ?? ''] ?? 'Email') },
 ]
