@@ -303,14 +303,14 @@ function LoginForm() {
       {/* Create account card */}
       <div style={{ marginTop: '16px' }}>
         <a href="/register" style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px 12px',
           padding: '14px 16px', borderRadius: '14px',
           border: '1.5px solid #e2e8f0', background: '#f8fafc',
           textDecoration: 'none',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: '1 1 170px' }}>
             <div style={{
-              width: '32px', height: '32px', borderRadius: '9px',
+              flexShrink: 0, width: '32px', height: '32px', borderRadius: '9px',
               background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(59,130,246,0.08))',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
@@ -318,10 +318,10 @@ function LoginForm() {
             </div>
             <div>
               <div style={{ fontSize: '0.83rem', fontWeight: 700, color: '#0f172a' }}>New to ARC PEM?</div>
-              <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>One-year license · Secure checkout</div>
+              <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Free trial · Monthly or annual</div>
             </div>
           </div>
-          <span style={{ fontSize: '0.82rem', color: '#6366f1', fontWeight: 800 }}>Create Account →</span>
+          <span style={{ fontSize: '0.82rem', color: '#6366f1', fontWeight: 800, whiteSpace: 'nowrap', flexShrink: 0 }}>Create Account →</span>
         </a>
       </div>
 

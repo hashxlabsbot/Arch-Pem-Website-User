@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import LogoMark from '@/components/LogoMark'
-import { company } from '@/lib/company'
-import { ClipboardIcon, ReceiptIcon, FileIcon, CompassIcon } from '@/components/icons'
+import { ClipboardIcon, ReceiptIcon, ExportIcon, HardHatIcon } from '@/components/icons'
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -70,17 +69,17 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               borderRadius: '100px', padding: '4px 12px',
             }}>
               <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#34d399', display: 'inline-block' }} />
-              <span style={{ fontSize: '0.67rem', color: '#93c5fd', fontWeight: 600 }}>v{company.product.version} live · Trusted by 30+ firms</span>
+              <span style={{ fontSize: '0.67rem', color: '#93c5fd', fontWeight: 600 }}>Runs in your browser · Trusted by 30+ firms</span>
             </div>
             <h1 style={{ fontSize: '1.85rem', fontWeight: 900, color: 'white', lineHeight: 1.18, margin: '0 0 9px', letterSpacing: '-0.04em' }}>
-              India&apos;s smartest<br />
+              Every rupee of every project,<br />
               <span style={{
                 background: 'linear-gradient(90deg, #60a5fa, #a78bfa)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              }}>BOQ &amp; estimation</span> platform
+              }}>in one live ledger</span>
             </h1>
             <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.42)', lineHeight: 1.6, margin: 0 }}>
-              Built for Indian construction professionals — generate accurate bills of quantities in minutes, not days.
+              BOQ budgets, vendor and contractor bills, labour, GST and Tally export for Indian construction firms. Office, accounts and site work on the same numbers, on any phone or computer.
             </p>
           </div>
 
@@ -94,7 +93,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           }}>
             <img
               src="/arch-illustration.svg"
-              alt="ARC PEM — Architectural project estimation visualisation"
+              alt="ARC PEM — construction project cost tracking"
               style={{ display: 'block', width: '100%', height: 'auto' }}
             />
           </div>
@@ -102,10 +101,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           {/* ── Feature pills ── */}
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
             {[
-              { icon: <ClipboardIcon size={12} color="rgba(255,255,255,0.55)" />, label: 'BOQ Builder' },
-              { icon: <ReceiptIcon size={12} color="rgba(255,255,255,0.55)" />,   label: 'GST Auto-calc' },
-              { icon: <FileIcon size={12} color="rgba(255,255,255,0.55)" />,      label: 'PDF Export' },
-              { icon: <CompassIcon size={12} color="rgba(255,255,255,0.55)" />,   label: 'Quantity Takeoff' },
+              { icon: <ClipboardIcon size={12} color="rgba(255,255,255,0.55)" />, label: 'BOQ & budgets' },
+              { icon: <ReceiptIcon size={12} color="rgba(255,255,255,0.55)" />,   label: 'GST & GSTR-2B' },
+              { icon: <ExportIcon size={12} color="rgba(255,255,255,0.55)" />,    label: 'Tally export' },
+              { icon: <HardHatIcon size={12} color="rgba(255,255,255,0.55)" />,   label: 'Site team on phone' },
             ].map(({ icon, label }) => (
               <div key={label} style={{
                 display: 'inline-flex', alignItems: 'center', gap: '5px',
@@ -123,9 +122,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           {/* ── Stats row ── */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '16px' }}>
             {[
-              { value: '₹50 Cr+', label: 'Estimated', accent: '#60a5fa' },
-              { value: '30+',      label: 'Firms active', accent: '#a78bfa' },
-              { value: '4.9 ★',   label: 'User rating',  accent: '#34d399' },
+              { value: '30+',       label: 'Firms onboard',         accent: '#a78bfa' },
+              { value: '₹120 Cr+', label: 'Project value tracked', accent: '#60a5fa' },
+              { value: 'Any device', label: 'Browser & phone',      accent: '#34d399' },
             ].map(({ value, label, accent }) => (
               <div key={label} style={{
                 background: 'rgba(255,255,255,0.04)', borderRadius: '10px',
@@ -143,10 +142,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 'auto',
           }}>
             <div style={{ display: 'flex' }}>
-              {['R','K','A','S'].map((l, i) => (
+              {['A','M','S'].map((l, i) => (
                 <div key={l} style={{
                   width: '24px', height: '24px', borderRadius: '50%', marginLeft: i === 0 ? 0 : '-6px',
-                  background: ['#3b82f6','#6366f1','#8b5cf6','#0ea5e9'][i],
+                  background: ['#3b82f6','#6366f1','#8b5cf6'][i],
                   border: '2px solid #06101f',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.58rem', fontWeight: 700, color: 'white',
@@ -154,7 +153,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               ))}
             </div>
             <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.32)', lineHeight: 1.5 }}>
-              Join professionals already using ARC PEM
+              Arch Consultancy, Munesh Associates, SS Constructions and 30+ firms run their projects on ARC PEM
             </span>
           </div>
 

@@ -337,7 +337,7 @@ function RegisterForm() {
           Create your account
         </h2>
         <p style={{ fontSize: '0.82rem', color: '#94a3b8', fontWeight: 500 }}>
-          Create your account to purchase and download ARC PEM
+          Set up your firm on ARC PEM. Start with a free trial, then choose a monthly or annual plan.
         </p>
       </div>
 
@@ -471,7 +471,7 @@ function RegisterForm() {
 
         {/* Trust bullets */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', paddingTop: '4px' }}>
-          {['✓ One-year license', '✓ 12 months of updates', '✓ Secure checkout'].map(t => (
+          {['✓ Free trial', '✓ Monthly or annual', '✓ Cancel anytime'].map(t => (
             <span key={t} style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 500 }}>{t}</span>
           ))}
         </div>
