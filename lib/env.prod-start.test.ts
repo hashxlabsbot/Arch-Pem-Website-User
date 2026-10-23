@@ -27,6 +27,34 @@ describe('production startup with optional settings missing', () => {
     expect(logged.join(' ')).not.toContain('q8V1xY0pR7tN3mK9sW2eL5aZ4cB6dF0g')
   })
 
+  it('on Vercel production, replaces a localhost NEXTAUTH_URL with the public address and reports it', async () => {
+    vi.stubEnv('NODE_ENV', 'production')
+    vi.stubEnv('VERCEL_ENV', 'production')
+    vi.stubEnv('DATABASE_URL', 'postgresql://u:p@localhost:5432/db')
+    vi.stubEnv('NEXTAUTH_SECRET', 'q8V1xY0pR7tN3mK9sW2eL5aZ4cB6dF0g')
+    vi.stubEnv('NEXTAUTH_URL', 'http://localhost:3001')
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const { env } = await import('./env')
+    const { configCorrections } = await import('./features')
+
+    expect(process.env.NEXTAUTH_URL).toBe('https://arcpem.com')
+    expect(env.nextAuthUrl()).toBe('https://arcpem.com')
+    expect(configCorrections).toHaveLength(1)
+  })
+
+  it('leaves NEXTAUTH_URL alone outside Vercel production (local next start, previews)', async () => {
+    vi.stubEnv('NODE_ENV', 'production')
+    vi.stubEnv('VERCEL_ENV', '')
+    vi.stubEnv('DATABASE_URL', 'postgresql://u:p@localhost:5432/db')
+    vi.stubEnv('NEXTAUTH_SECRET', 'q8V1xY0pR7tN3mK9sW2eL5aZ4cB6dF0g')
+    vi.stubEnv('NEXTAUTH_URL', 'http://localhost:3001')
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    await import('./env')
+    expect(process.env.NEXTAUTH_URL).toBe('http://localhost:3001')
+  })
+
   it('still refuses to start without the database or the session secret', async () => {
     vi.stubEnv('NODE_ENV', 'production')
     vi.stubEnv('DATABASE_URL', 'postgresql://u:p@localhost:5432/db')

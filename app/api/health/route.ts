@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { logger } from '@/lib/logger'
-import { securityWarnings, unavailableFeatures } from '@/lib/features'
+import { configCorrections, securityWarnings, unavailableFeatures } from '@/lib/features'
+import '@/lib/env'
 
 // Liveness/readiness probe for uptime monitors: the site is up AND can reach the accounts database (sign-in,
 // checkout and the app's sign-in provider all depend on it).
@@ -14,14 +15,16 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   const off = unavailableFeatures().map((f) => f.id)
   const warnings = securityWarnings().length
+  const corrected = configCorrections.length
   try {
     await db.$queryRaw`SELECT 1`
     return NextResponse.json(
       {
-        status: off.length || warnings ? 'degraded' : 'ok',
+        status: off.length || warnings || corrected ? 'degraded' : 'ok',
         db: 'up',
         ...(off.length ? { unavailable: off } : {}),
         ...(warnings ? { securityWarnings: warnings } : {}),
+        ...(corrected ? { correctedSettings: corrected } : {}),
         ts: new Date().toISOString(),
       },
       { headers: { 'Cache-Control': 'no-store' } },

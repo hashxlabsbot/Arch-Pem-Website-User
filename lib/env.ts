@@ -4,7 +4,8 @@
  * optional per feature: see lib/features.ts, which reports what is switched off instead of failing the whole site.
  */
 
-import { reportFeatureConfig } from './features'
+import { company } from './company'
+import { recordCorrection, reportFeatureConfig } from './features'
 
 type EnvKey =
   | 'DATABASE_URL'
@@ -64,6 +65,22 @@ if (typeof window === 'undefined') {
 // without (REQUIRED above) throws.
 if (typeof window === 'undefined' && isProd && process.env.NEXT_PHASE !== 'phase-production-build') {
   reportFeatureConfig()
+}
+
+// The live site must never hand out a localhost or plain-http address: NextAuth reads NEXTAUTH_URL on every request
+// for Google's OAuth redirect_uri and its cookies, and the same base feeds email links and the app's sign-in issuer.
+// A NEXTAUTH_URL copied from a local .env (http://localhost:3001) sent Google sign-in back to localhost. On a Vercel
+// production deploy, fall back to the canonical address and keep reporting it until the setting is fixed. Preview
+// and local builds are left alone.
+if (typeof window === 'undefined' && process.env.VERCEL_ENV === 'production' && process.env.NEXT_PHASE !== 'phase-production-build') {
+  const configured = process.env.NEXTAUTH_URL?.trim() ?? ''
+  if (configured && (!configured.startsWith('https://') || /localhost|127\.0\.0\.1/.test(configured))) {
+    process.env.NEXTAUTH_URL = company.siteUrl
+    const msg = `NEXTAUTH_URL is set to a non-public address; using ${company.siteUrl}. Fix it in the Vercel production environment.`
+    recordCorrection(msg)
+    // eslint-disable-next-line no-console
+    console.error(JSON.stringify({ level: 'error', msg: `config: ${msg}` }))
+  }
 }
 
 function get(key: EnvKey): string | undefined {

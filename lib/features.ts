@@ -67,6 +67,15 @@ export function securityWarnings(src: Source = process.env): string[] {
   return out
 }
 
+/**
+ * Settings the server had to correct at startup to stay safe (e.g. a localhost NEXTAUTH_URL on the live site).
+ * Kept so /api/health keeps flagging the misconfiguration until the setting itself is fixed.
+ */
+export const configCorrections: string[] = []
+export const recordCorrection = (msg: string) => {
+  if (!configCorrections.includes(msg)) configCorrections.push(msg)
+}
+
 let reported = false
 
 /**
