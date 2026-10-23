@@ -26,7 +26,7 @@ export default function CancelAutoRenew({ accessUntil }: { accessUntil: string }
         onClick={cancel}
         disabled={busy}
         className="text-xs font-semibold underline underline-offset-2"
-        style={{ color: '#64748b', cursor: busy ? 'wait' : 'pointer' }}
+        style={{ color: '#64748b', cursor: busy ? 'wait' : 'pointer', background: 'none', border: 0, padding: 0, font: 'inherit', fontSize: '0.75rem' }}
       >
         {busy ? 'Turning off…' : 'Turn off auto-renew'}
       </button>

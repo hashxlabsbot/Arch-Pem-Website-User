@@ -65,7 +65,7 @@ export default async function DashboardPage() {
       href: '/dashboard/support',
       gradient: 'linear-gradient(135deg, #10b981, #059669)',
       colorKey: 'green',
-      badge: 'Mon–Fri',
+      badge: 'Mon–Sat',
     },
     // Customers from before ARC PEM moved to the web keep their installers.
     ...(desktop
@@ -97,15 +97,15 @@ export default async function DashboardPage() {
 
         <div className="relative flex items-start justify-between gap-4">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
               <div
-                className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
+                className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap"
                 style={{ background: 'rgba(99,102,241,0.25)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.3)' }}
               >
                 {planName}
               </div>
               <div
-                className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1"
+                className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1 whitespace-nowrap"
                 style={active
                   ? { background: 'rgba(16,185,129,0.2)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.25)' }
                   : { background: 'rgba(245,158,11,0.2)', color: '#fcd34d', border: '1px solid rgba(245,158,11,0.25)' }}
@@ -155,7 +155,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Stats row ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
         {[
           {
             icon: ShieldCheck,

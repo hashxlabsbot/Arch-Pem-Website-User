@@ -13,7 +13,7 @@ const CHANNELS = [
     label: 'Call Us',
     value: company.phone,
     action: phoneTel,
-    badge: 'Mon–Fri, 10am–6pm IST',
+    badge: 'Mon–Sat, 10am–6pm IST',
     accent: '#16a34a',
     bg: 'rgba(22,163,74,0.08)',
     btnLabel: 'Call Now',
@@ -23,7 +23,7 @@ const CHANNELS = [
     label: 'WhatsApp',
     value: company.phone,
     action: whatsappLink,
-    badge: 'Quick replies, Mon–Fri',
+    badge: 'Quick replies, Mon–Sat',
     accent: '#059669',
     bg: 'rgba(5,150,105,0.08)',
     btnLabel: 'Chat on WhatsApp',
@@ -132,7 +132,7 @@ export default function SupportPage() {
 
         <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
           {[
-            { icon: Clock, text: 'Mon–Fri, 10am–6pm IST' },
+            { icon: Clock, text: 'Mon–Sat, 10am–6pm IST' },
             { icon: Zap,   text: 'WhatsApp replies in minutes' },
           ].map(({ icon: Icon, text }) => (
             <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>

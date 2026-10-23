@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LayoutDashboard, CreditCard, Download, HelpCircle, LogOut, Settings } from 'lucide-react'
 
 const NAV = [
@@ -24,6 +24,14 @@ export default function Sidebar({ isOpen, onClose }: Props) {
   const path    = usePathname()
   const { data: session } = useSession()
   const [signOutHover, setSignOutHover] = useState(false)
+
+  // On phones the sidebar is a drawer: Escape closes it, as with any overlay.
+  useEffect(() => {
+    if (!isOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [isOpen, onClose])
 
   const initials = session?.user?.name
     ?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() ?? '?'

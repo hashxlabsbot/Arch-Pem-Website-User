@@ -1,3 +1,7 @@
+/* `base` is needed even with preflight off (tailwind.config.js): it defines the --tw-* defaults that transform, filter
+   and ring utilities read. Without it `-translate-x-full` computes to `transform: none`, which left the dashboard
+   sidebar permanently open over the page on phones. With preflight disabled this layer adds no resets. */
+@tailwind base;
 @tailwind utilities;
 
 /* ══════════════════════════════════════════════

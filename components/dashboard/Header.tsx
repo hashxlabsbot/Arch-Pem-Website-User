@@ -70,6 +70,8 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
 
       {/* Hamburger — mobile only */}
       <button
+        type="button"
+        aria-label="Open menu"
         onClick={onMenuClick}
         className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ background: '#f8fafc', border: '1px solid #e2e8f0', cursor: 'pointer' }}
@@ -90,6 +92,9 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
         {/* Bell + dropdown */}
         <div ref={ref} style={{ position: 'relative' }}>
           <button
+            type="button"
+            aria-label="Notifications"
+            aria-expanded={open}
             onClick={() => setOpen(!open)}
             className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all"
             style={{

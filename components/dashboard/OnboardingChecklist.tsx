@@ -98,13 +98,15 @@ export default function OnboardingChecklist({ hasPlan }: Props) {
         </button>
       </div>
 
-      {/* Steps */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      {/* Steps: one column on phones, two on tablets (the dashboard sidebar takes 256px from 768px), four from
+          1280px. The 1px gaps over a tinted background draw the dividers for any column count. */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4" style={{ gap: '1px', background: '#f1f5f9' }}>
         {steps.map(({ icon: Icon, label, desc, done, href }, i) => {
           const content = (
             <div style={{
               padding: '16px 16px 18px',
-              borderRight: i < steps.length - 1 ? '1px solid #f1f5f9' : 'none',
+              height: '100%',
+              background: 'white',
               cursor: href ? 'pointer' : 'default',
               transition: 'background 0.15s',
             }}
@@ -133,11 +135,11 @@ export default function OnboardingChecklist({ hasPlan }: Props) {
           )
 
           return href ? (
-            <a key={i} href={href} style={{ textDecoration: 'none', display: 'block' }}>
+            <a key={i} href={href} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
               {content}
             </a>
           ) : (
-            <div key={i}>{content}</div>
+            <div key={i} style={{ height: '100%' }}>{content}</div>
           )
         })}
       </div>
