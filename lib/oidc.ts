@@ -17,12 +17,28 @@ import {
   type KeyObject,
 } from 'crypto'
 import { db } from '@/lib/db'
+import { NextResponse } from 'next/server'
 import { env, isProd } from '@/lib/env'
+import { logger } from '@/lib/logger'
 import { subscriptionState } from '@/lib/web-app'
 
 export const SUPPORTED_SCOPES = ['openid', 'email', 'profile', 'arcpem.web']
 export const CODE_TTL_MS = 60_000
 export const TOKEN_TTL_S = 300
+
+/**
+ * A 503 in the OAuth error format when this site isn't set up as the web app's sign-in provider (client id, client
+ * secret or, in production, the signing key is missing), otherwise null. Lets the four /oauth routes fail cleanly on
+ * their own instead of throwing, and never affects owner sign-in to the site.
+ */
+export function oidcUnavailable(): NextResponse | null {
+  if (env.oidcClientId() && env.oidcClientSecret() && (!isProd || env.oidcPrivateKey())) return null
+  logger.error('oauth: sign-in provider is not configured (OIDC_CLIENT_ID / OIDC_CLIENT_SECRET / OIDC_PRIVATE_KEY)')
+  return NextResponse.json(
+    { error: 'temporarily_unavailable', error_description: 'Sign-in to ARC PEM is not available right now.' },
+    { status: 503, headers: { 'Cache-Control': 'no-store' } },
+  )
+}
 
 export const issuer = () => env.nextAuthUrl().replace(/\/$/, '')
 

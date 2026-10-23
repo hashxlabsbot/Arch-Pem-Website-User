@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { rateLimit } from '@/lib/rate-limit'
 import { logger } from '@/lib/logger'
-import { TOKEN_TTL_S, authenticateClient, hashCode, issuer, ownerClaims, pkceMatches, signJwt } from '@/lib/oidc'
+import { TOKEN_TTL_S, authenticateClient, hashCode, issuer, ownerClaims, pkceMatches, signJwt, oidcUnavailable } from '@/lib/oidc'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,6 +11,9 @@ const fail = (error: string, status = 400) => NextResponse.json({ error }, { sta
 
 /** Step 2 of owner sign-in: the web app's server swaps the single-use code for a signed ID token. */
 export async function POST(req: NextRequest) {
+  const unavailable = oidcUnavailable()
+  if (unavailable) return unavailable
+
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
   const { allowed } = await rateLimit(`oidc-token:${ip}`, 60, 60_000)
   if (!allowed) return fail('slow_down', 429)

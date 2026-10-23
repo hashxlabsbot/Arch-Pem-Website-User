@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { issuer, ownerClaims, verifyJwt } from '@/lib/oidc'
+import { issuer, oidcUnavailable, ownerClaims, verifyJwt } from '@/lib/oidc'
 
 export const dynamic = 'force-dynamic'
 
 async function handle(req: NextRequest) {
+  const unavailable = oidcUnavailable()
+  if (unavailable) return unavailable
+
   const auth = req.headers.get('authorization') ?? ''
   const payload = auth.startsWith('Bearer ') ? verifyJwt(auth.slice(7), `${issuer()}/oauth/userinfo`) : null
   const claims = payload && typeof payload.sub === 'string' ? await ownerClaims(payload.sub) : null

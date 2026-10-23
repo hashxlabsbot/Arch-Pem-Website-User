@@ -3,7 +3,7 @@ import { randomBytes } from 'crypto'
 import { getActiveSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { rateLimit } from '@/lib/rate-limit'
-import { CODE_TTL_MS, SUPPORTED_SCOPES, findClient, hashCode, issuer } from '@/lib/oidc'
+import { CODE_TTL_MS, SUPPORTED_SCOPES, findClient, hashCode, issuer, oidcUnavailable } from '@/lib/oidc'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,6 +17,9 @@ function problem(message: string, status = 400) {
  * signed-in one is sent straight back to the web app with a single-use code (no consent screen: first-party app).
  */
 export async function GET(req: NextRequest) {
+  const unavailable = oidcUnavailable()
+  if (unavailable) return unavailable
+
   const p = req.nextUrl.searchParams
   const client = findClient(p.get('client_id'))
   if (!client) return problem('Unknown client.')

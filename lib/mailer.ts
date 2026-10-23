@@ -5,6 +5,9 @@ import { LOGO_PNG_BASE64 } from '@/lib/email-logo'
 let transporter: Transporter | null = null
 
 function getTransporter(): Transporter {
+  // Say what is wrong instead of letting nodemailer fail with an opaque connection error; callers decide whether
+  // a failed email should fail their request.
+  if (!process.env.SMTP_HOST?.trim()) throw new Error('Email is not configured: SMTP_HOST is not set')
   if (!transporter) {
     transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
