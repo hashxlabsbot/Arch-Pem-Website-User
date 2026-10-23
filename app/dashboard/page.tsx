@@ -1,10 +1,9 @@
 import { getActiveSession } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { Download, CreditCard, HelpCircle, ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Calendar } from 'lucide-react'
+import { Download, CreditCard, HelpCircle, ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Calendar, ExternalLink, Users, Smartphone, FileCheck2 } from 'lucide-react'
 import OnboardingChecklist from '@/components/dashboard/OnboardingChecklist'
 import { company } from '@/lib/company'
-import { annualPrice } from '@/lib/pricing'
-import { RocketIcon, ClipboardIcon, DashboardIcon } from '@/components/icons'
+import { env } from '@/lib/env'
 
 export default async function DashboardPage() {
   const session = await getActiveSession()
@@ -12,38 +11,52 @@ export default async function DashboardPage() {
 
   const user = await db.user.findUnique({
     where: { id: session.user.id },
-    include: { plan: true },
+    include: { plan: true, webSubscription: { include: { plan: true } } },
   })
 
+  const day = (d: Date) => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Kolkata' })
   const firstName = session.user.name?.split(' ')[0] ?? 'there'
   const initials  = session.user.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() ?? '?'
-  const planName  = user?.plan?.name ?? 'No Plan'
+  const sub = user?.webSubscription ?? null
+  const desktop = user?.plan ?? null
+  const planName = sub ? sub.plan.name.replace(/^web\s+/i, 'ARC PEM ') : desktop?.name ?? 'No plan yet'
+  const end = sub?.currentPeriodEnd ?? null
+  const active = Boolean(sub && sub.status !== 'CANCELED' && sub.status !== 'SUSPENDED' && (!end || end > new Date()))
   const memberSince = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
     : '—'
-  const planExpiry = user?.planExpiresAt
-    ? user.planExpiresAt.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-    : null
-  const planExpired = !!user?.planExpiresAt && user.planExpiresAt < new Date()
+  const appUrl = env.webAppUrl()
+  const openApp = appUrl ? `${appUrl}/auth/arcpem` : null
+  const renewal = !sub || !end
+    ? null
+    : !active
+      ? `Ended on ${day(end)}`
+      : sub.trialEndsAt
+        ? `Free trial until ${day(end)}${sub.autoRenew ? ' · first payment then' : ' · auto-renew off, nothing will be charged'}`
+        : sub.autoRenew
+        ? `Renews automatically on ${day(end)}`
+        : `Active until ${day(end)} · auto-renew off`
 
   const quickLinks = [
-    {
-      icon: Download,
-      label: 'Downloads',
-      desc: 'Get the latest ARC PEM installer for Windows or Mac',
-      href: '/dashboard/downloads',
-      gradient: 'linear-gradient(135deg, #3b82f6, #2563eb)',
-      colorKey: 'blue',
-      badge: `v${company.product.version} available`,
-    },
+    ...(active && openApp
+      ? [{
+          icon: ExternalLink,
+          label: 'Open ARC PEM',
+          desc: 'Go to your firm’s workspace: projects, ledgers, approvals and reports',
+          href: openApp,
+          gradient: 'linear-gradient(135deg, #7c3aed, #6366f1)',
+          colorKey: 'purple',
+          badge: 'app.arcpem.com',
+        }]
+      : []),
     {
       icon: CreditCard,
       label: 'Subscription',
-      desc: 'View or upgrade your current plan',
+      desc: sub ? 'Change plan, billing cycle or auto-renew' : 'Choose a plan, monthly or annual',
       href: '/dashboard/subscription',
-      gradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
-      colorKey: 'purple',
-      badge: planName,
+      gradient: 'linear-gradient(135deg, #3b82f6, #6366f1)',
+      colorKey: 'blue',
+      badge: sub ? (sub.billingInterval === 'MONTH' ? 'Monthly' : 'Annual') : 'From monthly',
     },
     {
       icon: HelpCircle,
@@ -54,6 +67,18 @@ export default async function DashboardPage() {
       colorKey: 'green',
       badge: 'Mon–Fri',
     },
+    // Customers from before ARC PEM moved to the web keep their installers.
+    ...(desktop
+      ? [{
+          icon: Download,
+          label: 'Desktop downloads',
+          desc: 'Installers for your existing desktop licence',
+          href: '/dashboard/downloads',
+          gradient: 'linear-gradient(135deg, #64748b, #475569)',
+          colorKey: 'blue',
+          badge: `v${company.product.version}`,
+        }]
+      : []),
   ]
 
   return (
@@ -81,32 +106,40 @@ export default async function DashboardPage() {
               </div>
               <div
                 className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1"
-                style={user?.plan
+                style={active
                   ? { background: 'rgba(16,185,129,0.2)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.25)' }
                   : { background: 'rgba(245,158,11,0.2)', color: '#fcd34d', border: '1px solid rgba(245,158,11,0.25)' }}
               >
-                <span className={`w-1.5 h-1.5 rounded-full inline-block ${user?.plan ? 'bg-emerald-400' : 'bg-amber-400'}`} />
-                {user?.plan ? 'Active' : 'Inactive'}
+                <span className={`w-1.5 h-1.5 rounded-full inline-block ${active ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                {active ? 'Active' : sub ? 'Inactive' : 'Not subscribed'}
               </div>
             </div>
-            <h2 className="text-2xl font-black mb-1.5 tracking-tight">
+            <h2 className="text-2xl font-black mb-1.5 tracking-tight" style={{ color: '#fff' }}>
               Welcome back, {firstName}!
             </h2>
-            <p className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.55)' }}>
-              {user?.plan
-                ? planExpiry
-                  ? `You're on the ${user.plan.name} plan — ${planExpired ? `your license expired on ${planExpiry}. Renew to keep access.` : `active until ${planExpiry}.`}`
-                  : `You're on the ${user.plan.name} plan — enjoy full access to all features.`
-                : 'You don\'t have an active license yet. Purchase a plan to unlock downloads and your license key.'}
+            <p className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              {active
+                ? `Your firm is on ${planName}. ${renewal}.`
+                : sub
+                  ? 'Your plan has ended. Renew to keep your team working — your data is safe and waiting.'
+                  : 'Pick a plan, monthly or annual, and your firm’s ARC PEM workspace is ready the moment payment completes.'}
             </p>
-            {!user?.plan && (
+            {active && openApp ? (
+              <a
+                href={openApp}
+                className="upgrade-btn inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl no-underline"
+                style={{ background: 'linear-gradient(100deg, #7c3aed, #6366f1 50%, #3b82f6)', color: 'white', boxShadow: '0 0 20px rgba(99,102,241,0.4)' }}
+              >
+                Open ARC PEM <ExternalLink size={14} />
+              </a>
+            ) : (
               <a
                 href="/dashboard/subscription"
                 className="upgrade-btn inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl no-underline"
-                style={{ background: 'linear-gradient(135deg, #3b82f6, #6366f1)', color: 'white', boxShadow: '0 0 20px rgba(99,102,241,0.4)' }}
+                style={{ background: 'linear-gradient(100deg, #7c3aed, #6366f1 50%, #3b82f6)', color: 'white', boxShadow: '0 0 20px rgba(99,102,241,0.4)' }}
               >
                 <Sparkles size={14} />
-                Upgrade Now
+                {sub ? 'Renew now' : 'Choose a plan'}
                 <ArrowRight size={14} />
               </a>
             )}
@@ -128,7 +161,7 @@ export default async function DashboardPage() {
             icon: ShieldCheck,
             label: 'Account Status',
             value: 'Active',
-            sub: 'All systems normal',
+            sub: sub ? `${sub.seatLimit ?? sub.plan.maxUsers} seats · ${sub.projectLimit ?? sub.plan.maxProjects} projects` : 'All systems normal',
             iconBg: 'linear-gradient(135deg, #10b981, #059669)',
             valueCls: '#10b981',
           },
@@ -136,11 +169,7 @@ export default async function DashboardPage() {
             icon: CreditCard,
             label: 'Current Plan',
             value: planName,
-            sub: user?.plan
-              ? planExpiry
-                ? `${planExpired ? 'Expired' : 'Valid till'} ${planExpiry}`
-                : `₹${annualPrice(user.plan.price).toLocaleString('en-IN')}/yr`
-              : 'No active license',
+            sub: renewal ?? (desktop ? 'Desktop licence' : 'Not subscribed yet'),
             iconBg: 'linear-gradient(135deg, #3b82f6, #6366f1)',
             valueCls: '#1e293b',
           },
@@ -174,7 +203,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Onboarding checklist (no active plan only) ── */}
-      <OnboardingChecklist hasPlan={!!user?.plan} />
+      <OnboardingChecklist hasPlan={Boolean(sub)} />
 
       {/* ── Quick Actions ── */}
       <div className="mb-2">
@@ -226,35 +255,19 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* ── What's New ── */}
-      <div style={{
-        background: 'white', borderRadius: '20px',
-        border: '1.5px solid #e2e8f0', marginTop: '20px', overflow: 'hidden',
-      }}>
-        <div style={{
-          padding: '14px 20px', borderBottom: '1px solid #f1f5f9',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0f172a' }}>What&apos;s New</span>
-            <span style={{
-              fontSize: '0.68rem', fontWeight: 700, color: '#6366f1',
-              background: 'rgba(99,102,241,0.1)', padding: '2px 8px', borderRadius: '6px',
-            }}>v{company.product.version}</span>
-          </div>
-          <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>June 2026</span>
+      {/* ── What's in ARC PEM ── */}
+      <div style={{ background: 'white', borderRadius: '20px', border: '1.5px solid #e2e8f0', marginTop: '20px', overflow: 'hidden' }}>
+        <div style={{ padding: '14px 20px', borderBottom: '1px solid #f1f5f9' }}>
+          <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0f172a' }}>Made for the whole firm</span>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}>
           {[
-            { icon: <RocketIcon size={22} color="#6366f1" />,    title: 'Latest Release', desc: 'ARC PEM is now live for Windows and Mac.' },
-            { icon: <ClipboardIcon size={22} color="#6366f1" />, title: 'BOQ Builder',    desc: 'Full bill of quantities with line items.' },
-            { icon: <DashboardIcon size={22} color="#6366f1" />, title: 'Reports',        desc: 'Export estimates as PDF & Excel.' },
-          ].map(({ icon, title, desc }, i) => (
-            <div key={title} style={{
-              padding: '16px 18px',
-              borderRight: i < 2 ? '1px solid #f1f5f9' : 'none',
-            }}>
-              <div style={{ marginBottom: '8px' }}>{icon}</div>
+            { Icon: Users, title: 'Your team, your roles', desc: 'Invite office and site staff; choose what each person can see and approve.' },
+            { Icon: Smartphone, title: 'On every device', desc: 'Add bills with receipt photos from site; install it on your phone like an app.' },
+            { Icon: FileCheck2, title: 'GST & Tally ready', desc: 'GSTR-2B reconciliation, TDS register and Tally export every month.' },
+          ].map(({ Icon, title, desc }, i) => (
+            <div key={title} style={{ padding: '16px 18px', borderRight: i < 2 ? '1px solid #f1f5f9' : 'none' }}>
+              <div style={{ marginBottom: '8px' }}><Icon size={20} color="#6366f1" /></div>
               <div style={{ fontSize: '0.83rem', fontWeight: 700, color: '#1e293b', marginBottom: '3px' }}>{title}</div>
               <div style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.5 }}>{desc}</div>
             </div>
@@ -263,7 +276,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Plan Features ── */}
-      {user?.plan && (
+      {(sub?.plan ?? desktop) && (
         <div
           className="rounded-2xl p-6 mt-6 bg-white"
           style={{ border: '1px solid #f1f5f9', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
@@ -276,11 +289,11 @@ export default async function DashboardPage() {
               className="text-[10px] font-bold px-2.5 py-1 rounded-full"
               style={{ background: 'linear-gradient(135deg,rgba(59,130,246,0.12),rgba(99,102,241,0.12))', color: '#6366f1', border: '1px solid rgba(99,102,241,0.2)' }}
             >
-              {user.plan.name}
+              {planName}
             </span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2.5 gap-x-6">
-            {(JSON.parse(user.plan.features) as string[]).map((f: string) => (
+            {(JSON.parse((sub?.plan ?? desktop)!.features) as string[]).map((f) => f.replace(/\bWeb (Solo|Studio|Enterprise)\b/g, '$1')).map((f: string) => (
               <div key={f} className="flex items-center gap-2.5 text-xs" style={{ color: '#475569' }}>
                 <CheckCircle2 size={13} style={{ color: '#10b981', flexShrink: 0 }} />
                 {f}

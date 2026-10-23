@@ -95,7 +95,7 @@ export default async function ArticleView({
       {preview && (
         <div style={{
           position: 'sticky', top: 0, zIndex: 50, textAlign: 'center',
-          background: '#f59e0b', color: '#1a1205', fontFamily: "'Plus Jakarta Sans',sans-serif",
+          background: '#f59e0b', color: '#1a1205', fontFamily: "var(--font-display), 'Plus Jakarta Sans',sans-serif",
           fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.05em', textTransform: 'uppercase',
           padding: '8px 16px',
         }}>

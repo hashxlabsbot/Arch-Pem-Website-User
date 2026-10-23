@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { useState } from 'react'
@@ -8,6 +9,7 @@ import { LayoutDashboard, CreditCard, Download, HelpCircle, LogOut, Settings } f
 const NAV = [
   { label: 'Dashboard',    href: '/dashboard',              icon: LayoutDashboard },
   { label: 'Subscription', href: '/dashboard/subscription', icon: CreditCard },
+  // Shown only to customers with a legacy desktop licence (see below).
   { label: 'Downloads',    href: '/dashboard/downloads',    icon: Download },
   { label: 'Support',      href: '/dashboard/support',      icon: HelpCircle },
   { label: 'Settings',     href: '/dashboard/settings',     icon: Settings },
@@ -52,7 +54,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
 
         {/* Logo */}
         <div className="px-5 py-5 flex-shrink-0">
-          <a href="/" className="flex items-center gap-3 no-underline group">
+          <Link href="/" className="flex items-center gap-3 no-underline group">
             <img
               src="/arc-icon.png"
               alt="ARC PEM"
@@ -64,7 +66,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
             <div className="flex flex-col leading-none">
               <span
                 className="text-white font-extrabold tracking-tight"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.02rem' }}
+                style={{ fontFamily: "var(--font-display), 'Plus Jakarta Sans', sans-serif", fontSize: '1.02rem' }}
               >
                 ARC PEM
               </span>
@@ -72,7 +74,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
                 Project Expense Manager
               </span>
             </div>
-          </a>
+          </Link>
         </div>
 
         {/* Divider */}
@@ -85,7 +87,7 @@ export default function Sidebar({ isOpen, onClose }: Props) {
 
         {/* Nav */}
         <nav className="flex-1 px-3 flex flex-col gap-0.5 overflow-y-auto">
-          {NAV.map(({ label, href, icon: Icon }) => {
+          {NAV.filter((n) => n.href !== '/dashboard/downloads' || session?.user?.hasDesktop).map(({ label, href, icon: Icon }) => {
             const active = href === '/dashboard' ? path === '/dashboard' : path.startsWith(href)
             return (
               <a

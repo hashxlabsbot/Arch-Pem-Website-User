@@ -30,13 +30,14 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
       icon: Zap,
       iconBg: 'rgba(99,102,241,0.12)',
       iconColor: '#6366f1',
-      title: 'Upgrade your plan',
-      body: 'Unlock downloads and your license key with a paid plan.',
+      title: 'Start your ARC PEM plan',
+      body: 'Subscribe monthly or annually and your firm’s workspace is ready at once.',
       href: '/dashboard/subscription',
-      cta: 'View Plans',
+      cta: 'View plans',
       time: 'Now',
     }] : []),
-    {
+    // Desktop app updates matter only to customers who still have a desktop licence.
+    ...(session?.user?.hasDesktop ? [{
       id: 'v1',
       icon: Download,
       iconBg: 'rgba(59,130,246,0.1)',
@@ -46,7 +47,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
       href: '/dashboard/downloads',
       cta: 'Download',
       time: 'New',
-    },
+    }] : []),
   ]
 
   const [open,     setOpen]     = useState(false)
@@ -135,7 +136,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
               {/* Notification list */}
               {visible.length === 0 ? (
                 <div style={{ padding: '28px 18px', textAlign: 'center', color: '#94a3b8', fontSize: '0.84rem' }}>
-                  You're all caught up!
+                  You&apos;re all caught up!
                 </div>
               ) : (
                 <div>

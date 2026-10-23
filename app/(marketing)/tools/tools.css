@@ -68,7 +68,7 @@
   padding: 11px 14px;
   border: 1.5px solid var(--gray-200);
   border-radius: 10px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-size: 0.875rem;
   color: var(--navy);
   background: rgba(255, 255, 255, 0.8);
@@ -112,7 +112,7 @@
   background: none;
   padding: 9px 8px;
   border-radius: 9px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--gray-500);
@@ -281,7 +281,7 @@
   padding: 9px 11px;
   border: 1.5px solid var(--gray-200);
   border-radius: 8px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-size: 0.83rem;
   color: var(--navy);
   background: #fff;
@@ -322,7 +322,7 @@
   border: 1.5px dashed var(--gray-300);
   background: none;
   color: var(--indigo);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   font-size: 0.85rem;
   border-radius: 12px;
@@ -348,7 +348,7 @@
   font-weight: 700;
 }
 .tr-big-num {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
   font-size: clamp(1.45rem, 2.6vw, 2.05rem);
   letter-spacing: -0.01em;
@@ -375,7 +375,7 @@
   letter-spacing: 0.05em;
 }
 .tr-tile-num {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
   font-size: 1.12rem;
   color: var(--navy);
@@ -544,7 +544,7 @@ a.tool-card:hover {
   justify-content: center;
 }
 .tool-card-title {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   font-size: 1.02rem;
   color: var(--navy);
@@ -564,7 +564,7 @@ a.tool-card:hover {
   border-radius: 100px;
   background: #fff;
   color: var(--gray-600);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
@@ -610,7 +610,7 @@ a.tool-card:hover {
   letter-spacing: 0.06em;
 }
 .pie-hole-value {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
   font-size: 0.86rem;
   color: var(--navy);
@@ -641,7 +641,7 @@ a.tool-card:hover {
   background: none;
   border: none;
   color: var(--indigo);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-size: 0.78rem;
   font-weight: 700;
   text-align: left;
@@ -697,7 +697,7 @@ a.tool-card:hover {
   padding: 9px 12px;
   border: 1.5px solid var(--gray-200);
   border-radius: 9px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-size: 0.82rem;
   color: var(--navy);
   outline: none;
@@ -749,13 +749,13 @@ a.tool-card:hover {
   padding-bottom: 14px;
 }
 .inv-firm-name {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
   font-size: 1.08rem;
   color: var(--navy);
 }
 .inv-title {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
   font-size: 1rem;
   letter-spacing: 0.16em;
@@ -808,7 +808,7 @@ a.tool-card:hover {
   border-top: 2px solid var(--navy);
   margin-top: 6px;
   padding-top: 9px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
   font-size: 0.98rem;
   color: var(--navy);

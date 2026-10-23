@@ -1,11 +1,18 @@
 import type { Metadata } from 'next'
 import JsonLd from '@/components/seo/JsonLd'
-import { PRICING_FAQS } from '@/lib/pricing-faqs'
+import { company } from '@/lib/company'
+import { getPublicPlans } from '@/lib/plans'
+import { pricingFaqs } from '@/lib/pricing-faqs'
+import { softwareJsonLd } from '@/lib/seo-entity'
 import PricingClient from './PricingClient'
 
-const TITLE = 'Pricing'
+// Plans are managed in the admin app; rebuild the static page (and the prices
+// in its HTML and JSON-LD) at least hourly.
+export const revalidate = 3600
+
+const TITLE = 'Pricing — Monthly & Annual Plans'
 const DESCRIPTION =
-  'Simple, annual pricing for ARC PEM — Solo, Studio, and Enterprise plans for architecture and construction firms. No monthly fees, no hidden costs, no internet required.'
+  'ARC PEM pricing: one subscription per firm (Starter, Studio, Business) by team seats and projects. Pay monthly or annually; cancel anytime.'
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -15,24 +22,26 @@ export const metadata: Metadata = {
     title: `${TITLE} · ARC PEM`,
     description: DESCRIPTION,
     url: '/pricing',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${TITLE} · ARC PEM`,
     description: DESCRIPTION,
-    images: ['/og-image.jpg'],
   },
 }
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const plans = await getPublicPlans()
+  const base = company.siteUrl.replace(/\/$/, '')
+  const faqs = pricingFaqs(plans.rules)
   return (
     <>
+      <JsonLd data={softwareJsonLd(plans)} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
           '@type': 'FAQPage',
-          mainEntity: PRICING_FAQS.map((f) => ({
+          mainEntity: faqs.map((f) => ({
             '@type': 'Question',
             name: f.q,
             acceptedAnswer: {
@@ -42,7 +51,17 @@ export default function PricingPage() {
           })),
         }}
       />
-      <PricingClient />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: base },
+            { '@type': 'ListItem', position: 2, name: 'Pricing', item: `${base}/pricing` },
+          ],
+        }}
+      />
+      <PricingClient initialPlans={plans} faqs={faqs} />
     </>
   )
 }

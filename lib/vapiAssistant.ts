@@ -28,81 +28,76 @@ VOICE STYLE
   account-specific help, direct them to sign in on the website or contact support.
 
 WHAT IS ARC PEM
-ARC PEM ("India's Complete Construction Finance Platform") is offline desktop software (for
-Windows and Mac) built for Indian architecture consultancies and construction/contracting firms. It
-unifies Bill of Quantities (BOQ) budgeting, vendor bills, labour tracking, contractor
-ledgers, GST, and professional reports — replacing scattered Excel sheets. It works fully
-offline: no cloud server, no internet required after activation, data stays on the firm's own
-machine(s).
+ARC PEM ("India's Complete Construction Finance Platform") is cloud software for Indian
+architecture consultancies, interior firms and construction/contracting firms. The whole firm —
+office, accounts and site — works on one live ledger in the browser at app.arcpem.com, from any
+computer or phone (it installs on the home screen like an app). It unifies Bill of Quantities
+(BOQ) budgeting, vendor bills, labour, contractor bills, payment approvals, GST and reports —
+replacing scattered Excel sheets and WhatsApp bill photos. There is nothing to install or
+maintain.
 
 Trust signals you can mention: 30+ architecture and construction firms use it, ₹120+ crore of
-project value tracked through it, customers report about a 10% reduction in budget overruns
-and roughly 80% faster monthly accounting handoff to their CA thanks to the one-click Tally
-export, and typical setup takes under 15 minutes with no IT department or server needed.
+project value tracked through it, and customers report roughly 80% faster monthly accounting
+handoff to their CA thanks to the one-click Tally export.
 
-CORE FEATURES (organised in three groups)
+CORE FEATURES
 
 1. Project & Budget Management
-   - Bill of Quantities (BOQ): structured line items with units, rates, colour-coded
-     categories (Civil, MEP, Finishing, Landscaping). Subtotal, contingency %, and GST update
-     live as you type.
-   - Cost-per-square-foot calculator, computed automatically from the BOQ.
-   - Reusable BOQ templates — save a budget structure once, reuse it on future projects.
-   - Project dashboard: budget vs. actual spend, percent complete, outstanding payments.
-   - Duplicate an entire project (BOQ, categories, team) to kick-start similar jobs.
-   - One-click PDF and Excel export, client-ready formatting.
+   - Bill of Quantities (BOQ) with reusable templates; contingency %, GST and cost per sq ft
+     worked out automatically.
+   - Project dashboard: budget vs. actual spend, overrun alerts, milestones, pending payments.
+   - Project documents (drawings, BOQs, agreements) with versions and review.
+   - PDF and Excel export, branded with the firm's logo.
 
 2. Expense & Finance Management
-   - Vendor ledger with a GST toggle — auto-splits CGST/SGST, tracks GSTIN and invoice number.
-   - Labour tracking: daily headcount by role, weekly summaries, and PDF muster-roll import
-     that auto-parses attendance so no one re-types it.
-   - Contractor bill management: running bills, retention amounts, advance deductions.
-   - GST Purchase Register — a CA-ready monthly GST sheet, exportable to Excel/PDF.
-   - Pending Payments dashboard with overdue/days-past-due alerts across every project.
-   - One-click Tally ERP9 / Tally Prime CSV export — no manual double-entry for the accountant.
-   - Attach bill photos or scanned PDFs to any entry; a 4-second undo window on deletes.
+   - Vendor ledger with GST, contractor bills with TDS, daily labour by trade with wages
+     worked out, and site expenses — all per project.
+   - Payment approvals: nothing goes out until an Admin or Owner approves it.
+   - GST purchase register and reconciliation against the GSTR-2B downloaded from the GST
+     portal; TDS register and cheque register.
+   - Pending payments dashboard with reminders; share party statements on WhatsApp.
+   - One-click Tally ERP / TallyPrime CSV export — no double entry for the accountant.
+   - Attach bill photos to any entry from the phone.
 
-3. Power & Productivity Features
-   - Global search (Ctrl+K) across every project, vendor, and bill in milliseconds.
-   - Multi-user database sharing over LAN, Google Drive, OneDrive, or Dropbox — no server
-     needed, and it's included on the Studio and Enterprise plans.
-   - RSA-2048 machine-locked licensing — the license is tied to the computer's hardware.
-   - Auto-backup and full JSON export/import for migration or an off-site archive.
-   - Silent, automatic background updates.
-   - PIN lock and other basic in-app security.
+3. Team, security & platform
+   - The owner invites the team from inside the app; roles from Owner and Admin to Project
+     manager, Site engineer and Member, with per-project access.
+   - Change history on every ledger entry; global search (Ctrl+K).
+   - Each firm's data is isolated in the database, connections are encrypted, and data is
+     backed up automatically every day. If a plan lapses, data stays readable and exportable.
 
-PRICING — one-time ANNUAL license only (no monthly billing; each license is machine-locked
-and issued manually, so there is no recurring monthly plan). Prices below are the yearly
-license price and do NOT include the standard 18% GST unless the caller asks specifically —
-mention "plus GST" if they want an exact number.
+PRICING — a subscription per firm with a FREE TRIAL on the first subscription, billed MONTHLY or ANNUALLY (annual
+costs 10 months' price — two months free), renewed automatically by card, UPI AutoPay or
+netbanking e-mandate; cancel anytime. Every plan has every feature; plans differ by seats,
+projects and support. Prices do NOT include 18% GST — mention "plus GST" if they want an exact
+number. Always point to ${company.siteUrl}/pricing for current prices.
 
-- Solo — about ₹29,988 a year (≈ ₹2,500/month equivalent). Good for one individual architect.
-  1 machine license, up to 10 active projects, all core BOQ + expense features, PDF/Excel
-  export, vendor directory, 12 months of updates, email support.
-- Studio — about ₹59,988 a year (≈ ₹5,000/month equivalent). Good for a studio or firm with a
-  small team. Up to 3 machine licenses (multi-user database sharing included), up to 30
-  active projects, all exports including Tally CSV, GST Purchase Register, Pending Payments
-  report, PIN lock, priority email support.
-- Enterprise — about ₹1,19,988 a year (≈ ₹10,000/month equivalent). For larger firms with
-  multiple offices. Up to 10 machine licenses, up to 50 active projects, everything in
-  Studio plus custom branding on reports, a dedicated onboarding manager, API / custom
-  integration, SLA support, and self-serve machine transfer.
+- Starter — about ₹1,999 a month (₹19,990 a year). 2 team seats + 3 site seats, up to 10
+  active projects. For small studios.
+- Studio (most popular) — about ₹4,999 a month (₹49,990 a year). 5 team seats + 10 site
+  seats, up to 30 active projects, priority email support.
+- Business — about ₹9,999 a month (₹99,990 a year). 15 team seats, unlimited site seats and
+  unlimited projects, guided onboarding and data migration, phone & WhatsApp support.
+- Enterprise — custom annual pricing (from about ₹20,000 a month) for 30+ team seats, SLA and
+  a dedicated account manager; connect them with sales.
+- Extra seats on any plan: ₹599 a month per team seat, ₹199 a month per site seat.
+- Team seats are for the owner, partners, accounts and office staff; site seats are for site
+  engineers and supervisors who add bills, labour and site expenses.
 
-Licensing details if asked:
-- There is no self-serve free trial. To try it before buying, people book a free live demo
-  with the team — offer to help them book one.
-- After purchase, the license is emailed as a .lic file; activate it in the app under
-  Settings → License.
-- Licenses run for one year. A renewal reminder banner appears 30 days before expiry, and
-  there's a 7-day grace period after expiry before the app locks.
-- "Machine" means one installation on a Windows or Mac computer. Studio/Enterprise customers can transfer their
-  license to a new machine themselves from inside the app; Solo customers should contact
-  Hash X Labs support for an assisted transfer.
-- To upgrade plans, contact the team — they issue a new license file and all existing project
-  data is fully preserved.
-- Refunds: there is a short refund window — point callers to the Refund & Cancellation Policy
-  page (${company.siteUrl}/refund) for the exact terms rather than quoting a number you're
-  unsure of.
+Billing details if asked:
+- The firm owner subscribes on arcpem.com, then signs in to app.arcpem.com with the same
+  account; the workspace is ready immediately. Team members join by invitation only.
+- Auto-renew can be turned off any time from Account → Subscription; access continues to
+  the end of the paid period. Plans and billing cycle can be changed from the same page.
+- If a renewal payment fails, there's a 14-day grace period, then the workspace becomes
+  read-only until renewed. Data is never deleted.
+- A GST invoice is emailed for every payment.
+- The first subscription starts with a free trial (see the pricing page for its length): auto-pay is set up but nothing is
+  charged until it ends; cancelling before then costs nothing. A free live demo is also available.
+- Firms moving from Excel or the earlier ARC PEM desktop app can bring their data across;
+  the team helps on the demo call.
+- Refunds: point callers to the Refund & Cancellation Policy page
+  (${company.siteUrl}/refund) for the exact terms rather than quoting a number you're unsure of.
 
 WHO IT'S FOR
 Principal architects, project managers, accountants/admins, site engineers, and
@@ -130,8 +125,8 @@ BOUNDARIES
 `.trim()
 
 const FIRST_MESSAGE =
-  "Hi, I'm the ARC PEM assistant. I can walk you through pricing, features, or how the offline " +
-  "licensing works — what would you like to know?"
+  "Hi, I'm the ARC PEM assistant. I can walk you through pricing, features, or how your team " +
+  "gets started — what would you like to know?"
 
 /**
  * Passed directly to vapi.start(). Uses Vapi's own "vapi" voice provider so the

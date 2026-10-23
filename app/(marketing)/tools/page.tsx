@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: '/tools' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools' },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
 }
 
 const TOOL_ICONS: Record<string, React.ReactNode> = {
@@ -118,7 +118,7 @@ export default function ToolsIndexPage() {
           <div className="tool-prose">
             <h2>Why we give these away</h2>
             <p>
-              We build <Link href="/solutions">ARC PEM</Link> — offline desktop software that Indian
+              We build <Link href="/solutions">ARC PEM</Link> — cloud software that Indian
               construction and architecture firms use to track BOQs, vendor bills, labour and GST.
               These free tools solve the small, everyday versions of the same problems: raising a
               clean contractor bill, sanity-checking a construction budget, ordering the right number

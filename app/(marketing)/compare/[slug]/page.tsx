@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
+import { fit } from '@/lib/seo'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import JsonLd from '@/components/seo/JsonLd'
 import ToolCta from '@/components/tools/ToolCta'
 import { company } from '@/lib/company'
 import { COMPARISONS, SEGMENTS } from '@/lib/aeo-pages'
-import { ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
+import { CONTENT_UPDATED, ORG_ID, SOFTWARE_ID } from '@/lib/seo-entity'
 import '../../tools/tools.css'
 
 export const dynamicParams = false
@@ -16,20 +17,22 @@ export function generateStaticParams() {
 
 const find = (slug: string) => COMPARISONS.find((c) => c.slug === slug)
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const params = await props.params
   const c = find(params.slug)
   if (!c) return {}
   const url = `/compare/${c.slug}`
   return {
     title: c.title,
-    description: c.description,
+    description: fit(c.description, 158),
     alternates: { canonical: url },
-    openGraph: { type: 'article', title: `${c.title} · ARC PEM`, description: c.description, url, images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-    twitter: { card: 'summary_large_image', title: `${c.title} · ARC PEM`, description: c.description, images: ['/og-image.jpg'] },
+    openGraph: { type: 'article', title: `${c.title} · ARC PEM`, description: c.description, url },
+    twitter: { card: 'summary_large_image', title: `${c.title} · ARC PEM`, description: c.description },
   }
 }
 
-export default function ComparePage({ params }: { params: { slug: string } }) {
+export default async function ComparePage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params
   const c = find(params.slug)
   if (!c) notFound()
   const base = company.siteUrl.replace(/\/$/, '')
@@ -47,6 +50,7 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
           author: { '@id': ORG_ID },
           publisher: { '@id': ORG_ID },
           about: { '@id': SOFTWARE_ID },
+          dateModified: CONTENT_UPDATED,
           inLanguage: 'en-IN',
         }}
       />
@@ -87,7 +91,7 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
             <div className="tool-table-wrap">
               <table className="tool-table">
                 <thead>
-                  <tr><th></th><th>ARC PEM</th><th>{c.other}</th></tr>
+                  <tr><th></th><th>{c.arcLabel ?? 'ARC PEM'}</th><th>{c.other}</th></tr>
                 </thead>
                 <tbody>
                   {c.rows.map((r) => (
@@ -101,9 +105,9 @@ export default function ComparePage({ params }: { params: { slug: string } }) {
               </table>
             </div>
 
-            <h2>Choose ARC PEM if</h2>
+            <h2>Choose {c.arcLabel ?? 'ARC PEM'} if</h2>
             <ul>{c.chooseArc.map((x) => <li key={x}>{x}</li>)}</ul>
-            <h2>{c.other} alone is enough if</h2>
+            <h2>{c.otherHeading ?? `${c.other} alone is enough if`}</h2>
             <ul>{c.chooseOther.map((x) => <li key={x}>{x}</li>)}</ul>
 
             <h2>Frequently asked questions</h2>

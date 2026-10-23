@@ -22,7 +22,7 @@ export default function ShippingPage() {
       <ul>
         <li>Once your payment is confirmed, your plan is activated <strong>automatically and instantly</strong> on your account.</li>
         <li>A payment confirmation and receipt are emailed to your registered address.</li>
-        <li>The desktop application can be downloaded from your dashboard at any time.</li>
+        <li>ARC PEM is delivered online: your firm&apos;s workspace at app.arcpem.com is available as soon as payment completes. Nothing is shipped physically.</li>
       </ul>
 
       <h2>2. Delivery timeline</h2>

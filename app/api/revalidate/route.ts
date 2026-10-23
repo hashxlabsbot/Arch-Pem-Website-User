@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
+import { submitToIndexNow } from '@/lib/indexnow'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,19 +22,34 @@ export async function POST(req: NextRequest) {
   }
 
   let slug: string | undefined
+  let kind: string | undefined
   try {
-    slug = (await req.json())?.slug
+    const body = await req.json()
+    slug = typeof body?.slug === 'string' ? body.slug : undefined
+    kind = typeof body?.kind === 'string' ? body.kind : undefined
   } catch {
     /* body optional */
   }
 
-  // Listing, category archives, feed and sitemap always change when any post does.
+  // { kind: 'plans' }: a plan's price or features changed in admin. The prices live in the HTML and JSON-LD of
+  // the home and pricing pages and in the AI briefings.
+  if (kind === 'plans') {
+    for (const path of ['/', '/pricing', '/llms.txt', '/llms-full.txt']) revalidatePath(path)
+    await submitToIndexNow(['/', '/pricing'])
+    return NextResponse.json({ revalidated: true, kind, at: Date.now() })
+  }
+
+  // Listing, category archives, feed, sitemap and the AI briefing always change when any post does.
   revalidatePath('/blog')
   revalidatePath('/blog/category/[category]', 'page')
   revalidatePath('/blog/rss.xml')
   revalidatePath('/sitemap.xml')
+  revalidatePath('/llms.txt')
   // The specific post (and its OG image share the segment).
   if (slug) revalidatePath(`/blog/${slug}`)
+
+  // Ask Bing & co. to recrawl now rather than whenever they next visit (a deleted post's URL then 404s for them).
+  await submitToIndexNow(['/blog', ...(slug ? [`/blog/${slug}`] : [])])
 
   return NextResponse.json({ revalidated: true, slug: slug ?? null, at: Date.now() })
 }

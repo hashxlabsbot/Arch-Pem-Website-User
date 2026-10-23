@@ -93,8 +93,9 @@ export default function WhyArcPem() {
           </h2>
           <p>
             Today it&apos;s bill photos on WhatsApp, the muster in a supervisor&apos;s notebook, a budget sheet only
-            one person understands — and your CA retyping all of it into Tally. ARC PEM pulls it into one
-            offline desktop app and gives you back the numbers you actually run the firm on.
+            one person understands — and your CA retyping all of it into Tally. ARC PEM pulls it into one live
+            ledger the whole firm shares, from any phone or computer, and gives you back the numbers you actually
+            run the firm on.
           </p>
         </div>
 
@@ -155,7 +156,7 @@ export default function WhyArcPem() {
               <ArcAppIcon size={56} />
             </div>
             <strong className="wa-hub-name">ARC PEM</strong>
-            <span className="wa-hub-meta">One offline desktop app<br />Windows · Mac</span>
+            <span className="wa-hub-meta">Every phone and computer<br />app.arcpem.com</span>
           </div>
 
           <div className="wa-col wa-col--out">

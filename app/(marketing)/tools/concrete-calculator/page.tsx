@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: '/tools/concrete-calculator' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/concrete-calculator', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/concrete-calculator' },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
 }
 
 const FAQS = [
@@ -247,7 +247,7 @@ export default function ConcreteCalculatorPage() {
 
       <ToolCta
         heading="You calculated 11 bags. Did the site actually consume 11?"
-        sub="ARC PEM tracks material purchases and vendor bills against your BOQ, project by project — so estimated vs actual is always one report away. Fully offline, built for Indian construction firms."
+        sub="ARC PEM tracks material purchases and vendor bills against your BOQ, project by project — so estimated vs actual is always one report away. Live for the whole firm, built for Indian construction firms."
       />
     </>
   )

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useEffect, Suspense } from 'react'
 import { signIn, getProviders } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -16,6 +17,18 @@ function validatePassword(v: string) {
   if (!v) return 'Password is required'
   if (v.length < 8) return 'Password must be at least 8 characters'
   return ''
+}
+
+/** Where to go after signing in: only a path on this site, so the parameter can't send anyone elsewhere. */
+function safeCallback(raw: string | null): string {
+  if (!raw) return '/dashboard'
+  try {
+    const url = new URL(raw, window.location.origin)
+    if (url.origin !== window.location.origin) return '/dashboard'
+    return `${url.pathname}${url.search}${url.hash}`
+  } catch {
+    return '/dashboard'
+  }
 }
 
 export default function LoginPage() {
@@ -89,14 +102,20 @@ function LoginForm() {
           : 'Incorrect email or password. Please try again.'
       )
     } else {
-      router.push('/dashboard')
+      const next = safeCallback(params.get('callbackUrl'))
+      // Sign-in for ARC PEM Web continues at a server endpoint that redirects to the web app: needs a full load.
+      if (next.startsWith('/oauth/')) {
+        window.location.assign(next)
+        return
+      }
+      router.push(next)
       router.refresh()
     }
   }
 
   function handleGoogleSignIn() {
     setGoogleLoading(true)
-    signIn('google', { callbackUrl: params.get('callbackUrl') || '/dashboard' })
+    signIn('google', { callbackUrl: safeCallback(params.get('callbackUrl')) })
   }
 
   const googleErrorMsg =
@@ -115,7 +134,9 @@ function LoginForm() {
           Welcome back
         </h2>
         <p style={{ fontSize: '0.84rem', color: '#94a3b8', fontWeight: 500 }}>
-          Sign in to your ARC PEM account
+          {params.get('for') === 'web-app'
+            ? 'Sign in with your ARC PEM account to continue to your workspace'
+            : 'Sign in to your ARC PEM account'}
         </p>
       </div>
 
@@ -305,9 +326,9 @@ function LoginForm() {
       </div>
 
       <p style={{ textAlign: 'center', marginTop: '14px' }}>
-        <a href="/" style={{ fontSize: '0.75rem', color: '#cbd5e1', textDecoration: 'none', fontWeight: 500 }}>
+        <Link href="/" style={{ fontSize: '0.75rem', color: '#cbd5e1', textDecoration: 'none', fontWeight: 500 }}>
           ← Back to website
-        </a>
+        </Link>
       </p>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

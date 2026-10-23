@@ -14,14 +14,11 @@ const base = (size: number) => ({
   'aria-hidden': true,
 })
 
-/** ARC PEM app icon — same arch mark as the hero's app window. */
+/** The official ARC PEM app icon (same file as the favicon). */
 export function ArcAppIcon({ size = 28, className }: G) {
   return (
-    <svg width={size} height={size} viewBox="0 0 44 44" fill="none" className={className} aria-hidden="true">
-      <rect width="44" height="44" rx="11" fill="#3b82f6" />
-      <path d="M11 34 L11 21 Q11 8 22 8 Q33 8 33 21 L33 34" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <line x1="7" y1="34" x2="37" y2="34" stroke="white" strokeWidth="4" strokeLinecap="round" />
-    </svg>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/arc-icon.png" width={size} height={size} alt="" aria-hidden="true" className={className} style={{ display: 'block', flexShrink: 0, borderRadius: Math.round(size * 0.22) }} />
   )
 }
 
@@ -65,16 +62,6 @@ export function SlipGlyph({ size = 16, className }: G) {
   )
 }
 
-export function WifiOffGlyph({ size = 16, className }: G) {
-  return (
-    <svg {...base(size)} className={className}>
-      <path d="M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M5 12.5a10 10 0 0 1 5.2-2.7M16.8 11.2a10 10 0 0 1 2.2 1.3M8.5 16a5 5 0 0 1 7 0" />
-      <path d="M12 19.5h.01" />
-      <path d="M3 3l18 18" />
-    </svg>
-  )
-}
-
 export function MonitorGlyph({ size = 16, className }: G) {
   return (
     <svg {...base(size)} className={className}>
@@ -94,12 +81,3 @@ export function DatabaseGlyph({ size = 16, className }: G) {
   )
 }
 
-export function PdfGlyph({ size = 16, className }: G) {
-  return (
-    <svg {...base(size)} className={className}>
-      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-      <path d="M14 3v5h5" />
-      <path d="M8.5 15.5h7M8.5 12.5h4" />
-    </svg>
-  )
-}

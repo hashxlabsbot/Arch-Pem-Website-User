@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: '/tools/construction-cost-calculator' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/construction-cost-calculator', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/construction-cost-calculator' },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
 }
 
 const FAQS = [
@@ -224,7 +224,7 @@ export default function CostCalculatorPage() {
 
       <ToolCta
         heading="Estimating is step one. Staying on budget is the real game."
-        sub="ARC PEM tracks your BOQ against actual vendor bills, labour and contractor payments as the build progresses — so overruns show up in weeks, not at the end. Fully offline desktop software."
+        sub="ARC PEM tracks your BOQ against actual vendor bills, labour and contractor payments as the build progresses — so overruns show up in weeks, not at the end. Live for the whole firm, on any phone or computer."
       />
     </>
   )

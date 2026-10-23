@@ -175,7 +175,7 @@ export default function VapiAssistant() {
           <div className="vapi-transcript">
             {transcript.length === 0 && status === 'active' && (
               <div className="vapi-transcript-hint">
-                Ask about pricing, features, offline security, or how to book a demo.
+                Ask about pricing, features, data security, or how to book a demo.
               </div>
             )}
             {transcript.map((line, i) => (

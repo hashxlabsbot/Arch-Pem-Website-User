@@ -8,14 +8,14 @@ import { company } from '@/lib/company'
 
 const TITLE = 'Bar Bending Schedule (BBS) Calculator'
 const DESCRIPTION =
-  'Generate a bar bending schedule for beams, columns, slabs and footings, build a multi-member project schedule, and get a diameter-wise steel order sheet — free and instant.'
+  'Generate a bar bending schedule for beams, columns, slabs and footings, plus a diameter-wise steel order sheet. Free and instant.'
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: '/tools/bar-bending-schedule-calculator' },
-  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/bar-bending-schedule-calculator', images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
-  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION, images: ['/og-image.jpg'] },
+  openGraph: { title: `${TITLE} · ARC PEM`, description: DESCRIPTION, url: '/tools/bar-bending-schedule-calculator' },
+  twitter: { card: 'summary_large_image', title: `${TITLE} · ARC PEM`, description: DESCRIPTION },
 }
 
 const FAQS = [
@@ -246,7 +246,7 @@ export default function BBSCalculatorPage() {
 
       <ToolCta
         heading="You calculated 58 kg of steel. Did the site order exactly that?"
-        sub="ARC PEM tracks BOQ, vendor bills and material purchases against your estimate, project by project — so estimated vs actual is always one report away. Fully offline, built for Indian construction firms."
+        sub="ARC PEM tracks BOQ, vendor bills and material purchases against your estimate, project by project — so estimated vs actual is always one report away. Live for the whole firm, built for Indian construction firms."
       />
     </>
   )

@@ -42,24 +42,24 @@ const CHANNELS = [
 
 const FAQS = [
   {
-    q: 'How do I activate my license key?',
-    a: 'Open ARC PEM, go to Settings → License, and paste your license key. Click Activate. The key is tied to your purchase email.',
+    q: 'How do I open ARC PEM after subscribing?',
+    a: 'Click Open ARC PEM on your dashboard, or go to app.arcpem.com and sign in with this account. Your firm’s workspace is ready as soon as payment completes.',
   },
   {
-    q: 'Can I use ARC PEM on multiple machines?',
-    a: 'Each license is valid for one machine at a time. Contact support to transfer your license to a different device.',
+    q: 'How do I add my team?',
+    a: 'In ARC PEM, open Team and send invitations. Each person sets their own password and gets the role and projects you choose. Your plan sets how many seats you have.',
   },
   {
-    q: 'How do I upgrade my plan?',
-    a: 'Go to Subscription in your dashboard, choose a plan, and complete the payment. Your account is upgraded instantly.',
+    q: 'How do I change plan or turn off auto-renew?',
+    a: 'Go to Subscription in your dashboard. Pick another plan or billing cycle, or turn off auto-renew; you keep access until the end of the period you have paid for.',
   },
   {
     q: 'What if the software crashes or has a bug?',
-    a: `Email us at ${company.supportEmail} with a description of the issue and your OS version. We typically respond within 24 hours.`,
+    a: `Email us at ${company.supportEmail} with a description of the issue and the browser you use. We typically respond within 24 hours.`,
   },
   {
     q: 'Is my data backed up?',
-    a: 'ARC PEM stores data locally on your machine. We recommend regular manual backups of your project files.',
+    a: 'Yes. Your firm’s data is backed up automatically every day, and admins can download a copy at any time from Settings → Backups in ARC PEM.',
   },
 ]
 
@@ -125,7 +125,7 @@ export default function SupportPage() {
               Support Center
             </h1>
             <p style={{ color: '#94a3b8', fontSize: '0.84rem', margin: 0, marginTop: '2px' }}>
-              We're here to help — reach us any way you prefer
+              We&apos;re here to help — reach us any way you prefer
             </p>
           </div>
         </div>

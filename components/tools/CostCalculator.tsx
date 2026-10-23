@@ -92,7 +92,7 @@ export default function CostCalculator() {
   useEffect(() => setMounted(true), [])
 
   // Debounced URL sync — lets a contractor share a link that reproduces this exact estimate.
-  const syncTimer = useRef<ReturnType<typeof setTimeout>>()
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useEffect(() => {
     if (syncTimer.current) clearTimeout(syncTimer.current)
     syncTimer.current = setTimeout(() => {
@@ -276,7 +276,7 @@ export default function CostCalculator() {
       </p>
 
       <div className="inv-brand">
-        Generated using ARC PEM Free Tools (arcpem.com/tools) — offline expense &amp; budget tracking software for builders
+        Generated using ARC PEM Free Tools (arcpem.com/tools) — expense &amp; budget tracking software for builders
       </div>
     </div>
   )

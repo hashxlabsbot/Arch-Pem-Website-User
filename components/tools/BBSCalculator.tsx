@@ -308,7 +308,7 @@ export default function BBSCalculator() {
   }, [])
 
   // Debounced URL sync — lets an engineer share a link that reproduces this exact schedule.
-  const syncTimer = useRef<ReturnType<typeof setTimeout>>()
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useEffect(() => {
     if (syncTimer.current) clearTimeout(syncTimer.current)
     syncTimer.current = setTimeout(() => {
@@ -562,7 +562,7 @@ export default function BBSCalculator() {
       </div>
 
       <div className="inv-brand">
-        Generated using ARC PEM Free Tools (arcpem.com/tools) — offline project &amp; material tracking for builders
+        Generated using ARC PEM Free Tools (arcpem.com/tools) — project &amp; material tracking for builders
       </div>
     </div>
   )
@@ -649,7 +649,7 @@ export default function BBSCalculator() {
       </div>
 
       <div className="inv-brand">
-        Generated using ARC PEM Free Tools (arcpem.com/tools) — offline project &amp; material tracking for builders
+        Generated using ARC PEM Free Tools (arcpem.com/tools) — project &amp; material tracking for builders
       </div>
     </div>
   )

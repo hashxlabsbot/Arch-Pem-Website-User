@@ -7,6 +7,8 @@
  *     before going live. Razorpay verifies the legal entity name, a reachable
  *     business address, phone, and support email against your account.
  */
+import { GST_RATE_PCT } from './pricing'
+
 export const company = {
   /** Public product/brand name. */
   brand: 'ARC PEM',
@@ -41,9 +43,9 @@ export const company = {
   /** Tax registration — shown in the footer/invoices for Indian SaaS. */
   gstin: '', // TODO: 15-char GSTIN, or leave blank to hide
 
-  /** Whether displayed prices already include 18% GST. Drives the pricing note. */
+  /** Displayed prices are before GST; checkout adds it (lib/pricing.ts chargePaise). Drives the pricing notes. */
   pricesIncludeGst: false,
-  gstRatePct: 18,
+  gstRatePct: GST_RATE_PCT,
 
   /** Refund stance, surfaced in the Refund Policy + at checkout. */
   refund: {
@@ -51,11 +53,16 @@ export const company = {
     windowDays: 7,
   },
 
+  // Fill these in: they become Organization.sameAs in the JSON-LD, the strongest signal search engines and
+  // AI assistants use to tie ARC PEM to the same company across the web.
   socials: {
     linkedin: '', // TODO: full URL or leave blank to hide
     twitter: '',  // TODO
     youtube: '',  // TODO
   },
+
+  /** The publisher's own company website (Hash X Labs). */
+  parentSite: 'https://www.hashxlabs.com',
 
   /** Used for canonical URLs, sitemap, OG tags. Must match the domain that
    *  actually serves the site (www.arcpem.com 307-redirects here in production). */
